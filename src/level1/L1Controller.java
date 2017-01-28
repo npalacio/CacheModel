@@ -17,7 +17,7 @@ public class L1Controller {
 	//Maybe when L1D and L2D process their queues they always go through all of them to figure out any evictions 
 	//before they are replaced?
 	
-	//On writes to the cache we will need to set dirty bit
+	//On writes to the cache we will need to set dirty bit test
 	
 	private List<ArrayList<L1CEntry>> sets;
 	private int numberOfSets = 128;
