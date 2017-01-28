@@ -1,0 +1,10 @@
+How do I ensure that instructions going to same address processed serially
+L1C keeps track of addresses that missed and are being fetched. If an instruction comes in and is looking for one of those addresses it
+is put into a queue that just waits (maybe map an address to a queue for this, a queue for each address)
+
+Then when that data comes back the first instruction that caused the fetch is processed (That instruction should be in the QItems). 
+The requested data comes back with an instruction, process that instruction then the rest of the queue (all at once)? 
+
+So everytime data comes back from L2 we check for a queue waiting on it. 
+And everytime an instruction misses we check if there is a fetch in progress already.
+Same for L2?

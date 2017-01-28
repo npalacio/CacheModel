@@ -1,0 +1,4 @@
+What should processor own?
+L1Controller owns its data so it acts at the whole Level 1, and that is what the processor interacts with?
+Make processor own a L1Controller object, meaning processor has to initialize all the queues for that.
+Then the L1Controller will have to own the L2Controller and L2Controller owns memory. The queues are initialized by whoever owns who.

@@ -13,10 +13,14 @@ public class Processor {
 	
 	public static void main(String[] args) {
 		String fileName = "input/input001.txt";
-		ProcessInstructions(fileName);
+		Start(fileName);
 	}
 	
-	private static void ProcessInstructions(String fileName) {
+	private static void Start(String fileName) {
+		List<Instruction> instructions = ProcessInstructions(fileName);
+	}
+	
+	private static List<Instruction> ProcessInstructions(String fileName) {
 		FileInputStream fis = null;
 		BufferedReader reader = null;
 		List<Instruction> instructions = new ArrayList<Instruction>();
@@ -54,8 +58,8 @@ public class Processor {
 				System.out.println(e);
 			}
 		}
-		L1Controller L1 = new L1Controller();
-		L1.initialize();
-		L1.printCache();
+		return instructions;
 	}
+	
+	
 }

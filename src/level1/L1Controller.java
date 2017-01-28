@@ -21,6 +21,7 @@ public class L1Controller {
 	
 	private List<ArrayList<L1CEntry>> sets;
 	private int numberOfSets = 128;
+	private L1Data backingData;
 
 	private Queue<QItem> toProc;
 	private Queue<QItem> toData;
@@ -30,8 +31,10 @@ public class L1Controller {
 	private Queue<QItem> fromData;
 	private Queue<QItem> fromL2;
 	
-	public L1Controller(Queue<QItem> toP, Queue<QItem> toD, Queue<QItem> toL2, 
+	public L1Controller(L1Data bd, Queue<QItem> toP, Queue<QItem> toD, Queue<QItem> toL2, 
 						Queue<QItem> fromP, Queue<QItem> fromD, Queue<QItem> fromL2) {
+		this.backingData = bd;
+		
 		this.toProc = toP;
 		this.toData = toD;
 		this.toL2 = toL2;
@@ -42,6 +45,7 @@ public class L1Controller {
 	}
 	
 	public void initialize() {
+		this.backingData.initialize();
 		List<ArrayList<L1CEntry>> newSets = new ArrayList<ArrayList<L1CEntry>>(numberOfSets);
 		for(int i = 0; i < this.numberOfSets; i++) {
 			ArrayList<L1CEntry> set = new ArrayList<L1CEntry>(2);
@@ -63,13 +67,21 @@ public class L1Controller {
 		int i = 0;
 		for(List<L1CEntry> set : this.sets) {
 			System.out.println("Set " + i);
-			i++;
 			int j = 0;
 			for(L1CEntry entry : set) {
 				System.out.println("\tEntry " + j);
-				System.out.println("\t\t" + entry.toString());
+				int L1CAddr = entry.getAddress();
+				L1DEntry dataEntry = backingData.getSets().get(i).get(j);
+				int L1DAddr = dataEntry.getAddress();
+				if(L1CAddr == L1DAddr) {
+					System.out.println("\t\tAddress = " + L1CAddr + ", data = " + dataEntry.getData().toString() + 
+									   ", isValid = " + entry.isValid() + ", isDirty = " + entry.isDirty());
+				} else {
+					System.out.println("ERROR: Controller address = " + L1CAddr + ", Data address = " + L1DAddr);
+				}
 				j++;
 			}
+			i++;
 		}
 	}
 }
