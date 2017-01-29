@@ -1,11 +1,11 @@
-package level1;
+package general;
 
-public class L1DEntry {
+public class CacheEntry {
 	
 	private int address;
 	private byte[] data;
 	
-	public L1DEntry(int addr, byte[] d) {
+	public CacheEntry(int addr, byte[] d) {
 		this.address = addr;
 		this.data = d;
 	}
@@ -30,5 +30,4 @@ public class L1DEntry {
 	public void setData(byte[] data) {
 		this.data = data;
 	}
-
 }

@@ -1,12 +1,11 @@
-package level1;
+package general;
 
-public class L1CEntry {
-
+public class ControllerEntry {
 	private boolean valid;
 	private boolean dirty;
 	private int address;
 	
-	public L1CEntry(boolean v, boolean d, int addr) {
+	public ControllerEntry(boolean v, boolean d, int addr) {
 		this.valid = v;
 		this.dirty = d;
 		this.address = addr;

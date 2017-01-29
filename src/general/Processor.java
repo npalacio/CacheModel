@@ -6,10 +6,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Logger;
 
+import level1.L1Controller;
+
 public class Processor {
+	
+	private L1Controller L1C;
 	
 	public static void main(String[] args) {
 		String fileName = "input/input001.txt";
@@ -18,6 +24,11 @@ public class Processor {
 	
 	private static void Start(String fileName) {
 		List<Instruction> instructions = ProcessInstructions(fileName);
+		Queue<QItem> proc2L1C = new LinkedList<QItem>();
+		Queue<QItem> L1C2proc = new LinkedList<QItem>();
+		L1Controller L1C = new L1Controller(L1C2proc, proc2L1C);
+		L1C.printL1Cache();
+		L1C.printL2Cache();
 	}
 	
 	private static List<Instruction> ProcessInstructions(String fileName) {
@@ -45,7 +56,7 @@ public class Processor {
 				//System.out.println("Instruction: isRead=" + instr.isRead() + ", address=" + instr.getAddress());
 				line = reader.readLine();
 			}
-//			System.out.println(instructions.size() + " instructions given");
+			System.out.println(instructions.size() + " instructions given");
 //			for(Instruction i : instructions) {
 //				System.out.println(i.toString());
 //			}
