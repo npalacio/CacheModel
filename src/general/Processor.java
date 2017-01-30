@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,8 +28,15 @@ public class Processor {
 		Queue<QItem> proc2L1C = new LinkedList<QItem>();
 		Queue<QItem> L1C2proc = new LinkedList<QItem>();
 		L1Controller L1C = new L1Controller(L1C2proc, proc2L1C);
-		L1C.printL1Cache();
-		L1C.printL2Cache();
+//		L1C.printL1Cache();
+//		L1C.printL2Cache();
+//		System.out.println(L1C.getMemoryData(20546));
+		for(Instruction instr : instructions) {
+			proc2L1C.offer(new QItem(instr));
+		}
+		while(L1C.areAnyLeft()) {
+			L1C.process();
+		}
 	}
 	
 	private static List<Instruction> ProcessInstructions(String fileName) {
@@ -48,7 +56,7 @@ public class Processor {
 				if(tokens[0].equals("read") && tokens.length == 2) {
 					instr = new Read(Integer.parseInt(tokens[1]));
 				} else if(tokens[0].equals("write") && tokens.length == 3) {
-					instr = new Write(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+					instr = new Write(Integer.parseInt(tokens[1]), ByteBuffer.allocate(32).putInt(Integer.parseInt(tokens[2])).array());
 				} else {
 					System.out.println("Invalid input for instruction");
 				}

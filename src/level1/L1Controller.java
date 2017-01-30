@@ -1,13 +1,19 @@
 package level1;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ThreadLocalRandom;
 
 import general.CacheEntry;
 import general.ControllerEntry;
+import general.Instruction;
 import general.QItem;
+import general.Read;
+import general.Write;
 import level2.L2Controller;
 
 public class L1Controller {
@@ -39,6 +45,10 @@ public class L1Controller {
 	
 	private L2Controller L2C;
 	
+	//Create a mapping of addresses to queues so that instructions going to the same address
+	//that is not in the cache can all wait in line together for it
+	private Map<Integer, Queue<Instruction>> instructionMisses;
+	
 	//Since processor owns L1C it will pass in the queues to communicate with it
 	//L1C initializes the other queues
 	public L1Controller(Queue<QItem> toP, Queue<QItem> fromP) {		
@@ -51,7 +61,7 @@ public class L1Controller {
 		this.toL2 = new LinkedList<QItem>();
 		this.fromL2 = new LinkedList<QItem>();
 		
-		this.backingData = new L1Data();
+		this.backingData = new L1Data(this.toData, this.fromData);
 		this.L2C = new L2Controller(this.fromL2, this.toL2);
 		initialize();
 	}
@@ -67,6 +77,111 @@ public class L1Controller {
 			newSets.add(i, set);
 		}
 		sets = newSets;
+		//Initialize waiting line for instructions that miss going to the same address
+		this.instructionMisses = new HashMap<Integer, Queue<Instruction>>();
+	}
+	
+	//This method should only return false if every single Queue is empty
+	public void process() {
+		//This method will go to all 3 from-q's and pull one off the top
+		QItem q = this.fromProc.poll();
+		if(q != null) {
+			processFromProc(q);
+		}
+		q = this.fromData.poll();
+		if(q != null) {
+			processFromData(q);
+		}
+		q = this.fromL2.poll();
+		if(q != null) {
+			processFromL2(q);
+		}
+	}
+	
+	//Hit and valid: tell L1Data to give us the data
+	//Miss or Invalid: check for a waiting line in case the data is already on its way for this address, 
+	//otherwise tell L2C to give us the data
+	private void processFromProc(QItem q) {
+		Instruction instr = q.getInstruction();
+		int instrAddress = instr.getAddress();
+		int setNum = getSet(instrAddress);
+		//Get the set that the address would be in if it is in cache
+		ArrayList<ControllerEntry> set = this.sets.get(setNum);
+		ControllerEntry matchingEntry = null;
+		for(ControllerEntry e : set) {
+			if(instrAddress == e.getAddress()) {
+				matchingEntry = e;
+			}
+		}
+		if(matchingEntry != null) {
+			if(matchingEntry.isValid()) {
+				//HIT
+				QItem qu = new QItem(instr);
+				this.toData.offer(qu);
+				//If it is a write instruction and we have it then that entry is now dirty
+				if(instr instanceof Write) {
+					matchingEntry.setDirty(true);
+				}
+			}
+		} else {
+			//MISS
+			//Check if a waiting line already exists
+			Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
+			if(waitingLine != null) {
+				//There is already a line for this address, put the instruction in line
+				waitingLine.offer(instr);
+			} else {
+				//There is no line for this, we need to tell L2 to give us the data and then create the line
+				QItem qu = new QItem(instr);
+				this.toL2.offer(qu);
+				this.instructionMisses.put(instr.getAddress(), new LinkedList<Instruction>());
+			}
+			//We will evict a cache line when the data comes back from L2
+		}
+	}
+	
+	//Method to process the data that comes back from L2C
+	private void processFromL2(QItem q) {
+		//TODO: Implement
+	}
+	
+	private void processFromData(QItem q) {
+		//TODO: Implement
+	}
+	
+	//We should wait to evict a cache line until we absolutely have to 
+	private void openCacheEntry(ArrayList<ControllerEntry> set) {
+		int chosenSpot = ThreadLocalRandom.current().nextInt(0, 2);
+		ControllerEntry entry = set.get(chosenSpot);
+		//If it is invalid, set address to -1 so that when the data comes back from L2 it can just find the
+		//spot with an address of -1 and go there
+		//If it is valid and dirty evict it
+		//If it is valid and clean, set everything to 0 and address to -1
+	}
+	
+	private int getSet(int addr) {
+		int setNum = addr % this.numberOfSets;
+		return setNum;
+	}
+	
+	public boolean areAnyLeft() {
+		boolean result = false;
+		if(this.toProc.size() > 0) {
+			result = true;
+		} else if(this.fromProc.size() > 0) {
+			result = true;
+		} else if(this.toData.size() > 0) {
+			result = true;
+		} else if(this.fromData.size() > 0) {
+			result = true;
+		} else if(this.toL2.size() > 0) {
+			result = true;
+		} else if(this.fromL2.size() > 0) {
+			result = true;
+		} else if(this.L2C.areAnyLeft()) {
+			result = true;
+		}
+		return result;
 	}
 	
 	public void printL1Cache() {
@@ -98,5 +213,9 @@ public class L1Controller {
 	
 	public void printL2Cache() {
 		this.L2C.printCache();
+	}
+	
+	public int getMemoryData(int addr) {
+		return this.L2C.getMemoryData(addr);
 	}
 }

@@ -8,6 +8,7 @@ import java.util.Queue;
 import general.QItem;
 import general.CacheEntry;
 import general.ControllerEntry;
+import general.Memory;
 
 public class L2Controller {
 	
@@ -17,6 +18,7 @@ public class L2Controller {
 	private List<ArrayList<ControllerEntry>> sets;
 	private int numberOfSets = 512;
 	private L2Data backingData;
+	private Memory mainMemory;
 
 	private Queue<QItem> toL1C;
 	private Queue<QItem> fromL1C;
@@ -38,6 +40,7 @@ public class L2Controller {
 		this.fromMem = new LinkedList<QItem>();
 		
 		this.backingData = new L2Data();
+		this.mainMemory = new Memory(fromMem, toMem);
 		initialize();
 	}
 	
@@ -50,6 +53,20 @@ public class L2Controller {
 			newSets.add(i, set);
 		}
 		sets = newSets;
+	}
+	
+	public boolean areAnyLeft() {
+		boolean result = false;
+		if(this.toL2D.size() > 0) {
+			result = true;
+		} else if(this.fromL2D.size() > 0) {
+			result = true;
+		} else if(this.toMem.size() > 0) {
+			result = true;
+		} else if(this.fromMem.size() > 0) {
+			result = true;
+		}
+		return result;
 	}
 	
 	public void printCache() {
@@ -77,5 +94,9 @@ public class L2Controller {
 			}
 			i++;
 		}
+	}
+	
+	public int getMemoryData(int addr) {
+		return mainMemory.getData(addr);
 	}
 }

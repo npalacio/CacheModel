@@ -1,0 +1,8 @@
+Currently I have implemented the L1 Controller taking an instruction from the processor and 
+sending it either to L1 Data or requesting the data from the L2 Controller
+What I still need to do:
+-Implement the L1 data processing things sent to it from the L1 controller
+-Implement the L2 cache processing requests from the L1 Controller and either requesting data from L2 Data or from memory
+  -For an eviction sent from L1 Controller, L2 Controller will check if it has that address and if it does just write it in its own data
+  -If it does not have that address, fetch that address from memory and then write to it
+-Need to figure out how to keep the process running until all instructions have been fully processed

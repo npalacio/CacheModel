@@ -1,0 +1,11 @@
+Processing a read from the processor to the L1 Controller:
+-find the set that it would be in, see if there is a matching address in one of those two entries in that set
+-if one of those entries does match:
+  -check if it is valid (we dont care if it is dirty or not)
+  -if it is valid:
+    -tell L1Data that we want the data in there (just send the instruction down the queue)
+    -L1Data would again find the set that it would be in and find the matching block in that set then grab its data
+  -if it is invalid, treat it as a miss
+-if neither entry matches, need to bring block into L1 Cache:
+  -pass instruction along to L2 so it knows what to get
+  -L2 returns the instruction along with the data
