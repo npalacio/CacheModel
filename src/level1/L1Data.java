@@ -67,37 +67,48 @@ public class L1Data {
 		for(CacheEntry e : set) {
 			if(address == e.getAddress()) {
 				data = e.getData();
+				QItem q = new QItem(r, data);
+				this.toL1C.offer(q);
+				return;
 			}
 		}
-		if(data == null) {
-			System.out.println("ERROR: No matching address found in L1Data for read instruction from address: " + address);
-			return;
-		}
-		QItem q = new QItem(r, data);
-		this.toL1C.offer(q);
+		System.out.println("ERROR: No matching address found in L1Data for read instruction from address: " + address);
 	}
 
 	//Change the data at the address to the data in the instruction
 	private void processWrite(Write w) {
-		//TODO: Implement
 		int address = w.getAddress();
 		int setNum = getSet(address);
 		ArrayList<CacheEntry> set = this.sets.get(setNum);
 		//Go to this set, find the matching address and put the data into a QItem
-		byte[] data = null;
 		for(CacheEntry e : set) {
 			if(address == e.getAddress()) {
 				e.setData(w.getData());
+				return;
 			}
 		}
-		if(data == null) {
-			System.out.println("ERROR: No matching address found in L1Data for read instruction from address: " + address);
-			return;
-		}
+		System.out.println("ERROR: No matching address found in L1Data for write instruction from address: " + address);
 	}
 	
 	private void processEviction(Eviction e) {
-		//TODO: Implement
+		int address = e.getAddress();
+		int setNum = getSet(address);
+		ArrayList<CacheEntry> set = this.sets.get(setNum);
+		//Go to this set, find the matching address and put the data into a QItem
+		byte[] data = null;
+		for(CacheEntry entry : set) {
+			if(address == entry.getAddress()) {
+				//Get the data to pass on
+				data = entry.getData();
+				//Clear out the data currently there
+				e.setData(ByteBuffer.allocate(32).putInt(0).array());
+				e.setAddress(-1);
+				QItem q = new QItem(e, data);
+				this.toL1C.offer(q);
+				return;
+			}
+		}
+		System.out.println("ERROR: No matching address found in L1Data for evict instruction from address: " + address);
 	}
 	
 	private int getSet(int addr) {

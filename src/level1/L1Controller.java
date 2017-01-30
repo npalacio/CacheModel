@@ -147,6 +147,9 @@ public class L1Controller {
 	
 	private void processFromData(QItem q) {
 		//TODO: Implement
+		//This is either:
+		//1. Data coming back from a read instruction: pass it along to the processor
+		//2. Data coming back from an eviction: pass it along to L2C so that it can 
 	}
 	
 	//We should wait to evict a cache line until we absolutely have to 

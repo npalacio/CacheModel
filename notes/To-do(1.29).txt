@@ -6,3 +6,7 @@ What I still need to do:
   -For an eviction sent from L1 Controller, L2 Controller will check if it has that address and if it does just write it in its own data
   -If it does not have that address, fetch that address from memory and then write to it
 -Need to figure out how to keep the process running until all instructions have been fully processed
+
+
+Maybe have separate method for when data comes from L2 and you have to write it in L1 since you have to print stuff
+you do not want to treat that write as a regular instruction?
