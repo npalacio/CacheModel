@@ -175,11 +175,16 @@ public class L1Controller {
 				//If it is a write instruction and we have it then that entry is now dirty
 				if(instr instanceof Write) {
 					matchingEntry.setDirty(true);
+				} else if(instr instanceof Eviction) {
+					//Set valid, dirty and address for controller
+					matchingEntry.setValid(false);
+					matchingEntry.setDirty(false);
+					matchingEntry.setLoc(Location.L1D);
+					matchingEntry.setAddress(-1);
 				}
 			}
 		} else {
 			//MISS
-			//TODO: Before calling it a miss, check the WB and Victim caches
 			//Check if a waiting line already exists
 			Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
 			if(waitingLine != null) {
@@ -191,13 +196,15 @@ public class L1Controller {
 				this.toL2.offer(qu);
 				this.instructionMisses.put(instr.getAddress(), new LinkedList<Instruction>());
 			}
-			//We will evict a cache line when the data comes back from L2
+			//TODO: Evict a cache line when the data comes back from L2
 		}
 	}
 	
 	//Method to process the data that comes back from L2C
 	private void processFromL2(QItem q) {
 		//TODO: Implement
+		//If there is a read/write instruction coming from L2 that means we requested the data
+		//So we need to put it into the cache meaning we have to evict a line from the cache from the corresponding set
 	}
 	
 	private void processFromData(QItem q) {
@@ -213,6 +220,11 @@ public class L1Controller {
 				System.out.println("ERROR: Read coming back from L1D to L1C did not contain data!");
 			}
 		} else if(instr instanceof Eviction) {
+			//TODO: If there is an eviction from data and clean = to victim, dirty = to write buffer
+			//Only write buffer and victim send their evictions to L2
+			//This means we need to create an eviction instruction to send to the WB or victim cache for a random line
+			//Need to think about how to tell any of the caches that we need to write to one of their lines a new line 
+			//(as in they do not have a matching address for it so they dont know where)
 			if(q.getData() != null) {
 				this.toL2.offer(q);
 			} else {
@@ -224,6 +236,7 @@ public class L1Controller {
 	}
 	
 	//Processes and instruction that needs an address that is currently in the write buffer
+	//WARNING: Any changes in here you should double check processInVictim, duplicate code
 	private void processInWriteBuf(QItem q, ControllerEntry controllerMatch) {
 		Instruction instr = q.getInstruction();
 		int instrAddr = instr.getAddress();
@@ -255,18 +268,72 @@ public class L1Controller {
 		}
 		//Eviction: evict and pass to L2
 		if(instr instanceof Eviction) {
-			//If this buffer entry is clean, just wipe out the data
-			if(!controllerMatch.isDirty()) {
+			//If this buffer entry is clean, just wipe out the data, otherwise pass along eviction to L2 for write-back
+			if(controllerMatch.isDirty()) {
 				//Extract the data into the Eviction QItem so it can go to L2
 				byte[] dataToEvict = dataMatch.getData().clone();
-				controllerMatch.setAddress(-1);
-				controllerMatch.setValid(false);
-				controllerMatch.setDirty(false);
-				controllerMatch.setLoc(Location.WRITE_BUFFER);
-				dataMatch.setAddress(-1);
-				dataMatch.setData(new byte[32]);
+				q.setData(dataToEvict);
+				this.toL2.offer(q);				
 			}
-			//If this buffer entry is dirty, send the eviction instruction with the data to L2
+			//Reset the data for this cache line
+			controllerMatch.setAddress(-1);
+			controllerMatch.setValid(false);
+			controllerMatch.setDirty(false);
+			controllerMatch.setLoc(Location.WRITE_BUFFER);
+			dataMatch.setAddress(-1);
+			dataMatch.setData(new byte[32]);
+			return;
+
+		}
+	}
+	
+	//WARNING: Any changes in here you should double check processInVictim, duplicate code
+	private void processInVictim(QItem q, ControllerEntry controllerMatch) {
+		Instruction instr = q.getInstruction();
+		int instrAddr = instr.getAddress();
+		CacheEntry dataMatch = null;
+		for(CacheEntry e : this.victimData) {
+			if(instrAddr == e.getAddress()) {
+				dataMatch = e;
+			}
+		}
+		if(dataMatch == null) {
+			System.out.println("ERROR: Matching entry in WB Controller but not in WB Data!");
+			return;
+		}
+		//Write: Set valid, dirty, location and address for controllerMatch, set address and data for dataMatch
+		if(instr instanceof Write) {
+			dataMatch.setData(((Write) instr).getData().clone());
+			dataMatch.setAddress(instrAddr);
+			controllerMatch.setAddress(instrAddr);
+			controllerMatch.setDirty(true);
+			controllerMatch.setValid(true);
+			controllerMatch.setLoc(Location.VICTIM);
+			return;
+		}
+		//Read: Get the data from dataMatch, pass it along to processor
+		if(instr instanceof Read) {
+			//Create copy of data to not pass ref to cache entry data
+			q.setData(dataMatch.getData().clone());
+			this.toProc.offer(q);
+		}
+		//Eviction: If dirty, put in write buffer cache
+		if(instr instanceof Eviction) {
+			//If this buffer entry is clean, just wipe out the data, otherwise pass along eviction to L2 for write-back
+			if(controllerMatch.isDirty()) {
+				//Extract the data into the Eviction QItem so it can go to L2
+				byte[] dataToEvict = dataMatch.getData().clone();
+				q.setData(dataToEvict);
+				this.toL2.offer(q);				
+			}
+			//Reset the data for this cache line
+			controllerMatch.setAddress(-1);
+			controllerMatch.setValid(false);
+			controllerMatch.setDirty(false);
+			controllerMatch.setLoc(Location.WRITE_BUFFER);
+			dataMatch.setAddress(-1);
+			dataMatch.setData(new byte[32]);
+			return;
 		}
 	}
 	

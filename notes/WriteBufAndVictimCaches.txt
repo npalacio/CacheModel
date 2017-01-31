@@ -1,2 +1,1 @@
-Victim Cache:
--Going to add 
+Where do evictions in L1 come from? Only from L2. 

@@ -93,6 +93,7 @@ public class L1Data {
 	}
 	
 	private void processEviction(Eviction e) {
+		//TODO: If it is dirty send it to the WB, if it is clean send it to the victim cache
 		int address = e.getAddress();
 		int setNum = getSet(address);
 		ArrayList<CacheEntry> set = this.sets.get(setNum);

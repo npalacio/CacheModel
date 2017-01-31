@@ -4,7 +4,6 @@ public class ControllerEntry {
 	private boolean valid;
 	private boolean dirty;
 	private Location loc;
-
 	private int address;
 	
 	public ControllerEntry(boolean v, boolean d, Location location, int addr) {
