@@ -3,11 +3,14 @@ package general;
 public class ControllerEntry {
 	private boolean valid;
 	private boolean dirty;
+	private Location loc;
+
 	private int address;
 	
-	public ControllerEntry(boolean v, boolean d, int addr) {
+	public ControllerEntry(boolean v, boolean d, Location location, int addr) {
 		this.valid = v;
 		this.dirty = d;
+		this.loc = location;
 		this.address = addr;
 	}
 	
@@ -17,6 +20,7 @@ public class ControllerEntry {
 		return s;
 	}
 
+	/*Getters and Setters*/
 	public boolean isValid() {
 		return valid;
 	}
@@ -39,5 +43,13 @@ public class ControllerEntry {
 
 	public void setAddress(int address) {
 		this.address = address;
+	}
+	
+	public Location getLoc() {
+		return loc;
+	}
+
+	public void setLoc(Location loc) {
+		this.loc = loc;
 	}
 }

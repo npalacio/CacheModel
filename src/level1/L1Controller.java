@@ -10,7 +10,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import general.CacheEntry;
 import general.ControllerEntry;
+import general.Eviction;
 import general.Instruction;
+import general.Location;
 import general.QItem;
 import general.Read;
 import general.Write;
@@ -33,6 +35,14 @@ public class L1Controller {
 	private List<ArrayList<ControllerEntry>> sets;
 	private int numberOfSets = 128;
 	private L1Data backingData;
+
+	private List<ControllerEntry> writeBuf;
+	private List<CacheEntry> writeBufData;
+	
+	private List<ControllerEntry> victim;
+	private List<CacheEntry> victimData;
+
+	private int bufVicSize = 4;
 
 	private Queue<QItem> toProc;
 	private Queue<QItem> fromProc;
@@ -60,23 +70,45 @@ public class L1Controller {
 
 		this.toL2 = new LinkedList<QItem>();
 		this.fromL2 = new LinkedList<QItem>();
-		
+				
 		this.backingData = new L1Data(this.toData, this.fromData);
 		this.L2C = new L2Controller(this.fromL2, this.toL2);
 		initialize();
 	}
 	
 	private void initialize() {
+		//Initialize L1Controller entries
 		List<ArrayList<ControllerEntry>> newSets = new ArrayList<ArrayList<ControllerEntry>>(numberOfSets);
 		for(int i = 0; i < this.numberOfSets; i++) {
 			ArrayList<ControllerEntry> set = new ArrayList<ControllerEntry>(2);
-			ControllerEntry entry0 = new ControllerEntry(false, false, 0);
-			ControllerEntry entry1 = new ControllerEntry(false, false, 0);
+			ControllerEntry entry0 = new ControllerEntry(false, false, Location.L1D, 0);
+			ControllerEntry entry1 = new ControllerEntry(false, false, Location.L1D, 0);
 			set.add(0, entry0);
 			set.add(1, entry1);
 			newSets.add(i, set);
 		}
 		sets = newSets;
+		
+		//Initialize writeBuf and victim caches
+		List<ControllerEntry> wBuf = new ArrayList<ControllerEntry>(this.bufVicSize);
+		List<ControllerEntry> vic = new ArrayList<ControllerEntry>(this.bufVicSize);
+		List<CacheEntry> wBData = new ArrayList<CacheEntry>(this.bufVicSize);
+		List<CacheEntry> vicData = new ArrayList<CacheEntry>(this.bufVicSize);
+		for(int i = 0; i < this.bufVicSize; i++) {
+			ControllerEntry wBufEntry = new ControllerEntry(false, false, Location.WRITE_BUFFER, 0);
+			ControllerEntry vicEntry = new ControllerEntry(false, false, Location.VICTIM, 0);
+			CacheEntry wBufE = new CacheEntry(0, new byte[32]);
+			CacheEntry vicE = new CacheEntry(0, new byte[32]);
+			wBuf.add(i, wBufEntry);
+			vic.add(i, vicEntry);
+			wBData.add(i, wBufE);
+			vicData.add(i, vicE);
+		}
+		this.writeBuf = wBuf;
+		this.victim = vic;
+		this.writeBufData = wBData;
+		this.victimData = vicData;
+		
 		//Initialize waiting line for instructions that miss going to the same address
 		this.instructionMisses = new HashMap<Integer, Queue<Instruction>>();
 	}
@@ -108,10 +140,32 @@ public class L1Controller {
 		//Get the set that the address would be in if it is in cache
 		ArrayList<ControllerEntry> set = this.sets.get(setNum);
 		ControllerEntry matchingEntry = null;
+		boolean foundMatch = false;
 		for(ControllerEntry e : set) {
 			if(instrAddress == e.getAddress()) {
 				matchingEntry = e;
+				foundMatch = true;
 			}
+		}
+		if(!foundMatch) {
+			for(ControllerEntry e : this.writeBuf) {
+				if(instrAddress == e.getAddress() && e.isValid()) {
+					matchingEntry = e;
+					foundMatch = true;
+					processInWriteBuf(q, e);
+					return;
+				}
+			}
+		}
+		if(!foundMatch) {
+			for(ControllerEntry e : this.victim) {
+				if(instrAddress == e.getAddress() && e.isValid()) {
+					matchingEntry = e;
+					foundMatch = true;
+					processInVictim(q, e);
+					return;
+				}
+			}			
 		}
 		if(matchingEntry != null) {
 			if(matchingEntry.isValid()) {
@@ -125,6 +179,7 @@ public class L1Controller {
 			}
 		} else {
 			//MISS
+			//TODO: Before calling it a miss, check the WB and Victim caches
 			//Check if a waiting line already exists
 			Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
 			if(waitingLine != null) {
@@ -146,20 +201,73 @@ public class L1Controller {
 	}
 	
 	private void processFromData(QItem q) {
-		//TODO: Implement
 		//This is either:
 		//1. Data coming back from a read instruction: pass it along to the processor
-		//2. Data coming back from an eviction: pass it along to L2C so that it can 
+		//2. Data coming back from an eviction: pass it along to L2C so that it can process it
+		Instruction instr = q.getInstruction();
+		if(instr instanceof Read) {
+			//It is data coming back from cache, send it to processor
+			if(q.getData() != null) {
+				this.toProc.offer(q);
+			} else {
+				System.out.println("ERROR: Read coming back from L1D to L1C did not contain data!");
+			}
+		} else if(instr instanceof Eviction) {
+			if(q.getData() != null) {
+				this.toL2.offer(q);
+			} else {
+				System.out.println("ERROR: Eviction coming back from L1D to L1C did not contain data!");				
+			}
+		} else {
+			System.out.println("ERROR: QItem coming back from L1D to L1C was not of type Read or Eviction!");
+		}
 	}
 	
-	//We should wait to evict a cache line until we absolutely have to 
-	private void openCacheEntry(ArrayList<ControllerEntry> set) {
-		int chosenSpot = ThreadLocalRandom.current().nextInt(0, 2);
-		ControllerEntry entry = set.get(chosenSpot);
-		//If it is invalid, set address to -1 so that when the data comes back from L2 it can just find the
-		//spot with an address of -1 and go there
-		//If it is valid and dirty evict it
-		//If it is valid and clean, set everything to 0 and address to -1
+	//Processes and instruction that needs an address that is currently in the write buffer
+	private void processInWriteBuf(QItem q, ControllerEntry controllerMatch) {
+		Instruction instr = q.getInstruction();
+		int instrAddr = instr.getAddress();
+		CacheEntry dataMatch = null;
+		for(CacheEntry e : this.writeBufData) {
+			if(instrAddr == e.getAddress()) {
+				dataMatch = e;
+			}
+		}
+		if(dataMatch == null) {
+			System.out.println("ERROR: Matching entry in WB Controller but not in WB Data!");
+			return;
+		}
+		//Write: write to the entry, set dirty bit
+		if(instr instanceof Write) {
+			dataMatch.setData(((Write) instr).getData().clone());
+			dataMatch.setAddress(instrAddr);
+			controllerMatch.setAddress(instrAddr);
+			controllerMatch.setDirty(true);
+			controllerMatch.setValid(true);
+			controllerMatch.setLoc(Location.WRITE_BUFFER);
+			return;
+		}
+		//Read: Give it the data and pass it along to processor
+		if(instr instanceof Read) {
+			//Create copy of data to not pass ref to cache entry data
+			q.setData(dataMatch.getData().clone());
+			this.toProc.offer(q);
+		}
+		//Eviction: evict and pass to L2
+		if(instr instanceof Eviction) {
+			//If this buffer entry is clean, just wipe out the data
+			if(!controllerMatch.isDirty()) {
+				//Extract the data into the Eviction QItem so it can go to L2
+				byte[] dataToEvict = dataMatch.getData().clone();
+				controllerMatch.setAddress(-1);
+				controllerMatch.setValid(false);
+				controllerMatch.setDirty(false);
+				controllerMatch.setLoc(Location.WRITE_BUFFER);
+				dataMatch.setAddress(-1);
+				dataMatch.setData(new byte[32]);
+			}
+			//If this buffer entry is dirty, send the eviction instruction with the data to L2
+		}
 	}
 	
 	private int getSet(int addr) {

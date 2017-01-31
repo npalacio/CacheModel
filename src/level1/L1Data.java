@@ -63,6 +63,7 @@ public class L1Data {
 		int setNum = getSet(address);
 		ArrayList<CacheEntry> set = this.sets.get(setNum);
 		//Go to this set, find the matching address and put the data into a QItem
+		//TODO: Make sure we do not send shallow copy of data
 		byte[] data = null;
 		for(CacheEntry e : set) {
 			if(address == e.getAddress()) {
@@ -81,6 +82,7 @@ public class L1Data {
 		int setNum = getSet(address);
 		ArrayList<CacheEntry> set = this.sets.get(setNum);
 		//Go to this set, find the matching address and put the data into a QItem
+		//TODO: Do not put shallow copy of data in cache
 		for(CacheEntry e : set) {
 			if(address == e.getAddress()) {
 				e.setData(w.getData());
