@@ -13,6 +13,7 @@ import general.ControllerEntry;
 import general.Eviction;
 import general.Instruction;
 import general.Location;
+import general.Put;
 import general.QItem;
 import general.Read;
 import general.Write;
@@ -197,23 +198,55 @@ public class L1Controller {
 				this.toL2.offer(qu);
 				this.instructionMisses.put(instr.getAddress(), new LinkedList<Instruction>());
 			}
-			//TODO: Evict a cache line when the data comes back from L2
 		}
 	}
 	
 	//Method to process the data that comes back from L2C
 	private void processFromL2(QItem q) {						
 		//Read/Write: L1C checks if there is an open spot in the set that the instruction needs to go to
-		//If neither spot is open it creates eviction instruction with address of one of the two entries in the set
-		//When L1C creates the eviction it needs to set the dirty bit so L1D can pass that along to WB/Victim
 		//Right after L1C creates the eviction it needs to move the new data into its place
 		//This involves setting the L1C entry data and then passing a Put instruction to L1D so it can store this data in the evicted spot
 		//After L1C creates eviction and creates put, it processes the original instruction then processes the waiting line for the instruction
 
 		Instruction instr = q.getInstruction();
 		int instrAddress = instr.getAddress();
-		
-		
+		int setNum = getSet(instrAddress);
+		ArrayList<ControllerEntry> set = this.sets.get(setNum);
+		if(instr instanceof Read || instr instanceof Write) {
+			//Check if a spot in the set is open
+			ControllerEntry entryToBeOverwritten = null;
+			for(ControllerEntry entry : set) {
+				if(entry.getAddress() == -1) {
+					//This spot is open
+					entryToBeOverwritten = entry;
+				}
+			}
+			if(entryToBeOverwritten == null) {
+				//Pick one of the two entries in the set to evict
+				int chosenEntry = ThreadLocalRandom.current().nextInt(0, 2);
+				entryToBeOverwritten = set.get(chosenEntry);
+				//Create eviction and set dirty bit
+				Eviction eviction = new Eviction(entryToBeOverwritten.getAddress());
+				eviction.setDirty(entryToBeOverwritten.isDirty());
+				QItem qEviction = new QItem(eviction);
+				this.toData.offer(qEviction);
+			}
+			//We have an open spot now for sure (entryToBeOverwritten)
+			entryToBeOverwritten.setAddress(instrAddress);
+			entryToBeOverwritten.setValid(true);
+			entryToBeOverwritten.setDirty(false);
+			entryToBeOverwritten.setLoc(Location.L1D);
+			//The QItem will be holding the data that is returned from L2
+			Instruction putInstr = new Put(instrAddress, q.getData().clone());
+			//L1Data will get address and data from put instruction
+			QItem putItem = new QItem(putInstr);
+			this.toData.offer(putItem);
+			//Now the L1Data will have evicted the necessary line and put in the new data in that line,
+			//we can process the original instruction (In this case a read or write)
+			//We can reuse same QItem, just clear the data so it looks like any other QItem coming to L1Data
+			q.setData(null);
+			this.toData.offer(q);
+		}
 		
 		//Eviction: L1C needs to set the dirty bit of the eviction so L1D can pass that along to WB/Victim
 		//An eviction from L2 only comes down due to violation of mutual inclusion

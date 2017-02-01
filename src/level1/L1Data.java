@@ -105,10 +105,11 @@ public class L1Data {
 		for(CacheEntry entry : set) {
 			if(address == entry.getAddress()) {
 				//Get the data to pass on
-				data = entry.getData();
+				data = entry.getData().clone();
 				//Clear out the data currently there
 				entry.setData(ByteBuffer.allocate(32).putInt(0).array());
 				entry.setAddress(-1);
+				e.setData(data);
 				QItem q = new QItem(e, data);
 				this.toL1C.offer(q);
 				return;
@@ -119,6 +120,7 @@ public class L1Data {
 	
 	private void processPut(Put p) {
 		//TODO: Implement
+		//L1C will have already sent down an eviction so a spot should already be open for this address, just need to write it in
 	}
 	
 	private int getSet(int addr) {

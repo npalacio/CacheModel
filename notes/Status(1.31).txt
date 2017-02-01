@@ -1,16 +1,5 @@
-To finish the project:
-1. Processor needs to read in instruction file and turn that into a list of instructions to process
-  a. Then pass that list to the L1 controller for processing
-2. The L1 Controller takes the list of reads and writes and processes each instruction
-  a.First checks if it has the memory address needed in either L1Data or Write Buffer or Victim cache
-    i. If it has the data needed either write to it (no issue writing to victim cache?) or get it for a read
-    ii. If it does not have the data needed, pass the instruction along to L2 
-      -L2 will fetch the data and ensure that it also holds that data in it own cache
-      -When L2 comes back with the data L1C will need to ensure that there is a spot to put that line
-        -If the set needed for that line is full, evict one of those lines to the victim cache if clean and write buffer if dirty
-      -Write the data that comes back from L2C to the open spot in L1D 
-        -write new data if a write instruction otherwise write old data and then pass along the data to the proc for the read
-3. L1Data must process:
-  a. Read: just pass along data (L1Controller already checked if address matched and data is valid)
-  b. Write: write data and be done
-  c. Eviction: Move data to WB if dirty and victim cache if clean.
+Next thing to do:
+1. Document each entity and how it processes queues feeding into it given every possible scenario so you can use this to check your work.
+2. Waiting on reply from teacher to hear about if mutual inclusion extends to L1's WB and victim cache, more to do there but that
+should wrap up L1 Controller besides reviewing and testing.
+3. Move onto L2 Controller

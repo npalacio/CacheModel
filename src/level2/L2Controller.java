@@ -8,6 +8,7 @@ import java.util.Queue;
 import general.QItem;
 import general.CacheEntry;
 import general.ControllerEntry;
+import general.Location;
 import general.Memory;
 
 public class L2Controller {
@@ -48,12 +49,14 @@ public class L2Controller {
 		List<ArrayList<ControllerEntry>> newSets = new ArrayList<ArrayList<ControllerEntry>>(numberOfSets);
 		for(int i = 0; i < this.numberOfSets; i++) {
 			ArrayList<ControllerEntry> set = new ArrayList<ControllerEntry>(1);
-			ControllerEntry entry0 = new ControllerEntry(false, false, 0);
+			ControllerEntry entry0 = new ControllerEntry(false, false, Location.L2D, -1);
 			set.add(0, entry0);
 			newSets.add(i, set);
 		}
 		sets = newSets;
 	}
+	
+	//TODO: Make sure that data being return to L1C is put as the QItem's data, not the instruction since that may or may not have it
 	
 	public boolean areAnyLeft() {
 		boolean result = false;

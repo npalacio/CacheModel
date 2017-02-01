@@ -12,6 +12,10 @@ public class Eviction extends Instruction {
 		this.data = d;
 	}
 
+	public Eviction(int addr) {
+		super(addr);
+	}
+
 	public byte[] getData() {
 		return data;
 	}
