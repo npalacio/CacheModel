@@ -8,6 +8,7 @@ import java.util.Queue;
 import general.CacheEntry;
 import general.Eviction;
 import general.Instruction;
+import general.Put;
 import general.QItem;
 import general.Read;
 import general.Write;
@@ -52,6 +53,8 @@ public class L1Data {
 				processWrite((Write) instr);
 			} else if(instr instanceof Eviction) {
 				processEviction((Eviction) instr);
+			} else if(instr instanceof Put) {
+				processPut((Put) instr);
 			}
 			
 		}
@@ -104,14 +107,18 @@ public class L1Data {
 				//Get the data to pass on
 				data = entry.getData();
 				//Clear out the data currently there
-				e.setData(ByteBuffer.allocate(32).putInt(0).array());
-				e.setAddress(-1);
+				entry.setData(ByteBuffer.allocate(32).putInt(0).array());
+				entry.setAddress(-1);
 				QItem q = new QItem(e, data);
 				this.toL1C.offer(q);
 				return;
 			}
 		}
 		System.out.println("ERROR: No matching address found in L1Data for evict instruction from address: " + address);
+	}
+	
+	private void processPut(Put p) {
+		//TODO: Implement
 	}
 	
 	private int getSet(int addr) {

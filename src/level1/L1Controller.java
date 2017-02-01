@@ -133,6 +133,7 @@ public class L1Controller {
 	//Hit and valid: tell L1Data to give us the data
 	//Miss or Invalid: check for a waiting line in case the data is already on its way for this address, 
 	//otherwise tell L2C to give us the data
+	//This will always only be a read or a write
 	private void processFromProc(QItem q) {
 		Instruction instr = q.getInstruction();
 		int instrAddress = instr.getAddress();
@@ -201,21 +202,29 @@ public class L1Controller {
 	}
 	
 	//Method to process the data that comes back from L2C
-	private void processFromL2(QItem q) {
-		//TODO: Implement
-		//If there is a read/write instruction coming from L2 that means we requested the data
-		//So we need to put it into L1D meaning we have to evict a line from L1D from the corresponding set if that set is full
+	private void processFromL2(QItem q) {						
+		//Read/Write: L1C checks if there is an open spot in the set that the instruction needs to go to
+		//If neither spot is open it creates eviction instruction with address of one of the two entries in the set
+		//When L1C creates the eviction it needs to set the dirty bit so L1D can pass that along to WB/Victim
+		//Right after L1C creates the eviction it needs to move the new data into its place
+		//This involves setting the L1C entry data and then passing a Put instruction to L1D so it can store this data in the evicted spot
+		//After L1C creates eviction and creates put, it processes the original instruction then processes the waiting line for the instruction
+
+		Instruction instr = q.getInstruction();
+		int instrAddress = instr.getAddress();
 		
-		//Will also need to process waiting lines if data is coming back for an address
 		
-		//This could also be an eviction from L2 sent to maintain mutual inclusion
-		//In which case L1C would clear its values before passing it along to L1D
+		
+		//Eviction: L1C needs to set the dirty bit of the eviction so L1D can pass that along to WB/Victim
+		//An eviction from L2 only comes down due to violation of mutual inclusion
+		//Be sure to clear L1C entry before sending to L1D
+		//TODO: Fill in answer from teacher's email on mutual inclusion
 	}
 	
 	private void processFromData(QItem q) {
 		//This is either:
 		//1. Data coming back from a read instruction: pass it along to the processor
-		//2. Data coming back from an eviction: pass it along to L2C so that it can process it
+		//2. Data coming back from an eviction: put it in WB or Victim
 		Instruction instr = q.getInstruction();
 		if(instr instanceof Read) {
 			//It is data coming back from cache, send it to processor
@@ -225,50 +234,20 @@ public class L1Controller {
 				System.out.println("ERROR: Read coming back from L1D to L1C did not contain data!");
 			}
 		} else if(instr instanceof Eviction) {
-			Eviction e = (Eviction) instr;
-			//TODO: If there is an eviction from data and clean = to victim, dirty = to write buffer
-			//Only write buffer and victim send their evictions to L2
-			//This means we need to create an eviction instruction to send to the WB or victim cache for a random line
-			//Need to think about how to tell any of the caches that we need to write to one of their lines a new line 
-			//(as in they do not have a matching address for it so they dont know where)
-			if(q.getData() != null) {
-				processL1DEviction(q);
-				//this.toL2.offer(q);
-			} else {
-				System.out.println("ERROR: Eviction coming back from L1D to L1C did not contain data!");				
-			}
+			//TODO: (If WB/Vic included in mutual inclusion) Check eviction to see if it came from L2 (If it did, do not send to WB/Victim, send back to L2)
+			processL1DEviction(q);
 		} else {
 			System.out.println("ERROR: QItem coming back from L1D to L1C was not of type Read or Eviction!");
 		}
 	}
 	
 	//If L1D has sent an eviction then that eviction had to go through L1C first meaning that the L1C entry has already been cleared
+	//This puts the evicted line from L1D in either WB or Victim cache depending on if it is dirty or not
 	private void processL1DEviction(QItem q) {
 		Eviction e = (Eviction) q.getInstruction();
 		int instrAddress = e.getAddress();
 		//Check if clean or dirty
-		//Find the entry in L1C
-		int setNum = getSet(instrAddress);
-		ArrayList<ControllerEntry> set = this.sets.get(setNum);
-		boolean valid = false;
-		boolean dirty = true;
-		ControllerEntry matchingEntry = null;
-		for(ControllerEntry entry : set) {
-			if(entry.getAddress() == instrAddress) {
-				matchingEntry = entry;
-			}
-		}
-		if(matchingEntry != null) {
-			if(!matchingEntry.isValid()) {
-				System.out.println("ERROR: When processing eviction from L1D in L1C the address to be evicted was invalid in L1C, not processing any further");
-				return;
-			}
-			valid = true;
-			dirty = matchingEntry.isDirty();
-		} else {
-			System.out.println("ERROR: When processing eviction from L1D to L1C, the address to evict was not found in L1C, not processing any further");
-		}
-		if(dirty) {
+		if(e.isDirty()) {
 			//Move into WB
 			//Check if there is an open space already, if no open spot pick one to evict
 			for(int i = 0; i < this.bufVicSize; i++) {
@@ -291,6 +270,7 @@ public class L1Controller {
 					return;
 				}				
 			}
+			
 			//Need to clear spot
 			int evictionSpot = ThreadLocalRandom.current().nextInt(0, this.bufVicSize);
 			ControllerEntry contrEntry = this.writeBuf.get(evictionSpot);
@@ -299,10 +279,12 @@ public class L1Controller {
 				System.out.println("ERROR: (In processing eviction from L1D) Mismatching addresses across entries in the WB controller and WB data, stopping process!");
 				return;
 			}
+			
 			//Need to send eviction with new address and data
 			Instruction newEviction = new Eviction(contrEntry.getAddress(), cacheEntry.getData().clone());
 			QItem newQ = new QItem(newEviction);
 			this.toL2.offer(newQ);
+			
 			//Need to set values of that cleared spot to the new address and data now there
 			contrEntry.setAddress(instrAddress);
 			contrEntry.setDirty(true);
@@ -310,6 +292,7 @@ public class L1Controller {
 			contrEntry.setLoc(Location.WRITE_BUFFER);
 			cacheEntry.setAddress(instrAddress);
 			cacheEntry.setData(e.getData().clone());
+			
 		} else {
 			//Move into victim cache
 			for(int i = 0; i < this.bufVicSize; i++) {
@@ -326,12 +309,36 @@ public class L1Controller {
 					contrEntry.setAddress(instrAddress);
 					contrEntry.setDirty(false);
 					contrEntry.setValid(true);
-					contrEntry.setLoc(Location.WRITE_BUFFER);
+					contrEntry.setLoc(Location.VICTIM);
 					cacheEntry.setAddress(instrAddress);
 					cacheEntry.setData(e.getData().clone());
 					return;
 				}
 			}
+			
+			//Need to clear spot
+			int evictionSpot = ThreadLocalRandom.current().nextInt(0, this.bufVicSize);
+			ControllerEntry contrEntry = this.victim.get(evictionSpot);
+			CacheEntry cacheEntry = this.victimData.get(evictionSpot);
+			if(contrEntry.getAddress() != cacheEntry.getAddress()) {
+				System.out.println("ERROR: (In processing eviction from L1D) Mismatching addresses across entries in the WB controller and WB data, stopping process!");
+				return;
+			}
+			
+			//Need to send eviction with new address and data if this entry we are kicking out is dirty
+			if(contrEntry.isDirty()){
+				Instruction newEviction = new Eviction(contrEntry.getAddress(), cacheEntry.getData().clone());
+				QItem newQ = new QItem(newEviction);
+				this.toL2.offer(newQ);
+			}
+			
+			//Need to set values of that cleared spot to the new address and data now there
+			contrEntry.setAddress(instrAddress);
+			contrEntry.setDirty(true);
+			contrEntry.setValid(true);
+			contrEntry.setLoc(Location.WRITE_BUFFER);
+			cacheEntry.setAddress(instrAddress);
+			cacheEntry.setData(e.getData().clone());
 		}
 	}
 	
