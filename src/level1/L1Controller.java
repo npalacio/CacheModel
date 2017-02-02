@@ -203,11 +203,6 @@ public class L1Controller {
 	
 	//Method to process the data that comes back from L2C
 	private void processFromL2(QItem q) {						
-		//Read/Write: L1C checks if there is an open spot in the set that the instruction needs to go to
-		//Right after L1C creates the eviction it needs to move the new data into its place
-		//This involves setting the L1C entry data and then passing a Put instruction to L1D so it can store this data in the evicted spot
-		//After L1C creates eviction and creates put, it processes the original instruction then processes the waiting line for the instruction
-
 		Instruction instr = q.getInstruction();
 		int instrAddress = instr.getAddress();
 		int setNum = getSet(instrAddress);
@@ -246,12 +241,53 @@ public class L1Controller {
 			//We can reuse same QItem, just clear the data so it looks like any other QItem coming to L1Data
 			q.setData(null);
 			this.toData.offer(q);
+			//Process the other instructions that were waiting on this data, if any
+			Queue<Instruction> waitingLine = instructionMisses.get(instrAddress);
+			if(waitingLine != null) {
+				for(Instruction waitingInstr : waitingLine) {
+					QItem q1 = new QItem(waitingInstr);
+					this.toData.offer(q1);
+				}
+			}
 		}
-		
 		//Eviction: L1C needs to set the dirty bit of the eviction so L1D can pass that along to WB/Victim
 		//An eviction from L2 only comes down due to violation of mutual inclusion
 		//Be sure to clear L1C entry before sending to L1D
 		//TODO: Fill in answer from teacher's email on mutual inclusion
+		else if(instr instanceof Eviction) {
+			//Make sure fromL2 boolean is set
+			Eviction e = (Eviction) instr;
+			if(e.isFromL2ToL1()) {
+				//Correct bit has been set
+				//Make sure the set has the address to be evicted, then reset the L1C entry and pass the eviction on to L1D
+				boolean entryFound = false;
+				ControllerEntry contrEntry = null;
+				for(ControllerEntry entry : set) {
+					if(instrAddress == entry.getAddress()) {
+						contrEntry = entry;
+						entryFound = true;
+						//TODO: Send eviction to L1D before resetting values
+						contrEntry.setAddress(-1);
+						contrEntry.setDirty(false);
+						contrEntry.setValid(false);
+						contrEntry.setLoc(Location.L1D);
+					}
+				}
+				//TODO: Check WB/Vic for entry!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				//If in here, no need to go to L1D just reset values and send back to L2 if dirty
+				if(contrEntry == null) {
+					//This is assuming that we are looking in the right set
+					System.out.println("ERROR: L2C sent an eviction to L1C but L1C does not have the address to be evicted, stopping process!");
+					return;
+				}
+			} else {
+				System.out.println("ERROR: L2C sent L1C an eviction but did not set the L2ToL1 bit, stopping process!");
+				return;
+			}
+			//L1D only
+		} else {
+			System.out.println("ERROR: L2C sent L1C something other than a read, write or eviction instruction!");
+		}
 	}
 	
 	private void processFromData(QItem q) {

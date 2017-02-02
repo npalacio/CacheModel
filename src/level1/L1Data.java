@@ -96,6 +96,7 @@ public class L1Data {
 	}
 	
 	private void processEviction(Eviction e) {
+		//TODO: If eviction came from L2, you only need to respond if the line was dirty (check eviction instruction)
 		//TODO: If it is dirty send it to the WB, if it is clean send it to the victim cache
 		int address = e.getAddress();
 		int setNum = getSet(address);

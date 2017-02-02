@@ -1,0 +1,32 @@
+L1:
+  L1C:
+    fromProc/InstructionCache:
+      -L1C takes the read/write instruction and checks if it has it in L1D, if it does it passes the instruction to L1D queue
+      -If not in L1D, check WB/victim cache and retrieve it from there if necessary and pass the data back to Proc if it was a read
+      -If not in WB/Victim, check if there is already a waiting line for that address, if no waiting line pass instruction along to L2
+    from L1D:
+      -Read/Write: this is data coming back from L1D for the instruction, pass along to processor
+      -Eviction: 
+        -If eviction came from L1C in order to make room for data that came back:
+          -L1C has already cleared its values, put line in either WB or victim cache
+        -If eviction came from L2 in order to keep mutual inclusion:
+          -L1C already cleared its values, do not put in WB/Victim, pass directly to L2
+    from L2C:
+	  -Read/Write:
+	    -This is data (put in QItem.data) for the instruction that we sent, store (Put instruction) the data in L1D 
+		  -evict something if necessary, be sure to set dirty bit so L1D knows if it needs to 
+		-Then process the instruction, then check for a queue waiting on this data and process those as well
+	  -Eviction:
+	    -L2C is asking us to evict something to maintain mutual inclusion, we cannot send this data to WB or victim (although it may already be in WB/Victim)
+		-Grab the data where ever it is in L1, clear the values there then pass the eviction back to L2
+  L1D:
+    from L1C:
+	  Read/Write:
+	    -This mean L1D has the data we need for an instruction, either write to the address or pass along the data for a read
+	  Eviction:
+	    -L1C is in charge of where to put the evicted line, just clear out the spot in L1D then pass the eviction back to L1C with the data/address to evict
+	  Put:
+	    -An eviction should have already come before this instruction to make a spot available, so just put the data/address in the available spot
+  L2C: As soon as L2C gives L1C an eviction, as far as L2 is concerned the data has been evicted. It will only get a response if that address was dirty and needs to be written back
+  L2D:
+  Memory:
