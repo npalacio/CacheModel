@@ -156,6 +156,7 @@ public class L2Controller {
 						byte[] data = dataMatch.getData().clone();
 						q.setData(data);
 						this.toL1C.offer(q);
+						this.L1Addresses.add(instrAddress);
 						//We sent the data back that L1C requested, we are done
 						return;
 					}
@@ -169,6 +170,8 @@ public class L2Controller {
 				return;
 			}
 		} else if(instr instanceof Eviction) {
+			//L1 got rid of this address, regardless of how we integrate it into L2, it is no longer in L1
+			this.L1Addresses.remove(instrAddress);
 			if(inL2D || inWb) {
 				//We have the line, write to it
 				if(inL2D) {
@@ -206,7 +209,10 @@ public class L2Controller {
 					eviction.setDirty(entryToBeOverwritten.isDirty());
 					QItem q1 = new QItem(eviction);
 					this.toL2D.offer(q1);
-					this.L2Addresses.remove(entryOldAddress);
+					if(!entryToBeOverwritten.isDirty()) {
+						//L2D will not be sending an eviction back for this address, it will just be clearing out the values
+						this.L2Addresses.remove(entryOldAddress);
+					}
 				}
 				//Put the data there
 				entryToBeOverwritten.setAddress(instrAddress);
@@ -230,6 +236,7 @@ public class L2Controller {
 			//L2D is just returning the data that we need, pass it along to L1C for processing
 			if(q.getData() != null) {
 				this.toL1C.offer(q);
+				this.L1Addresses.add(instrAddress);
 				return;
 			} else {
 				System.out.println("ERROR: L1D returned a R/W instruction to L2C without any data on QItem, stopping process!");
@@ -287,7 +294,6 @@ public class L2Controller {
 	}
 
 	private void processFromMem(QItem q) {
-		//TODO: Adjust set of L2 addresses when we bring something new into L2D
 		Instruction instr = q.getInstruction();
 		int instrAddress = instr.getAddress();
 		int setNum = getSet(instrAddress);
@@ -300,8 +306,8 @@ public class L2Controller {
 				Eviction eviction = new Eviction(entryAddress);
 				QItem q1 = new QItem(eviction);
 				this.toL2D.offer(q1);
-				//Remove from list of addresses in L2 since we are kicking it out
-				this.L2Addresses.remove(entryAddress);
+				//Remove from list of addresses in L2 if it is clean since it will not be going to WB
+				if(!entryForNewData.isDirty()) this.L2Addresses.remove(entryAddress);
 			}
 			//Now that we know we have an open spot, send L2D a Put instruction to store the data that came from memory (QItem.data)
 			Put putInstr = new Put(instrAddress, q.getData().clone());
