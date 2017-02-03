@@ -41,6 +41,7 @@ public class Memory {
 		int instrAddress = instr.getAddress();
 		CacheEntry entry = this.data.get(instrAddress);
 		if(instr instanceof Read || instr instanceof Write) {
+			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", Memory: Fetching data from address " + instrAddress);
 			byte[] dataNeeded = entry.getData().clone();
 			q.setData(dataNeeded);
 			this.toL2.offer(q);
@@ -48,6 +49,7 @@ public class Memory {
 		} else if(instr instanceof Eviction) {
 			byte[] data = ((Eviction) instr).getData().clone();
 			entry.setData(data);
+			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", Memory: Writing to data from address " + instrAddress);
 			return;
 		} else {
 			System.out.println("ERROR: L2C sent Memory an instruction other than a R/W, Eviction, stopping process!");

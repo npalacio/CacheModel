@@ -158,6 +158,7 @@ public class L1Controller {
 				if(instrAddress == e.getAddress() && e.isValid()) {
 					matchingEntry = e;
 					foundMatch = true;
+					System.out.println("Instruction " + instr.getNumber() + ", HIT in L1, fetching from Write Buffer");
 					processInWriteBuf(q, e);
 					return;
 				}
@@ -168,6 +169,7 @@ public class L1Controller {
 				if(instrAddress == e.getAddress() && e.isValid()) {
 					matchingEntry = e;
 					foundMatch = true;
+					System.out.println("Instruction " + instr.getNumber() + ", HIT in L1, fetching from Victime Cache");
 					processInVictim(q, e);
 					return;
 				}
@@ -176,7 +178,7 @@ public class L1Controller {
 		if(matchingEntry != null) {
 			if(matchingEntry.isValid()) {
 				//HIT
-				System.out.println("Instruction " + instr.getNumber() + ", HIT in L1C, fetching from L1D");
+				System.out.println("Instruction " + instr.getNumber() + ", HIT in L1, fetching from L1D");
 				QItem qu = new QItem(instr);
 				this.toData.offer(qu);
 				//If it is a write instruction and we have it then that entry is now dirty
@@ -423,6 +425,7 @@ public class L1Controller {
 		//Check if clean or dirty
 		if(e.isDirty()) {
 			//Move into WB
+			System.out.println("L1D to L1C: Evict address " + instrAddress + " to L1 Write Buffer");
 			//Check if there is an open space already, if no open spot pick one to evict
 			for(int i = 0; i < this.bufVicSize; i++) {
 				ControllerEntry entry = this.writeBuf.get(i);
@@ -456,6 +459,7 @@ public class L1Controller {
 			
 			if(!contrEntry.isDirty()){
 				//Need to send eviction with new address and data
+				System.out.println("L1C to L2C: Evicting address " + contrEntry.getAddress() + " to L2 to make room in Write Buffer");
 				Instruction newEviction = new Eviction(contrEntry.getAddress(), cacheEntry.getData().clone());
 				QItem newQ = new QItem(newEviction);
 				this.toL2.offer(newQ);
@@ -473,6 +477,7 @@ public class L1Controller {
 			
 		} else {
 			//Move into victim cache
+			System.out.println("L1D to L1C: Evict address " + instrAddress + " to L1 Victim Cache");
 			for(int i = 0; i < this.bufVicSize; i++) {
 				ControllerEntry contrEntry = this.victim.get(i);
 				if(contrEntry.getAddress() == -1) {
@@ -505,6 +510,7 @@ public class L1Controller {
 			
 			//Need to send eviction with new address and data if this entry we are kicking out is dirty
 			if(contrEntry.isDirty()){
+				System.out.println("L1C to L2C: Evicting address " + contrEntry.getAddress() + " to L2 to make room in Victim cache");
 				Instruction newEviction = new Eviction(contrEntry.getAddress(), cacheEntry.getData().clone());
 				QItem newQ = new QItem(newEviction);
 				this.toL2.offer(newQ);
@@ -553,6 +559,7 @@ public class L1Controller {
 			return;
 		}
 		//Eviction: evict and pass to L2
+		//I dont think this will ever come from the processor
 		if(instr instanceof Eviction) {
 			//If this buffer entry is clean, just wipe out the data, otherwise pass along eviction to L2 for write-back
 			if(controllerMatch.isDirty()) {

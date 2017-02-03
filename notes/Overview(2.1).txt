@@ -83,7 +83,7 @@ L2:
    -If we ever have an address in the WB that is dirty and then have another write to that L1C just writes to it while already in
     the WB so it merges right away?
 
-
+Write instructions are currently not returned past L1D! Need to figure out how to show that they are done
 
 
 

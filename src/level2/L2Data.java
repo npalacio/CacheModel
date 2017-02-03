@@ -53,6 +53,7 @@ public class L2Data {
 		int entryAddress = entry.getAddress();
 		boolean addressMatch = instrAddress == entryAddress;
 		if(instr instanceof Read || instr instanceof Write) {
+			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L2D: Fetching data from address " + instrAddress);
 			if(!addressMatch) {
 				System.out.println("ERROR: When retreiving data for R/W in L2D, the instruction address did not match the address in the L2Entry, stopping process!");
 				return;
@@ -67,6 +68,7 @@ public class L2Data {
 				//The spot is either open or we are overwriting the same address
 				entry.setAddress(instrAddress);
 				entry.setData(((Put) instr).getData().clone());
+				System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L2D: Putting data for address " + instrAddress + " into L2D");
 				//We stored the data we are done
 				return;
 			} else {
@@ -84,6 +86,7 @@ public class L2Data {
 				((Eviction) instr).setData(dataToSave);
 				this.toL2C.offer(q);
 			}
+			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L2D: Evicting address " + instrAddress);
 			//If it was dirty we saved the data and passed it back
 			//Now we just need to clear the values
 			entry.setAddress(-1);

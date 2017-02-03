@@ -72,6 +72,7 @@ public class L1Data {
 				data = e.getData().clone();
 				QItem q = new QItem(r, data);
 				this.toL1C.offer(q);
+				System.out.println("Instruction " + r.getNumber() + ", L1D to L1C: Data from address " + r.getAddress());
 				return;
 			}
 		}
@@ -87,6 +88,7 @@ public class L1Data {
 		for(CacheEntry e : set) {
 			if(address == e.getAddress()) {
 				e.setData(w.getData().clone());
+				System.out.println("Instruction " + w.getNumber() + ", " + w.toString() + ", L1D: Writing " + ByteBuffer.wrap(w.getData()).getInt() + " to address " + w.getAddress());
 				return;
 			}
 		}
@@ -107,6 +109,7 @@ public class L1Data {
 					e.setData(data);
 					QItem q = new QItem(e);
 					this.toL1C.offer(q);
+					System.out.println("L1D: Evicting address " + e.getAddress() + " from L1D");
 				}
 				//Clear out the data currently there
 				entry.setData(new byte[32]);
@@ -126,6 +129,7 @@ public class L1Data {
 				//Open spot
 				entry.setAddress(instrAddress);
 				entry.setData(p.getData().clone());
+				System.out.println("L1D: Putting data from address " + p.getAddress() + " into L1D");
 				return;
 			}
 		}

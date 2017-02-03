@@ -144,8 +144,10 @@ public class L2Controller {
 					if(inL2D) {
 						//Pass request along to L2D
 						this.toL2D.offer(q);
+						System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L1C to L2C: HIT in L2D for address " + instr.getAddress());
 						return;
 					} else if(inWb) {
+						System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L1C to L2C: HIT in L2 Write Buffer for address " + instr.getAddress());
 						//Grab the data and send it back
 						int entryIndex = this.writeBuf.indexOf(matchingEntry);
 						CacheEntry dataMatch = this.writeBufData.get(entryIndex);
@@ -166,6 +168,7 @@ public class L2Controller {
 				}
 			} else {
 				//Not in L2 at all, pass along request to memory
+				System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L1C to L2C: MISS in L2 for address " + instr.getAddress() + ", fetching from memory");
 				this.toMem.offer(q);
 				return;
 			}
@@ -237,6 +240,7 @@ public class L2Controller {
 			if(q.getData() != null) {
 				this.toL1C.offer(q);
 				this.L1Addresses.add(instrAddress);
+				System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L2D to L1C: Data from address " + instr.getAddress());
 				return;
 			} else {
 				System.out.println("ERROR: L1D returned a R/W instruction to L2C without any data on QItem, stopping process!");
@@ -272,6 +276,7 @@ public class L2Controller {
 				QItem q1 = new QItem(eviction);
 				this.toMem.offer(q1);
 				this.L2Addresses.remove(entryAddress);
+				System.out.println("L2C to Memory: Evicting address " + instrAddress + " from L2 Write Buffer to make room for new entry");
 			} else {
 				//Get the cache entry corresponding to the controller entry
 				int entryIndex = this.writeBuf.indexOf(cacheEntryForNewData);
@@ -290,6 +295,7 @@ public class L2Controller {
 			entryForNewData.setDirty(isNewDataDirty);
 			entryForNewData.setLoc(Location.L2WB);
 			entryForNewData.setValid(true);
+			//System.out.println("L2 Write Buffer: ");
 		}
 	}
 
@@ -321,6 +327,7 @@ public class L2Controller {
 			entryForNewData.setValid(true);
 			//Now that we properly stored the data in L2, we need to pass the instruction along to L1C
 			this.toL1C.offer(q);
+			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", Memory to L2C: Data from address " + instrAddress);
 		} else {
 			System.out.println("ERROR: Memory sent L2C an instruction that was not a read or write, stopping process!");
 			return;
