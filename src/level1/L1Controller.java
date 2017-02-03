@@ -45,8 +45,8 @@ public class L1Controller {
 
 	private int bufVicSize = 4;
 
-	private Queue<QItem> toProc;
-	private Queue<QItem> fromProc;
+	private Queue<QItem> toInstrCache;
+	private Queue<QItem> fromInstrCache;
 
 	private Queue<QItem> toData;
 	private Queue<QItem> toL2;
@@ -63,8 +63,8 @@ public class L1Controller {
 	//Since processor owns L1C it will pass in the queues to communicate with it
 	//L1C initializes the other queues
 	public L1Controller(Queue<QItem> toP, Queue<QItem> fromP) {		
-		this.toProc = toP;
-		this.fromProc = fromP;
+		this.toInstrCache = toP;
+		this.fromInstrCache = fromP;
 
 		this.toData = new LinkedList<QItem>();
 		this.fromData = new LinkedList<QItem>();
@@ -118,7 +118,7 @@ public class L1Controller {
 	//Potential pointer problem reusing same var for each QItem?
 	public void process() {
 		//This method will go to all 3 from-q's and pull one off the top
-		QItem q = this.fromProc.poll();
+		QItem q = this.fromInstrCache.poll();
 		if(q != null) {
 			processFromProc(q);
 		}
@@ -130,7 +130,8 @@ public class L1Controller {
 		if(q != null) {
 			processFromL2(q);
 		}
-		//TODO: Need to tell L1D to process as well as L2C
+		this.backingData.process();
+		this.L2C.process();
 	}
 	
 	//Hit and valid: tell L1Data to give us the data
@@ -140,6 +141,7 @@ public class L1Controller {
 	private void processFromProc(QItem q) {
 		Instruction instr = q.getInstruction();
 		int instrAddress = instr.getAddress();
+		System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ": Instruction Cache to L1C");
 		int setNum = getSet(instrAddress);
 		//Get the set that the address would be in if it is in cache
 		ArrayList<ControllerEntry> set = this.sets.get(setNum);
@@ -174,6 +176,7 @@ public class L1Controller {
 		if(matchingEntry != null) {
 			if(matchingEntry.isValid()) {
 				//HIT
+				System.out.println("Instruction " + instr.getNumber() + ", HIT in L1C, fetching from L1D");
 				QItem qu = new QItem(instr);
 				this.toData.offer(qu);
 				//If it is a write instruction and we have it then that entry is now dirty
@@ -189,6 +192,7 @@ public class L1Controller {
 			}
 		} else {
 			//MISS
+			System.out.println("Instruction " + instr.getNumber() + ", MISS in L1C, retrieving from L2");
 			//Check if a waiting line already exists
 			Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
 			if(waitingLine != null) {
@@ -210,6 +214,7 @@ public class L1Controller {
 		int setNum = getSet(instrAddress);
 		ArrayList<ControllerEntry> set = this.sets.get(setNum);
 		if(instr instanceof Read || instr instanceof Write) {
+			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L2C to L1C: Data from address " + instr.getAddress());
 			//Check if a spot in the set is open
 			ControllerEntry entryToBeOverwritten = null;
 			for(ControllerEntry entry : set) {
@@ -258,6 +263,7 @@ public class L1Controller {
 		//An eviction from L2 only comes down due to violation of mutual inclusion
 		//Be sure to clear L1C entry before sending to L1D
 		else if(instr instanceof Eviction) {
+			System.out.println("L2 to L1: Evict address " + instr.getAddress() + " in order to maintain mutual inclusion");
 			//Make sure fromL2 boolean is set
 			Eviction e = (Eviction) instr;
 			if(e.isFromL2ToL1()) {
@@ -390,9 +396,10 @@ public class L1Controller {
 		//2. Data coming back from an eviction: put it in WB or Victim
 		Instruction instr = q.getInstruction();
 		if(instr instanceof Read) {
+			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L1D to L1C: Data from address " + instr.getAddress());
 			//It is data coming back from cache, send it to processor
 			if(q.getData() != null) {
-				this.toProc.offer(q);
+				this.toInstrCache.offer(q);
 			} else {
 				System.out.println("ERROR: Read coming back from L1D to L1C did not contain data!");
 			}
@@ -542,7 +549,7 @@ public class L1Controller {
 		if(instr instanceof Read) {
 			//Create copy of data to not pass ref to cache entry data
 			q.setData(dataMatch.getData().clone());
-			this.toProc.offer(q);
+			this.toInstrCache.offer(q);
 			return;
 		}
 		//Eviction: evict and pass to L2
@@ -592,7 +599,7 @@ public class L1Controller {
 		if(instr instanceof Read) {
 			//Create copy of data to not pass ref to cache entry data
 			q.setData(dataMatch.getData().clone());
-			this.toProc.offer(q);
+			this.toInstrCache.offer(q);
 			return;
 		}
 		//Eviction: If dirty, put in write buffer cache
@@ -621,9 +628,9 @@ public class L1Controller {
 	
 	public boolean areAnyLeft() {
 		boolean result = false;
-		if(this.toProc.size() > 0) {
+		if(this.toInstrCache.size() > 0) {
 			result = true;
-		} else if(this.fromProc.size() > 0) {
+		} else if(this.fromInstrCache.size() > 0) {
 			result = true;
 		} else if(this.toData.size() > 0) {
 			result = true;

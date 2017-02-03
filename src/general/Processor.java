@@ -24,19 +24,30 @@ public class Processor {
 	}
 	
 	private static void Start(String fileName) {
+		System.out.println("Reading Instructions...");
 		List<Instruction> instructions = ProcessInstructions(fileName);
-		Queue<QItem> proc2L1C = new LinkedList<QItem>();
-		Queue<QItem> L1C2proc = new LinkedList<QItem>();
-		L1Controller L1C = new L1Controller(L1C2proc, proc2L1C);
+		System.out.println("Initializing components...");
+		Queue<QItem> instrCache2L1C = new LinkedList<QItem>();
+		Queue<QItem> L1C2instrCache = new LinkedList<QItem>();
+		Queue<QItem> instrCache2proc = new LinkedList<QItem>();
+		L1Controller L1C = new L1Controller(L1C2instrCache, instrCache2L1C);
+		InstructionCache IC = new InstructionCache(instructions, instrCache2L1C, L1C2instrCache, instrCache2proc, L1C);
+		System.out.println("Processing instructions...");
+		while(IC.process()) {
+			QItem q = instrCache2proc.poll();
+			while(q != null) {
+				//Print out finished instructions here
+				Instruction instr = q.getInstruction();
+				printInstruction(q);
+			}
+		}
+		
 //		L1C.printL1Cache();
 //		L1C.printL2Cache();
 //		System.out.println(L1C.getMemoryData(20546));
-		for(Instruction instr : instructions) {
-			proc2L1C.offer(new QItem(instr));
-		}
-		while(L1C.areAnyLeft()) {
-			L1C.process();
-		}
+//		for(Instruction instr : instructions) {
+//			proc2L1C.offer(new QItem(instr));
+//		}
 	}
 	
 	private static List<Instruction> ProcessInstructions(String fileName) {
@@ -48,23 +59,26 @@ public class Processor {
 			fis = new FileInputStream(fileName);
 			reader = new BufferedReader(new InputStreamReader(fis));
 			String line = reader.readLine();
+			int i = 0;
 			while(line != null) {
 //				System.out.println(line);
 				String[] tokens = line.split(" ");
 				//System.out.println(tokens[0] + " " + tokens[1]);
 				Instruction instr = null;
 				if(tokens[0].equals("read") && tokens.length == 2) {
-					instr = new Read(Integer.parseInt(tokens[1]));
+					instr = new Read(i, Integer.parseInt(tokens[1]));
+				} else if(tokens[0].equals("read") && tokens.length == 3) {
+					instr = new Read(i, Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
 				} else if(tokens[0].equals("write") && tokens.length == 3) {
-					instr = new Write(Integer.parseInt(tokens[1]), ByteBuffer.allocate(32).putInt(Integer.parseInt(tokens[2])).array());
+					instr = new Write(i, Integer.parseInt(tokens[1]), ByteBuffer.allocate(32).putInt(Integer.parseInt(tokens[2])).array());
 				} else {
 					System.out.println("Invalid input for instruction");
 				}
 				instructions.add(instr);
-				//System.out.println("Instruction: isRead=" + instr.isRead() + ", address=" + instr.getAddress());
+				i++;
 				line = reader.readLine();
 			}
-			System.out.println(instructions.size() + " instructions given");
+			System.out.println(instructions.size() + " instructions read in...");
 //			for(Instruction i : instructions) {
 //				System.out.println(i.toString());
 //			}
@@ -78,6 +92,33 @@ public class Processor {
 			}
 		}
 		return instructions;
+	}
+	
+	private static void printInstruction(QItem q) {
+		Instruction instr = q.getInstruction();
+		String s = null;
+		if(instr instanceof Read) {
+			Read r = (Read) instr;
+			int offset = r.getByteOffset();
+			if(offset == 0) {
+				int result = ByteBuffer.wrap(q.getData()).getInt();
+				s = "Finished processing instruction " + r.getNumber() + ", read from address " + r.getAddress() + ", with result = " + result;
+			} else if(offset > 0) {
+				//Byte buffer.get puts the specified byte[] with offset and length into the array that you pass it
+				byte[] resultDestination = new byte[32 - offset];
+				ByteBuffer.allocate(32).get(resultDestination, offset, 32-offset);
+				int result = ByteBuffer.wrap(resultDestination).getInt();
+				s = "Finished processing instruction " + r.getNumber() + ", read from address " + r.getAddress() + ", with offset = " + offset + ", with result = " + result;
+			} else {
+				s = "ERROR: Negative offset given for read";
+			}
+		} else if(instr instanceof Write) {
+			Write w = (Write) instr;
+			s = "Finished processing instruction " + w.getNumber() + ", write to address " + w.getAddress();
+		} else {
+			s = "ERROR: L1C returned an instruction other than a Read or Write";
+		}
+		System.out.println(s);
 	}
 	
 	
