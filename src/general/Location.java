@@ -4,5 +4,6 @@ public enum Location {
 	L1D,
 	WRITE_BUFFER,
 	VICTIM,
-	L2D
+	L2D,
+	L2WB
 }

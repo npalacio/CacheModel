@@ -250,6 +250,8 @@ public class L1Controller {
 					QItem q1 = new QItem(waitingInstr);
 					this.toData.offer(q1);
 				}
+				//Delete the waiting line since we got the data back and it is processed
+				instructionMisses.put(instrAddress, null);
 			}
 		}
 		

@@ -1,10 +1,12 @@
 package level2;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import general.QItem;
 import general.Read;
@@ -54,8 +56,11 @@ public class L2Controller {
 		this.toMem = new LinkedList<QItem>();
 		this.fromMem = new LinkedList<QItem>();
 		
-		this.backingData = new L2Data();
+		this.backingData = new L2Data(this.toL2D, this.fromL2D);
 		this.mainMemory = new Memory(fromMem, toMem);
+		
+		this.L1Addresses = new HashSet<Integer>();
+		this.L2Addresses = new HashSet<Integer>();
 		
 		initialize();
 	}
@@ -86,7 +91,6 @@ public class L2Controller {
 		this.writeBufData = wbData;
 	}
 	
-	//TODO: Make sure that data being return to L1C is put as the QItem's data, not the instruction since that may or may not have it
 	//This is method that processes for L2C, L2D and memory
 	public void process() {
 		QItem q = this.fromL1C.poll();
@@ -101,7 +105,8 @@ public class L2Controller {
 		if(q != null) {
 			processFromMem(q);
 		}
-		//TODO: Tell L2D and memory to process their queues
+		this.backingData.process();
+		this.mainMemory.process();
 	}
 	
 	private void processFromL1C(QItem q) {
@@ -169,18 +174,40 @@ public class L2Controller {
 				if(inL2D) {
 					//Create Put instruction and pass it to L2D, we already determined that we have this address in L2D, we are just overwriting it
 					Put putInstr = new Put(instrAddress, ((Eviction) instr).getData().clone());
+					QItem q1 = new QItem(putInstr);
+					this.toL2D.offer(q1);
+					return;
 				} else if(inWb) {
 					//Just write the values to WB
+					int entryIndex = this.writeBuf.indexOf(matchingEntry);
+					CacheEntry dataMatch = this.writeBufData.get(entryIndex);
+					if(dataMatch.getAddress() != matchingEntry.getAddress()) {
+						System.out.println("ERROR: When processing eviction from L1C to L2C, addresses across WB and WBData do not match, stopping process!");
+						return;
+					}
+					//Write the values to data and WB
+					matchingEntry.setAddress(instrAddress);
+					matchingEntry.setDirty(((Eviction) instr).isDirty());
+					matchingEntry.setLoc(Location.WRITE_BUFFER);
+					matchingEntry.setValid(true);
+					dataMatch.setAddress(instrAddress);
+					dataMatch.setData(((Eviction) instr).getData().clone());
+					//We cleared the spot and wrote the data we are done
+					return;
 				}
 			} else {
 				//We dont have the line but we should (mutual inclusion)
 				System.out.println("WARNING: L1 evicted line, but L2 does not have that line (it should with mutual inclusion), continuing process");
 				//Evict line that is in its spot in L2D
 				ControllerEntry entryToBeOverwritten = this.sets.get(setNum).get(0);
-				Eviction eviction = new Eviction(entryToBeOverwritten.getAddress());
-				eviction.setDirty(entryToBeOverwritten.isDirty());
-				QItem q1 = new QItem(eviction);
-				this.toL2D.offer(q1);
+				int entryOldAddress = entryToBeOverwritten.getAddress();
+				if(entryOldAddress != -1) {
+					Eviction eviction = new Eviction(entryOldAddress);
+					eviction.setDirty(entryToBeOverwritten.isDirty());
+					QItem q1 = new QItem(eviction);
+					this.toL2D.offer(q1);
+					this.L2Addresses.remove(entryOldAddress);
+				}
 				//Put the data there
 				entryToBeOverwritten.setAddress(instrAddress);
 				entryToBeOverwritten.setDirty(((Eviction) instr).isDirty());
@@ -189,19 +216,109 @@ public class L2Controller {
 				Put putInstr = new Put(instrAddress, ((Eviction) instr).getData().clone());
 				QItem q2 = new QItem(putInstr);
 				this.toL2D.offer(q2);
+				this.L2Addresses.add(instrAddress);
 				//We made room for this eviction from L1 in L2D and then wrote the value there
 				return;
 			}
-			
 		}
 	}
 	
 	private void processFromL2D(QItem q) {
-		//TODO: Implement
+		Instruction instr = q.getInstruction();
+		int instrAddress = instr.getAddress();
+		if(instr instanceof Read || instr instanceof Write) {
+			//L2D is just returning the data that we need, pass it along to L1C for processing
+			if(q.getData() != null) {
+				this.toL1C.offer(q);
+				return;
+			} else {
+				System.out.println("ERROR: L1D returned a R/W instruction to L2C without any data on QItem, stopping process!");
+				return;
+			}
+		} else if(instr instanceof Eviction) {
+			//We evicted something from L2D and it was dirty so it needs to go to WB
+			//Check for open space in WB
+			ControllerEntry entryForNewData = null;
+			for(ControllerEntry entry : this.writeBuf) {
+				if(entry.getAddress() == -1) {
+					//This is an open space
+					entryForNewData = entry;
+				}
+			}
+			//If no open space, make open space
+			CacheEntry cacheEntryForNewData = null;
+			if(entryForNewData == null) {
+				int indexToEvict = ThreadLocalRandom.current().nextInt(0, this.writeBufSize);
+				entryForNewData = this.writeBuf.get(indexToEvict);
+				int entryAddress = entryForNewData.getAddress();
+				cacheEntryForNewData = this.writeBufData.get(indexToEvict);
+				if(cacheEntryForNewData.getAddress() != entryAddress) {
+					System.out.println("ERROR: When processing Eviction from L2D to L2C, addresses across WB and WBData do not match, stopping process!");
+					return;
+				}
+				//Create eviction to send to memory
+				if(!entryForNewData.isDirty()) {
+					System.out.println("WARNING: There is an entry in L2 WB that is not dirty, continuing process");
+				}
+				Eviction eviction = new Eviction(entryAddress, cacheEntryForNewData.getData().clone());
+				eviction.setDirty(true);
+				QItem q1 = new QItem(eviction);
+				this.toMem.offer(q1);
+				this.L2Addresses.remove(entryAddress);
+			} else {
+				//Get the cache entry corresponding to the controller entry
+				int entryIndex = this.writeBuf.indexOf(cacheEntryForNewData);
+				cacheEntryForNewData = this.writeBufData.get(entryIndex);
+			}
+			//At this point we have the controller entry and data entry clear (whether it already was clear or we made it clear)
+			//Write eviction data to WB
+			boolean isNewDataDirty = ((Eviction) instr).isDirty();
+			if(!entryForNewData.isDirty()) {
+				System.out.println("WARNING: Eviction coming from L2D to L2C must be dirty but dirty bit on eviction instruction was not set, continuing process");
+			}
+			byte[] newData = ((Eviction) instr).getData().clone();
+			cacheEntryForNewData.setAddress(instrAddress);
+			cacheEntryForNewData.setData(newData);
+			entryForNewData.setAddress(instrAddress);
+			entryForNewData.setDirty(isNewDataDirty);
+			entryForNewData.setLoc(Location.L2WB);
+			entryForNewData.setValid(true);
+		}
 	}
 
 	private void processFromMem(QItem q) {
-		//TODO: Implement
+		//TODO: Adjust set of L2 addresses when we bring something new into L2D
+		Instruction instr = q.getInstruction();
+		int instrAddress = instr.getAddress();
+		int setNum = getSet(instrAddress);
+		ControllerEntry entryForNewData = this.sets.get(setNum).get(0);
+		int entryAddress = entryForNewData.getAddress();
+		if(instr instanceof Read || instr instanceof Write) {
+			//Check if spot where this data would go is empty
+			if(entryAddress != -1) {
+				//If it is not empty, send L2D an eviction for that address, set dirty bit of eviction with dirty bit of address being evicted	
+				Eviction eviction = new Eviction(entryAddress);
+				QItem q1 = new QItem(eviction);
+				this.toL2D.offer(q1);
+				//Remove from list of addresses in L2 since we are kicking it out
+				this.L2Addresses.remove(entryAddress);
+			}
+			//Now that we know we have an open spot, send L2D a Put instruction to store the data that came from memory (QItem.data)
+			Put putInstr = new Put(instrAddress, q.getData().clone());
+			QItem q2 = new QItem(putInstr);
+			this.toL2D.offer(q2);
+			this.L2Addresses.add(instrAddress);
+			//Also set controller entry data
+			entryForNewData.setAddress(instrAddress);
+			entryForNewData.setLoc(Location.L2D);
+			entryForNewData.setDirty(false);
+			entryForNewData.setValid(true);
+			//Now that we properly stored the data in L2, we need to pass the instruction along to L1C
+			this.toL1C.offer(q);
+		} else {
+			System.out.println("ERROR: Memory sent L2C an instruction that was not a read or write, stopping process!");
+			return;
+		}
 	}
 	
 	public boolean areAnyLeft() {
