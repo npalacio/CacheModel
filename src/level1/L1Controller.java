@@ -115,6 +115,7 @@ public class L1Controller {
 	}
 	
 	//This method should only return false if every single Queue is empty
+	//Potential pointer problem reusing same var for each QItem?
 	public void process() {
 		//This method will go to all 3 from-q's and pull one off the top
 		QItem q = this.fromProc.poll();
@@ -129,6 +130,7 @@ public class L1Controller {
 		if(q != null) {
 			processFromL2(q);
 		}
+		//TODO: Need to tell L1D to process as well as L2C
 	}
 	
 	//Hit and valid: tell L1Data to give us the data

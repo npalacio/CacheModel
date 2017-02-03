@@ -42,7 +42,8 @@ L2:
 	    -If not in L1D or WB, pass QItem along to memory for retrieval
 	  -Eviction:
 	    -Eviction received from L1C means we need to store that data in L2
-	    -If spot that new data needs is taken, create eviction for L2D and be sure to set dirty bit of eviction with that of evicted data as well as clear the values in the controller entry in L2C
+	    -We should already have this address so look to just create a Put for that address
+	    -If spot that new data needs is taken and a different address than the new data, create eviction for L2D and be sure to set dirty bit of eviction with that of evicted data as well as clear the values in the controller entry in L2C
 	    -Now that we have the open spot we need, use Put instruction to store this data in L2D
 	-from L2D:
 	  -Read/Write:
@@ -53,7 +54,7 @@ L2:
 	    -Now that we have open spot in WB, write this eviction to the open spot and be done
 	-from Memory:
 	  -Memory is giving us data we requested for a read or write
-	  -We need to store this data in L2D (using Put instruction) before passing along to L1
+	  -We need to store this data in L2D, but first we need to make room if spot is not open (create eviction if needed) (using Put instruction) before passing along to L1
 	  -Once we pass Put instruction to L2D, we can pass this along to L1C
 	-Maintaining mutual inclusion: This process might have to take priority after every cycle of processing? No because mutual inclusion will be broken 
 	 in our mind the moment we put the data that breaks it into the Queue for L1 but the actual data is not even there yet, stick to pass necessary evictions to Queue
@@ -65,6 +66,7 @@ L2:
         -Grab the data it wants and put it on QItem, not instruction, then pass back to L2C
       -Put: When L1C evicts something we try and put it in L2
         -Store the data and the requested address
+        -This address could already be in the spot, we are just overwriting it
       -Eviction: Making room for something that was just evicted by L1
         -If it is dirty (Eviction instruction has this bit), save data to Eviction instruction and pass QItem back to L1C
         -If it is clean just reset the values and be sure to erase this address from the set of addresses for L2

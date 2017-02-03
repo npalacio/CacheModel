@@ -14,7 +14,7 @@ public class L2Data {
 		initialize();
 	}
 	
-	private void initialize() {
+	public void initialize() {
 		List<ArrayList<CacheEntry>> newSets = new ArrayList<ArrayList<CacheEntry>>(numberOfSets);
 		for(int i = 0; i < this.numberOfSets; i++) {
 			ArrayList<CacheEntry> set = new ArrayList<CacheEntry>(2);
