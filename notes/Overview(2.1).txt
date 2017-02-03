@@ -1,4 +1,4 @@
-L1:
+L1: *Reviewed processing parts*
   L1C:
     fromProc/InstructionCache:
       -L1C takes the read/write instruction and checks if it has it in L1D, if it does it passes the instruction to L1D queue
@@ -13,12 +13,13 @@ L1:
           -L1C already cleared its values, do not put in WB/Victim, pass directly to L2
     from L2C:
 	  -Read/Write:
-	    -This is data (put in QItem.data) for the instruction that we sent, store (Put instruction) the data in L1D 
+	    -This is data (put in QItem.data) for the instruction that we sent, store (Put instruction) the data in L1D but be sure to set dirty bit in L1C with that of QItem
 		  -evict something if necessary, be sure to set dirty bit so L1D knows if it needs to 
 		-Then process the instruction, then check for a queue waiting on this data and process those as well
 	  -Eviction:
 	    -L2C is asking us to evict something to maintain mutual inclusion, we cannot send this data to WB or victim (although it may already be in WB/Victim)
 		-Grab the data where ever it is in L1, clear the values there then pass the eviction back to L2
+		-Is data that is coming from L2 to L1 clean or dirty?
   L1D:
     from L1C:
 	  Read/Write:
@@ -27,6 +28,57 @@ L1:
 	    -L1C is in charge of where to put the evicted line, just clear out the spot in L1D then pass the eviction back to L1C with the data/address to evict
 	  Put:
 	    -An eviction should have already come before this instruction to make a spot available, so just put the data/address in the available spot
-  L2C: As soon as L2C gives L1C an eviction, as far as L2 is concerned the data has been evicted. It will only get a response if that address was dirty and needs to be written back
+L2:
+  L2C: 
+    -As soon as L2C gives L1C an eviction, as far as L2 is concerned the data has been evicted. It will only get a response if that address was dirty and needs to be written back
+	-When L2 gives data to L1 it needs to let it know whether or not that data is dirty or clean (set bit on QItem)
+	-L2 has to keep track of maintaining mutual inclusion, it does this by evicting data from L1 when necessary
+	
+	-from L1C:
+	  -Read/Write:
+	    -This is just a request from L1 to grab the data necessary for these instructions
+	    -Check if data is in L1D, if it is pass QItem along to it to retrieve it
+	    -If not in L1D, check if in write buffer, if so just grab it from there and send it back to L1
+	    -If not in L1D or WB, pass QItem along to memory for retrieval
+	  -Eviction:
+	    -Eviction received from L1C means we need to store that data in L2
+	    -If spot that new data needs is taken, create eviction for L2D and be sure to set dirty bit of eviction with that of evicted data as well as clear the values in the controller entry in L2C
+	    -Now that we have the open spot we need, use Put instruction to store this data in L2D
+	-from L2D:
+	  -Read/Write:
+	    -We now have the data needed that L1C requested, pass this along to L1C
+	  -Eviction:
+	    -We evicted from L2D and it was dirty so we need to write this to WB
+	    -Check for open spot in WB, if none create new eviction for that data in WB, remove address from set of address for L2 and pass eviction to Memory
+	    -Now that we have open spot in WB, write this eviction to the open spot and be done
+	-from Memory:
+	  -Memory is giving us data we requested for a read or write
+	  -We need to store this data in L2D (using Put instruction) before passing along to L1
+	  -Once we pass Put instruction to L2D, we can pass this along to L1C
+	-Maintaining mutual inclusion: This process might have to take priority after every cycle of processing? No because mutual inclusion will be broken 
+	 in our mind the moment we put the data that breaks it into the Queue for L1 but the actual data is not even there yet, stick to pass necessary evictions to Queue
+	  -Anytime we: write something to L2D, evict something to memory, pass something to L1C, we need to track it so we have record of what data is in L2 and L1
+	  -We will need to create some process that fires after every 'cycle' that compares addresses in L1 vs L2 and evicts anything from L1 necessary
   L2D:
+    -from L2C:
+      -Read/Write: This is just a request to get the data (We use put to actually write to L2D)
+        -Grab the data it wants and put it on QItem, not instruction, then pass back to L2C
+      -Put: When L1C evicts something we try and put it in L2
+        -Store the data and the requested address
+      -Eviction: Making room for something that was just evicted by L1
+        -If it is dirty (Eviction instruction has this bit), save data to Eviction instruction and pass QItem back to L1C
+        -If it is clean just reset the values and be sure to erase this address from the set of addresses for L2
+        
   Memory:
+    -from L2C:
+      -Eviction: Just write this data
+	  -Read/Write: Just retrieve this data and add to QItem
+  
+ Implementing Write Merging:
+   -If we ever have an address in the WB that is dirty and then have another write to that L1C just writes to it while already in
+    the WB so it merges right away?
+
+
+
+
+

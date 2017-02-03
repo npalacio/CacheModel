@@ -66,11 +66,10 @@ public class L1Data {
 		int setNum = getSet(address);
 		ArrayList<CacheEntry> set = this.sets.get(setNum);
 		//Go to this set, find the matching address and put the data into a QItem
-		//TODO: Make sure we do not send shallow copy of data
 		byte[] data = null;
 		for(CacheEntry e : set) {
 			if(address == e.getAddress()) {
-				data = e.getData();
+				data = e.getData().clone();
 				QItem q = new QItem(r, data);
 				this.toL1C.offer(q);
 				return;
@@ -85,10 +84,9 @@ public class L1Data {
 		int setNum = getSet(address);
 		ArrayList<CacheEntry> set = this.sets.get(setNum);
 		//Go to this set, find the matching address and put the data into a QItem
-		//TODO: Do not put shallow copy of data in cache
 		for(CacheEntry e : set) {
 			if(address == e.getAddress()) {
-				e.setData(w.getData());
+				e.setData(w.getData().clone());
 				return;
 			}
 		}
@@ -96,8 +94,6 @@ public class L1Data {
 	}
 	
 	private void processEviction(Eviction e) {
-		//TODO: If eviction came from L2, you only need to respond if the line was dirty (check eviction instruction)
-		//TODO: If it is dirty send it to the WB, if it is clean send it to the victim cache
 		int address = e.getAddress();
 		int setNum = getSet(address);
 		ArrayList<CacheEntry> set = this.sets.get(setNum);
@@ -105,23 +101,36 @@ public class L1Data {
 		byte[] data = null;
 		for(CacheEntry entry : set) {
 			if(address == entry.getAddress()) {
-				//Get the data to pass on
-				data = entry.getData().clone();
+				if(e.isDirty()){
+					//Get the data to pass on
+					data = entry.getData().clone();
+					e.setData(data);
+					QItem q = new QItem(e);
+					this.toL1C.offer(q);
+				}
 				//Clear out the data currently there
-				entry.setData(ByteBuffer.allocate(32).putInt(0).array());
+				entry.setData(new byte[32]);
 				entry.setAddress(-1);
-				e.setData(data);
-				QItem q = new QItem(e, data);
-				this.toL1C.offer(q);
-				return;
 			}
 		}
 		System.out.println("ERROR: No matching address found in L1Data for evict instruction from address: " + address);
 	}
 	
 	private void processPut(Put p) {
-		//TODO: Implement
 		//L1C will have already sent down an eviction so a spot should already be open for this address, just need to write it in
+		int instrAddress = p.getAddress();
+		int setNum = getSet(instrAddress);
+		ArrayList<CacheEntry> set = this.sets.get(setNum);
+		for(CacheEntry entry : set) {
+			if(entry.getAddress() == -1) {
+				//Open spot
+				entry.setAddress(instrAddress);
+				entry.setData(p.getData().clone());
+				return;
+			}
+		}
+		//If we reach here we did not find open spot
+		System.out.println("ERROR: When processing Put in L1D, open spot not found!");
 	}
 	
 	private int getSet(int addr) {

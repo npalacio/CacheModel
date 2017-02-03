@@ -30,6 +30,8 @@ public class L2Controller {
 	private Queue<QItem> toMem;
 	private Queue<QItem> fromMem;
 	
+	//Create sets of integers to keep track of what data is in L1 and L2
+	
 	public L2Controller(Queue<QItem> toL1, Queue<QItem> fromL1) {
 		this.toL1C = toL1;
 		this.fromL1C = fromL1;
