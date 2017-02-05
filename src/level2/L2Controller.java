@@ -204,7 +204,7 @@ public class L2Controller {
 				}
 			} else {
 				//We dont have the line but we should (mutual inclusion)
-				System.out.println("WARNING: L1 evicted line, but L2 does not have that line (it should with mutual inclusion), continuing process");
+				//System.out.println("WARNING: L1 evicted line, but L2 does not have that line (it should with mutual inclusion), continuing process");
 				//Evict line that is in its spot in L2D
 				ControllerEntry entryToBeOverwritten = this.sets.get(setNum).get(0);
 				int entryOldAddress = entryToBeOverwritten.getAddress();
@@ -280,13 +280,13 @@ public class L2Controller {
 				System.out.println("L2C to Memory: Evicting address " + instrAddress + " from L2 Write Buffer to make room for new entry");
 			} else {
 				//Get the cache entry corresponding to the controller entry
-				int entryIndex = this.writeBuf.indexOf(cacheEntryForNewData);
+				int entryIndex = this.writeBuf.indexOf(entryForNewData);
 				cacheEntryForNewData = this.writeBufData.get(entryIndex);
 			}
 			//At this point we have the controller entry and data entry clear (whether it already was clear or we made it clear)
 			//Write eviction data to WB
 			boolean isNewDataDirty = ((Eviction) instr).isDirty();
-			if(!entryForNewData.isDirty()) {
+			if(!isNewDataDirty) {
 				System.out.println("WARNING: Eviction coming from L2D to L2C must be dirty but dirty bit on eviction instruction was not set, continuing process");
 			}
 			byte[] newData = ((Eviction) instr).getData().clone();

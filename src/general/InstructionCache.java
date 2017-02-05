@@ -61,7 +61,7 @@ public class InstructionCache {
 			j++;
 			i++;
 		}
-		System.out.println("Loaded " + j + " instructions for L1 to process");
+		System.out.println("Instruction Cache: Loaded " + j + " instructions for L1 to process");
 		this.currentInstruction = i;
 	}
 }

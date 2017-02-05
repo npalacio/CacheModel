@@ -248,6 +248,10 @@ public class L1Controller {
 			this.toData.offer(putItem);
 			//Now the L1Data will have evicted the necessary line and put in the new data in that line,
 			//we can process the original instruction (In this case a read or write)
+			//If it is a write instruction then our line is going to be dirty
+			if(instr instanceof Write) {
+				entryToBeOverwritten.setDirty(true);
+			}
 			//We can reuse same QItem, just clear the data so it looks like any other QItem coming to L1Data
 			q.setData(null);
 			this.toData.offer(q);
@@ -257,6 +261,9 @@ public class L1Controller {
 				for(Instruction waitingInstr : waitingLine) {
 					QItem q1 = new QItem(waitingInstr);
 					this.toData.offer(q1);
+					if(waitingInstr instanceof Write) {
+						entryToBeOverwritten.setDirty(true);
+					}
 				}
 				//Delete the waiting line since we got the data back and it is processed
 				instructionMisses.put(instrAddress, null);

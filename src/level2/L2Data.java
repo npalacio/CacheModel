@@ -86,7 +86,7 @@ public class L2Data {
 				((Eviction) instr).setData(dataToSave);
 				this.toL2C.offer(q);
 			}
-			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L2D: Evicting address " + instrAddress);
+			System.out.println("L2D: Evicting address " + instrAddress);
 			//If it was dirty we saved the data and passed it back
 			//Now we just need to clear the values
 			entry.setAddress(-1);
