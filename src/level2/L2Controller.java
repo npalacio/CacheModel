@@ -107,6 +107,7 @@ public class L2Controller {
 		}
 		this.backingData.process();
 		this.mainMemory.process();
+		maintainMutualInclusion();
 	}
 	
 	private void processFromL1C(QItem q) {
@@ -327,10 +328,25 @@ public class L2Controller {
 			entryForNewData.setValid(true);
 			//Now that we properly stored the data in L2, we need to pass the instruction along to L1C
 			this.toL1C.offer(q);
+			this.L1Addresses.add(instrAddress);
 			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", Memory to L2C: Data from address " + instrAddress);
 		} else {
 			System.out.println("ERROR: Memory sent L2C an instruction that was not a read or write, stopping process!");
 			return;
+		}
+	}
+	
+	private void maintainMutualInclusion() {
+		Set<Integer> newL1Set = new HashSet<Integer>(this.L1Addresses);
+		Set<Integer> newL2Set = new HashSet<Integer>(this.L2Addresses);
+		newL1Set.removeAll(newL2Set);
+		for(Integer i : newL1Set) {
+			System.out.println("L2C: Evicting address " + i + " from L1 in order to maintain mutual exclusion");
+			Eviction e = new Eviction(i);
+			e.setFromL2ToL1(true);
+			QItem q = new QItem(e);
+			this.toL1C.offer(q);
+			this.L1Addresses.remove(i);
 		}
 	}
 	

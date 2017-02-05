@@ -72,7 +72,7 @@ public class L1Data {
 				data = e.getData().clone();
 				QItem q = new QItem(r, data);
 				this.toL1C.offer(q);
-				System.out.println("Instruction " + r.getNumber() + ", L1D to L1C: Data from address " + r.getAddress());
+				//System.out.println("Instruction " + r.getNumber() + ", L1D to L1C: Data from address " + r.getAddress());
 				return;
 			}
 		}
@@ -89,6 +89,7 @@ public class L1Data {
 			if(address == e.getAddress()) {
 				e.setData(w.getData().clone());
 				System.out.println("Instruction " + w.getNumber() + ", " + w.toString() + ", L1D: Writing " + ByteBuffer.wrap(w.getData()).getInt() + " to address " + w.getAddress());
+				this.toL1C.offer(new QItem(w));
 				return;
 			}
 		}
@@ -114,6 +115,7 @@ public class L1Data {
 				//Clear out the data currently there
 				entry.setData(new byte[32]);
 				entry.setAddress(-1);
+				return;
 			}
 		}
 		System.out.println("ERROR: No matching address found in L1Data for evict instruction from address: " + address);

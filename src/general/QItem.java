@@ -13,6 +13,7 @@ public class QItem {
 	}
 	
 	public QItem(Instruction i, byte[] d) {
+		this.instruction = i;
 		this.data = d;
 	}
 

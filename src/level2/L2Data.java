@@ -68,7 +68,7 @@ public class L2Data {
 				//The spot is either open or we are overwriting the same address
 				entry.setAddress(instrAddress);
 				entry.setData(((Put) instr).getData().clone());
-				System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L2D: Putting data for address " + instrAddress + " into L2D");
+				System.out.println("L2D: Putting data for address " + instrAddress + " into L2D");
 				//We stored the data we are done
 				return;
 			} else {

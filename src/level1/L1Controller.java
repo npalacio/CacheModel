@@ -194,14 +194,15 @@ public class L1Controller {
 			}
 		} else {
 			//MISS
-			System.out.println("Instruction " + instr.getNumber() + ", MISS in L1C, retrieving from L2");
 			//Check if a waiting line already exists
 			Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
 			if(waitingLine != null) {
 				//There is already a line for this address, put the instruction in line
+				System.out.println("Instruction " + instr.getNumber() + ", MISS in L1C, Data is already being retrieved from L2");
 				waitingLine.offer(instr);
 			} else {
 				//There is no line for this, we need to tell L2 to give us the data and then create the line
+				System.out.println("Instruction " + instr.getNumber() + ", MISS in L1C, retrieving from L2");
 				QItem qu = new QItem(instr);
 				this.toL2.offer(qu);
 				this.instructionMisses.put(instr.getAddress(), new LinkedList<Instruction>());
@@ -265,7 +266,7 @@ public class L1Controller {
 		//An eviction from L2 only comes down due to violation of mutual inclusion
 		//Be sure to clear L1C entry before sending to L1D
 		else if(instr instanceof Eviction) {
-			System.out.println("L2 to L1: Evict address " + instr.getAddress() + " in order to maintain mutual inclusion");
+			System.out.println("L1: Evicting address " + instr.getAddress() + " in order to maintain mutual inclusion");
 			//Make sure fromL2 boolean is set
 			Eviction e = (Eviction) instr;
 			if(e.isFromL2ToL1()) {
@@ -405,8 +406,13 @@ public class L1Controller {
 			} else {
 				System.out.println("ERROR: Read coming back from L1D to L1C did not contain data!");
 			}
+		} else if(instr instanceof Write) {
+			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L1D to L1C: Wrote to address " + instr.getAddress());
+			this.toInstrCache.offer(q);
 		} else if(instr instanceof Eviction) {
 			processL1DEviction(q);
+//		} else if(instr instanc) {
+			
 		} else {
 			System.out.println("ERROR: QItem coming back from L1D to L1C was not of type Read or Eviction!");
 		}
@@ -635,9 +641,10 @@ public class L1Controller {
 	
 	public boolean areAnyLeft() {
 		boolean result = false;
-		if(this.toInstrCache.size() > 0) {
-			result = true;
-		} else if(this.fromInstrCache.size() > 0) {
+//		if(this.toInstrCache.size() > 0) {
+//			result = true;
+//		} else 
+		if(this.fromInstrCache.size() > 0) {
 			result = true;
 		} else if(this.toData.size() > 0) {
 			result = true;
@@ -650,6 +657,7 @@ public class L1Controller {
 		} else if(this.L2C.areAnyLeft()) {
 			result = true;
 		}
+//		System.out.println("Are any left? " + result);
 		return result;
 	}
 	

@@ -1,0 +1,4 @@
+read 1000
+write 1000 999
+read 1512
+read 1000

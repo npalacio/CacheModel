@@ -38,6 +38,7 @@ public class InstructionCache {
 			}
 			//Grab the processed instructions
 			List<QItem> processedInstr = new ArrayList<QItem>();
+			System.out.println("Processed " + this.L1C2IC.size() + " instructions...");
 			QItem q = this.L1C2IC.poll();
 			while(q != null) {
 				processedInstr.add(q);

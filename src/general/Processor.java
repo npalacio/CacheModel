@@ -19,7 +19,7 @@ public class Processor {
 	private L1Controller L1C;
 	
 	public static void main(String[] args) {
-		String fileName = "input/input001.txt";
+		String fileName = "input/input002.txt";
 		Start(fileName);
 	}
 	
@@ -39,6 +39,7 @@ public class Processor {
 				//Print out finished instructions here
 				Instruction instr = q.getInstruction();
 				printInstruction(q);
+				q = instrCache2proc.poll();
 			}
 		}
 		
@@ -114,7 +115,7 @@ public class Processor {
 			}
 		} else if(instr instanceof Write) {
 			Write w = (Write) instr;
-			s = "Finished processing instruction " + w.getNumber() + ", write to address " + w.getAddress();
+			s = "Finished processing instruction " + w.getNumber() + ", write " + ByteBuffer.wrap(w.getData()).getInt() + " to address " + w.getAddress();
 		} else {
 			s = "ERROR: L1C returned an instruction other than a Read or Write";
 		}
