@@ -85,8 +85,10 @@ public class L2Data {
 				byte[] dataToSave = entry.getData().clone();
 				((Eviction) instr).setData(dataToSave);
 				this.toL2C.offer(q);
+				System.out.println("L2D: Evicting (dirty) address " + instrAddress + ", passing back to L2C");				
+			} else {
+				System.out.println("L2D: Evicting (clean) address " + instrAddress + ", resetting entry");
 			}
-			System.out.println("L2D: Evicting address " + instrAddress);
 			//If it was dirty we saved the data and passed it back
 			//Now we just need to clear the values
 			entry.setAddress(-1);
@@ -95,7 +97,7 @@ public class L2Data {
 	}
 	
 	private int getSet(int address) {
-		return this.numberOfSets % 512;
+		return address % this.numberOfSets;
 	}
 	
 	/* Getters and Setters */

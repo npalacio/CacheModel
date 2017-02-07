@@ -19,7 +19,7 @@ public class Processor {
 	private L1Controller L1C;
 	
 	public static void main(String[] args) {
-		String fileName = "input/input001.txt";
+		String fileName = "input/input002.txt";
 		Start(fileName);
 	}
 	

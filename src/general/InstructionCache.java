@@ -33,9 +33,17 @@ public class InstructionCache {
 		if(this.currentInstruction < this.instrListSize) {
 			//Process next set of instructions
 			loadNextInstructions();
+			int cycle = 0;
 			while(this.L1C.areAnyLeft()) {
+				System.out.println("********************************************************");
+				System.out.println("CYCLE " + cycle);
+				System.out.println("********************************************************");
 				this.L1C.process();
+				cycle++;
 			}
+			System.out.println("********************************************************");
+			System.out.println("DONE");
+			System.out.println("********************************************************");
 			//Grab the processed instructions
 			List<QItem> processedInstr = new ArrayList<QItem>();
 			System.out.println("Processed " + this.L1C2IC.size() + " instructions...");

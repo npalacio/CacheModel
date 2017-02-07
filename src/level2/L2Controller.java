@@ -217,6 +217,7 @@ public class L2Controller {
 						//L2D will not be sending an eviction back for this address, it will just be clearing out the values
 						this.L2Addresses.remove(entryOldAddress);
 					}
+					System.out.println("L2C: Passing along eviction for address " + entryOldAddress + " to L2D in order to make room for dirty line that was evicted from L1 at address " + instrAddress);
 				}
 				//Put the data there
 				entryToBeOverwritten.setAddress(instrAddress);
@@ -228,8 +229,8 @@ public class L2Controller {
 				this.toL2D.offer(q2);
 				this.L2Addresses.add(instrAddress);
 				//We made room for this eviction from L1 in L2D and then wrote the value there
-				return;
 			}
+			System.out.println("L2C: L1 evicted (dirty) address " + instrAddress + " back to L2, passing data along to L2D to store");
 		}
 	}
 	
@@ -296,6 +297,7 @@ public class L2Controller {
 			entryForNewData.setDirty(isNewDataDirty);
 			entryForNewData.setLoc(Location.L2WB);
 			entryForNewData.setValid(true);
+			System.out.println("L2C: Wrote address " + instrAddress + " into L2 Write Buffer");
 			//System.out.println("L2 Write Buffer: ");
 		}
 	}
@@ -396,6 +398,6 @@ public class L2Controller {
 	}
 	
 	private int getSet(int address) {
-		return this.numberOfSets % 512;
+		return address % this.numberOfSets;
 	}
 }

@@ -70,7 +70,7 @@ public class L1Data {
 		for(CacheEntry e : set) {
 			if(address == e.getAddress()) {
 				data = e.getData().clone();
-				System.out.println("Returning data for a read, at address " + address + ", data = " + ByteBuffer.wrap(data).getInt());
+//				System.out.println("L1D: Returning data for a read, at address " + address + ", data = " + ByteBuffer.wrap(data).getInt());
 				QItem q = new QItem(r, data);
 				this.toL1C.offer(q);
 				//System.out.println("Instruction " + r.getNumber() + ", L1D to L1C: Data from address " + r.getAddress());
@@ -111,7 +111,7 @@ public class L1Data {
 					e.setData(data);
 					QItem q = new QItem(e);
 					this.toL1C.offer(q);
-					System.out.println("L1D: Evicting (dirty) address " + e.getAddress() + " from L1D, passing back dirty data to L1c");
+					System.out.println("L1D: Evicting (dirty) address " + e.getAddress() + " from L1D, passing back dirty data to L1C");
 				} else {
 					System.out.println("L1D: Evicting (clean) address " + e.getAddress() + " from L1D, resetting entry");
 				}
