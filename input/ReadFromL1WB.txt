@@ -1,0 +1,9 @@
+read 2
+write 2 12
+read 130
+write 130 69
+read 258
+read 2
+read 130
+read 2
+read 130

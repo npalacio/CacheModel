@@ -183,6 +183,7 @@ public class L2Controller {
 					Put putInstr = new Put(instrAddress, ((Eviction) instr).getData().clone());
 					QItem q1 = new QItem(putInstr);
 					this.toL2D.offer(q1);
+					System.out.println("L2C: Overwriting L2D entry for address " + instr.getAddress() + " with data coming back from L1 even if data is not dirty");
 					return;
 				} else if(inWb) {
 					//Just write the values to WB
@@ -200,6 +201,7 @@ public class L2Controller {
 					dataMatch.setAddress(instrAddress);
 					dataMatch.setData(((Eviction) instr).getData().clone());
 					//We cleared the spot and wrote the data we are done
+					System.out.println("L2C: Overwriting L2 WB entry for address " + instr.getAddress() + " with data coming back from L1 even if data is not dirty");
 					return;
 				}
 			} else {

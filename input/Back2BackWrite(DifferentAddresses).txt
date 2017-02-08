@@ -1,0 +1,6 @@
+read 1001
+write 1001 8
+read 1001
+read 1009
+write 1009 6
+read 1009

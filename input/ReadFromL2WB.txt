@@ -1,0 +1,6 @@
+read 0
+write 0 999
+read 512
+read 1
+read 1024
+read 0

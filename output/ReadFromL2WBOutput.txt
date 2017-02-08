@@ -1,0 +1,149 @@
+Address 0 ends up in L2 WB and then a read for that address is sent.
+The data is correctly retrieved from the L2 WB.
+Actual output:
+
+Reading Instructions...
+6 instructions read in...
+Initializing components...
+Processing instructions...
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 0, Read from 0: Instruction Cache to L1C
+Instruction 0, MISS in L1C, retrieving from L2
+Instruction 0, Read from 0, L1C to L2C: MISS in L2 for address 0, fetching from memory
+Instruction 0, Read from 0, Memory: Fetching data from address 0
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 1, Write 999 to 0: Instruction Cache to L1C
+Instruction 1, MISS in L1C, Data is either being retrieved from L2 or evicted from L1D and will be in L1 WB or L1 Victim cache
+Instruction 0, Read from 0, Memory to L2C: Data from address 0
+L2D: Putting data for address 0 into L2D
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 2, Read from 512: Instruction Cache to L1C
+Instruction 2, MISS in L1C, retrieving from L2
+Instruction 0, Read from 0, L2C to L1C: Data from address 0
+L1D: Putting data from address 0 into L1D
+Instruction 2, Read from 512, L1C to L2C: MISS in L2 for address 512, fetching from memory
+Instruction 2, Read from 512, Memory: Fetching data from address 512
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 3, Read from 1: Instruction Cache to L1C
+Instruction 3, MISS in L1C, retrieving from L2
+Instruction 3, Read from 1, L1C to L2C: MISS in L2 for address 1, fetching from memory
+Instruction 2, Read from 512, Memory to L2C: Data from address 512
+L2D: Evicting (clean) address 0, resetting entry
+Instruction 3, Read from 1, Memory: Fetching data from address 1
+L2C: Evicting address 0 from L1 in order to maintain mutual exclusion
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 0, Read from 0, L1D to L1C: Data from address 0
+Instruction 2, Read from 512, L2C to L1C: Data from address 512
+Instruction 1, Write 999 to 0, L1D: Writing 999 to address 0
+Instruction 3, Read from 1, Memory to L2C: Data from address 1
+L2D: Putting data for address 512 into L2D
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 1, Write 999 to 0, L1D to L1C: Wrote to address 0
+L1: Evicting address 0 in order to maintain mutual inclusion
+L1D: Putting data from address 512 into L1D
+L2D: Putting data for address 1 into L2D
+********************************************************
+CYCLE 6
+********************************************************
+Instruction 3, Read from 1, L2C to L1C: Data from address 1
+********************************************************
+CYCLE 7
+********************************************************
+Instruction 2, Read from 512, L1D to L1C: Data from address 512
+L1D: Evicting address 0 from L1D, L1C will decide where to put it
+********************************************************
+CYCLE 8
+********************************************************
+L1C: L1D evicted data from address 0 in order to maintain mutual exclusion, passing back to L2C
+L1D: Putting data from address 1 into L1D
+L2C: Passing along eviction for address 512 to L2D in order to make room for dirty line that was evicted from L1 at address 0
+L2C: L1 evicted (dirty) address 0 back to L2, passing data along to L2D to store
+L2D: Evicting (clean) address 512, resetting entry
+L2C: Evicting address 512 from L1 in order to maintain mutual exclusion
+********************************************************
+CYCLE 9
+********************************************************
+L1: Evicting address 512 in order to maintain mutual inclusion
+L2D: Putting data for address 0 into L2D
+********************************************************
+CYCLE 10
+********************************************************
+Instruction 3, Read from 1, L1D to L1C: Data from address 1
+L1D: Evicting address 512 from L1D, L1C will decide where to put it
+********************************************************
+CYCLE 11
+********************************************************
+L1C: L1D evicted data from address 512 in order to maintain mutual exclusion, passing back to L2C
+L2C: Passing along eviction for address 0 to L2D in order to make room for dirty line that was evicted from L1 at address 512
+L2C: L1 evicted (dirty) address 512 back to L2, passing data along to L2D to store
+L2D: Evicting (dirty) address 0, passing back to L2C
+********************************************************
+CYCLE 12
+********************************************************
+L2C: Wrote address 0 into L2 Write Buffer
+L2D: Putting data for address 512 into L2D
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 0, read from address 0, with result = 0
+Finished processing instruction 1, write 999 to address 0
+Finished processing instruction 2, read from address 512, with result = 512
+Finished processing instruction 3, read from address 1, with result = 1
+Instruction Cache: Loaded 2 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 4, Read from 1024: Instruction Cache to L1C
+Instruction 4, MISS in L1C, retrieving from L2
+Instruction 4, Read from 1024, L1C to L2C: MISS in L2 for address 1024, fetching from memory
+Instruction 4, Read from 1024, Memory: Fetching data from address 1024
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 5, Read from 0: Instruction Cache to L1C
+Instruction 5, MISS in L1C, retrieving from L2
+Instruction 5, Read from 0, L1C to L2C: HIT in L2 Write Buffer for address 0
+Instruction 4, Read from 1024, Memory to L2C: Data from address 1024
+L2D: Evicting (clean) address 512, resetting entry
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 5, Read from 0, L2C to L1C: Data from address 0
+L1D: Putting data from address 0 into L1D
+L2D: Putting data for address 1024 into L2D
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 4, Read from 1024, L2C to L1C: Data from address 1024
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 5, Read from 0, L1D to L1C: Data from address 0
+L1D: Putting data from address 1024 into L1D
+********************************************************
+CYCLE 5
+********************************************************
+********************************************************
+CYCLE 6
+********************************************************
+Instruction 4, Read from 1024, L1D to L1C: Data from address 1024
+********************************************************
+DONE
+********************************************************
+Processed 2 instructions...
+Finished processing instruction 5, read from address 0, with result = 999
+Finished processing instruction 4, read from address 1024, with result = 1024

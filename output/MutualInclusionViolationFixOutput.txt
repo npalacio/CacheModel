@@ -1,0 +1,128 @@
+Address 0 is brought into L1 and then kicked out of L1 in order to maintain mutual inclusion.
+Actual output:
+
+Reading Instructions...
+5 instructions read in...
+Initializing components...
+Processing instructions...
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 0, Read from 1000: Instruction Cache to L1C
+Instruction 0, MISS in L1C, retrieving from L2
+Instruction 0, Read from 1000, L1C to L2C: MISS in L2 for address 1000, fetching from memory
+Instruction 0, Read from 1000, Memory: Fetching data from address 1000
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 1, Write 999 to 1000: Instruction Cache to L1C
+Instruction 1, MISS in L1C, Data is either being retrieved from L2 or evicted from L1D and will be in L1 WB or L1 Victim cache
+Instruction 0, Read from 1000, Memory to L2C: Data from address 1000
+L2D: Putting data for address 1000 into L2D
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 2, Write 2 to 1512: Instruction Cache to L1C
+Instruction 2, MISS in L1C, retrieving from L2
+Instruction 0, Read from 1000, L2C to L1C: Data from address 1000
+L1D: Putting data from address 1000 into L1D
+Instruction 2, Write 2 to 1512, L1C to L2C: MISS in L2 for address 1512, fetching from memory
+Instruction 2, Write 2 to 1512, Memory: Fetching data from address 1512
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 3, Read from 1000: Instruction Cache to L1C
+Instruction 3, HIT in L1, fetching from L1D
+Instruction 2, Write 2 to 1512, Memory to L2C: Data from address 1512
+L2D: Evicting (clean) address 1000, resetting entry
+L2C: Evicting address 1000 from L1 in order to maintain mutual exclusion
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 0, Read from 1000, L1D to L1C: Data from address 1000
+Instruction 2, Write 2 to 1512, L2C to L1C: Data from address 1512
+Instruction 1, Write 999 to 1000, L1D: Writing 999 to address 1000
+L2D: Putting data for address 1512 into L2D
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 1, Write 999 to 1000, L1D to L1C: Wrote to address 1000
+L1: Evicting address 1000 in order to maintain mutual inclusion
+********************************************************
+CYCLE 6
+********************************************************
+Instruction 3, Read from 1000, L1D to L1C: Data from address 1000
+L1D: Putting data from address 1512 into L1D
+********************************************************
+CYCLE 7
+********************************************************
+Instruction 2, Write 2 to 1512, L1D: Writing 2 to address 1512
+********************************************************
+CYCLE 8
+********************************************************
+Instruction 2, Write 2 to 1512, L1D to L1C: Wrote to address 1512
+L1D: Evicting address 1000 from L1D, L1C will decide where to put it
+********************************************************
+CYCLE 9
+********************************************************
+L1C: L1D evicted data from address 1000 in order to maintain mutual exclusion, passing back to L2C
+L2C: Passing along eviction for address 1512 to L2D in order to make room for dirty line that was evicted from L1 at address 1000
+L2C: L1 evicted (dirty) address 1000 back to L2, passing data along to L2D to store
+L2D: Evicting (clean) address 1512, resetting entry
+L2C: Evicting address 1512 from L1 in order to maintain mutual exclusion
+********************************************************
+CYCLE 10
+********************************************************
+L1: Evicting address 1512 in order to maintain mutual inclusion
+L1D: Evicting address 1512 from L1D, L1C will decide where to put it
+L2D: Putting data for address 1000 into L2D
+********************************************************
+CYCLE 11
+********************************************************
+L1C: L1D evicted data from address 1512 in order to maintain mutual exclusion, passing back to L2C
+L2C: Passing along eviction for address 1000 to L2D in order to make room for dirty line that was evicted from L1 at address 1512
+L2C: L1 evicted (dirty) address 1512 back to L2, passing data along to L2D to store
+L2D: Evicting (dirty) address 1000, passing back to L2C
+********************************************************
+CYCLE 12
+********************************************************
+L2C: Wrote address 1000 into L2 Write Buffer
+L2D: Putting data for address 1512 into L2D
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 0, read from address 1000, with result = 1000
+Finished processing instruction 1, write 999 to address 1000
+Finished processing instruction 3, read from address 1000, with result = 999
+Finished processing instruction 2, write 2 to address 1512
+Instruction Cache: Loaded 1 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 4, Read from 1512: Instruction Cache to L1C
+Instruction 4, MISS in L1C, retrieving from L2
+Instruction 4, Read from 1512, L1C to L2C: HIT in L2D for address 1512
+Instruction 4, Read from 1512, L2D: Fetching data from address 1512
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 4, Read from 1512, L2D to L1C: Data from address 1512
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 4, Read from 1512, L2C to L1C: Data from address 1512
+L1D: Putting data from address 1512 into L1D
+********************************************************
+CYCLE 3
+********************************************************
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 4, Read from 1512, L1D to L1C: Data from address 1512
+********************************************************
+DONE
+********************************************************
+Processed 1 instructions...
+Finished processing instruction 4, read from address 1512, with result = 2

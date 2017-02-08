@@ -158,7 +158,6 @@ public class L1Controller {
 				if(instrAddress == e.getAddress() && e.isValid()) {
 					matchingEntry = e;
 					foundMatch = true;
-					System.out.println("Instruction " + instr.getNumber() + ", HIT in L1, fetching from Write Buffer");
 					processInWriteBuf(q, e);
 					return;
 				}
@@ -169,7 +168,6 @@ public class L1Controller {
 				if(instrAddress == e.getAddress() && e.isValid()) {
 					matchingEntry = e;
 					foundMatch = true;
-					System.out.println("Instruction " + instr.getNumber() + ", HIT in L1, fetching from Victime Cache");
 					processInVictim(q, e);
 					return;
 				}
@@ -198,7 +196,7 @@ public class L1Controller {
 			Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
 			if(waitingLine != null) {
 				//There is already a line for this address, put the instruction in line
-				System.out.println("Instruction " + instr.getNumber() + ", MISS in L1C, Data is already being retrieved from L2");
+				System.out.println("Instruction " + instr.getNumber() + ", MISS in L1C, Data is either being retrieved from L2 or evicted from L1D and will be in L1 WB or L1 Victim cache");
 				waitingLine.offer(instr);
 			} else {
 				//There is no line for this, we need to tell L2 to give us the data and then create the line
@@ -231,10 +229,15 @@ public class L1Controller {
 				int chosenEntry = ThreadLocalRandom.current().nextInt(0, 2);
 				entryToBeOverwritten = set.get(chosenEntry);
 				//Create eviction and set dirty bit
-				Eviction eviction = new Eviction(entryToBeOverwritten.getAddress());
+				int evictionAddress = entryToBeOverwritten.getAddress();
+				Eviction eviction = new Eviction(evictionAddress);
 				eviction.setDirty(entryToBeOverwritten.isDirty());
 				QItem qEviction = new QItem(eviction);
 				this.toData.offer(qEviction);
+				System.out.println("L1C: Evicting address " + evictionAddress + " from L1D to make room for address " + instrAddress);
+				//Need to create waiting line for anything that is looking for this data since we sent the eviction
+				//We wont have this data until the eviction comes back from L1D
+				this.instructionMisses.put(evictionAddress, new LinkedList<Instruction>());
 			}
 			//We have an open spot now for sure (entryToBeOverwritten)
 			entryToBeOverwritten.setAddress(instrAddress);
@@ -432,6 +435,7 @@ public class L1Controller {
 		int instrAddress = e.getAddress();
 		//If it came from L2, just pass along to L2
 		if(e.isFromL2ToL1()) {
+			System.out.println("L1C: L1D evicted data from address " + instrAddress + " in order to maintain mutual exclusion, passing back to L2C");
 			this.toL2.offer(q);
 			return;
 		}
@@ -457,6 +461,12 @@ public class L1Controller {
 					entry.setLoc(Location.WRITE_BUFFER);
 					cacheE.setAddress(instrAddress);
 					cacheE.setData(e.getData().clone());
+					Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
+					if(waitingLine != null) {
+						for(Instruction instr : waitingLine) {
+							processInWriteBuf(new QItem(instr), entry);
+						}
+					}
 					return;
 				}				
 			}
@@ -487,6 +497,12 @@ public class L1Controller {
 			contrEntry.setLoc(Location.WRITE_BUFFER);
 			cacheEntry.setAddress(instrAddress);
 			cacheEntry.setData(e.getData().clone());
+			Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
+			if(waitingLine != null) {
+				for(Instruction instr : waitingLine) {
+					processInWriteBuf(new QItem(instr), contrEntry);
+				}
+			}
 			
 		} else {
 			//Move into victim cache
@@ -498,7 +514,7 @@ public class L1Controller {
 					//Entries in WB and Vic controllers should match up with the same spots in their memory arrays
 					CacheEntry cacheEntry = this.victimData.get(i);
 					if(cacheEntry.getAddress() != contrEntry.getAddress()) {
-						System.out.println("ERROR: (In processing eviction from L1D) Mismatching addresses across entries in the WB controller and WB data, stopping process!");
+						System.out.println("ERROR: (In processing eviction from L1D) Mismatching addresses across entries in the Victim controller and Victim data, stopping process!");
 						return;
 					}
 					//We have found a valid spot in the Victim cache, place it here
@@ -508,6 +524,12 @@ public class L1Controller {
 					contrEntry.setLoc(Location.VICTIM);
 					cacheEntry.setAddress(instrAddress);
 					cacheEntry.setData(e.getData().clone());
+					Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
+					if(waitingLine != null) {
+						for(Instruction instr : waitingLine) {
+							processInVictim(new QItem(instr), contrEntry);
+						}
+					}
 					return;
 				}
 			}
@@ -536,6 +558,12 @@ public class L1Controller {
 			contrEntry.setLoc(Location.VICTIM);
 			cacheEntry.setAddress(instrAddress);
 			cacheEntry.setData(e.getData().clone());
+			Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
+			if(waitingLine != null) {
+				for(Instruction instr : waitingLine) {
+					processInVictim(new QItem(instr), contrEntry);
+				}
+			}
 		}
 	}
 	
@@ -543,6 +571,7 @@ public class L1Controller {
 	//WARNING: Any changes in here you should double check processInVictim, duplicate code
 	private void processInWriteBuf(QItem q, ControllerEntry controllerMatch) {
 		Instruction instr = q.getInstruction();
+		System.out.println("Instruction " + instr.getNumber() + ", HIT in L1, fetching from Write Buffer");
 		int instrAddr = instr.getAddress();
 		int entryIndex = this.writeBuf.indexOf(controllerMatch);
 		CacheEntry dataMatch = this.writeBufData.get(entryIndex);
@@ -594,9 +623,10 @@ public class L1Controller {
 	//WARNING: Any changes in here you should double check processInVictim, duplicate code
 	private void processInVictim(QItem q, ControllerEntry controllerMatch) {
 		Instruction instr = q.getInstruction();
+		System.out.println("Instruction " + instr.getNumber() + ", HIT in L1, fetching from Victime Cache");
 		int instrAddr = instr.getAddress();
 		int entryIndex = this.victim.indexOf(controllerMatch);
-		CacheEntry dataMatch = this.writeBufData.get(entryIndex);
+		CacheEntry dataMatch = this.victimData.get(entryIndex);
 		if(dataMatch == null) {
 			System.out.println("ERROR: Matching entry in Victim Controller but not in Victim Data!");
 			return;

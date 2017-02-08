@@ -105,16 +105,22 @@ public class L1Data {
 		byte[] data = null;
 		for(CacheEntry entry : set) {
 			if(address == entry.getAddress()) {
-				if(e.isDirty()){
-					//Get the data to pass on
-					data = entry.getData().clone();
-					e.setData(data);
-					QItem q = new QItem(e);
-					this.toL1C.offer(q);
-					System.out.println("L1D: Evicting (dirty) address " + e.getAddress() + " from L1D, passing back dirty data to L1C");
-				} else {
-					System.out.println("L1D: Evicting (clean) address " + e.getAddress() + " from L1D, resetting entry");
-				}
+//				if(e.isDirty()){
+//					//Get the data to pass on
+//					data = entry.getData().clone();
+//					e.setData(data);
+//					QItem q = new QItem(e);
+//					this.toL1C.offer(q);
+//					System.out.println("L1D: Evicting (dirty) address " + e.getAddress() + " from L1D, passing back dirty data to L1C");
+//				} else {
+//					System.out.println("L1D: Evicting (clean) address " + e.getAddress() + " from L1D, resetting entry");
+//				}
+				//This entry is either going to the victim cache or WB (L1 decides)
+				System.out.println("L1D: Evicting address " + e.getAddress() + " from L1D, L1C will decide where to put it");
+				data = entry.getData().clone();
+				e.setData(data);
+				QItem q = new QItem(e);
+				this.toL1C.offer(q);
 				//Clear out the data currently there
 				entry.setData(new byte[32]);
 				entry.setAddress(-1);

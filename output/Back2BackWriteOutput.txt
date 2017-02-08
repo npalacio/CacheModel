@@ -1,0 +1,78 @@
+First we read from 7463, which initially holds a value of 7463
+Then we write 4823 to address 7463.
+Then we read from 7463 expecting a value of 4823.
+Then we write 1000 to 7463 and immediately read from it again, expecting a value of 1000.
+Actual output:
+
+Reading Instructions...
+5 instructions read in...
+Initializing components...
+Processing instructions...
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 0, Read from 7463: Instruction Cache to L1C
+Instruction 0, MISS in L1C, retrieving from L2
+Instruction 0, Read from 7463, L1C to L2C: MISS in L2 for address 7463, fetching from memory
+Instruction 0, Read from 7463, Memory: Fetching data from address 7463
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 1, Write 4823 to 7463: Instruction Cache to L1C
+Instruction 1, MISS in L1C, Data is already being retrieved from L2
+Instruction 0, Read from 7463, Memory to L2C: Data from address 7463
+L2D: Putting data for address 7463 into L2D
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 2, Read from 7463: Instruction Cache to L1C
+Instruction 2, MISS in L1C, Data is already being retrieved from L2
+Instruction 0, Read from 7463, L2C to L1C: Data from address 7463
+L1D: Putting data from address 7463 into L1D
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 3, Write 1000 to 7463: Instruction Cache to L1C
+Instruction 3, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 0, Read from 7463, L1D to L1C: Data from address 7463
+Instruction 1, Write 4823 to 7463, L1D: Writing 4823 to address 7463
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 1, Write 4823 to 7463, L1D to L1C: Wrote to address 7463
+********************************************************
+CYCLE 6
+********************************************************
+Instruction 2, Read from 7463, L1D to L1C: Data from address 7463
+Instruction 3, Write 1000 to 7463, L1D: Writing 1000 to address 7463
+********************************************************
+CYCLE 7
+********************************************************
+Instruction 3, Write 1000 to 7463, L1D to L1C: Wrote to address 7463
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 0, read from address 7463, with result = 7463
+Finished processing instruction 1, write 4823 to address 7463
+Finished processing instruction 2, read from address 7463, with result = 4823
+Finished processing instruction 3, write 1000 to address 7463
+Instruction Cache: Loaded 1 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 4, Read from 7463: Instruction Cache to L1C
+Instruction 4, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 4, Read from 7463, L1D to L1C: Data from address 7463
+********************************************************
+DONE
+********************************************************
+Processed 1 instructions...
+Finished processing instruction 4, read from address 7463, with result = 1000

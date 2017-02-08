@@ -1,0 +1,360 @@
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095
+read 201
+write 904 90
+read 0
+read 12
+write 12 256
+write 904 1
+write 928 23
+read 2093
+write 2093 999
+read 928
+read 201
+read 1928
+write 904 234
+read 1928
+write 12 32
+write 904 84
+read 12
+read 3374
+write 201 938
+read 1928
+write 0 0
+read 928
+read 201
+read 876
+write 4095 89
+write 201 9
+write 904 23
+read 3333
+write 3333 756
+read 4095

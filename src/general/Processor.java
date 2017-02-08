@@ -19,7 +19,7 @@ public class Processor {
 	private L1Controller L1C;
 	
 	public static void main(String[] args) {
-		String fileName = "input/input002.txt";
+		String fileName = "input/LoadTest.txt";
 		Start(fileName);
 	}
 	
@@ -106,8 +106,9 @@ public class Processor {
 				s = "Finished processing instruction " + r.getNumber() + ", read from address " + r.getAddress() + ", with result = " + result;
 			} else if(offset > 0) {
 				//Byte buffer.get puts the specified byte[] with offset and length into the array that you pass it
-				byte[] resultDestination = new byte[32 - offset];
-				ByteBuffer.allocate(32).get(resultDestination, offset, 32-offset);
+				byte[] resultDestination = new byte[32];
+				ByteBuffer b = ByteBuffer.wrap(q.getData().clone());
+				b.get(resultDestination, offset, 32-offset);
 				int result = ByteBuffer.wrap(resultDestination).getInt();
 				s = "Finished processing instruction " + r.getNumber() + ", read from address " + r.getAddress() + ", with offset = " + offset + ", with result = " + result;
 			} else {

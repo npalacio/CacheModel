@@ -1,0 +1,101 @@
+The 3 addresses given in this input all map to the same set in L1.
+And since that set can only hold 2 at a time it ends up evicting one of these (2 or 130).
+And either 2 or 130 will be read from the victim cache.
+Actual output:
+
+Reading Instructions...
+6 instructions read in...
+Initializing components...
+Processing instructions...
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 0, Read from 2: Instruction Cache to L1C
+Instruction 0, MISS in L1C, retrieving from L2
+Instruction 0, Read from 2, L1C to L2C: MISS in L2 for address 2, fetching from memory
+Instruction 0, Read from 2, Memory: Fetching data from address 2
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 1, Read from 130: Instruction Cache to L1C
+Instruction 1, MISS in L1C, retrieving from L2
+Instruction 1, Read from 130, L1C to L2C: MISS in L2 for address 130, fetching from memory
+Instruction 0, Read from 2, Memory to L2C: Data from address 2
+L2D: Putting data for address 2 into L2D
+Instruction 1, Read from 130, Memory: Fetching data from address 130
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 2, Read from 258: Instruction Cache to L1C
+Instruction 2, MISS in L1C, retrieving from L2
+Instruction 0, Read from 2, L2C to L1C: Data from address 2
+L1D: Putting data from address 2 into L1D
+Instruction 2, Read from 258, L1C to L2C: MISS in L2 for address 258, fetching from memory
+Instruction 1, Read from 130, Memory to L2C: Data from address 130
+L2D: Putting data for address 130 into L2D
+Instruction 2, Read from 258, Memory: Fetching data from address 258
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 3, Read from 2: Instruction Cache to L1C
+Instruction 3, HIT in L1, fetching from L1D
+Instruction 1, Read from 130, L2C to L1C: Data from address 130
+Instruction 2, Read from 258, Memory to L2C: Data from address 258
+L2D: Putting data for address 258 into L2D
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 0, Read from 2, L1D to L1C: Data from address 2
+Instruction 2, Read from 258, L2C to L1C: Data from address 258
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 3, Read from 2, L1D to L1C: Data from address 2
+L1D: Putting data from address 130 into L1D
+********************************************************
+CYCLE 6
+********************************************************
+********************************************************
+CYCLE 7
+********************************************************
+Instruction 1, Read from 130, L1D to L1C: Data from address 130
+L1D: Evicting address 2 from L1D, L1C will decide where to put it
+********************************************************
+CYCLE 8
+********************************************************
+L1D to L1C: Evict address 2 to L1 Victim Cache
+L1D: Putting data from address 258 into L1D
+********************************************************
+CYCLE 9
+********************************************************
+********************************************************
+CYCLE 10
+********************************************************
+Instruction 2, Read from 258, L1D to L1C: Data from address 258
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 0, read from address 2, with result = 2
+Finished processing instruction 3, read from address 2, with result = 2
+Finished processing instruction 1, read from address 130, with result = 130
+Finished processing instruction 2, read from address 258, with result = 258
+Instruction Cache: Loaded 2 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 4, Read from 130: Instruction Cache to L1C
+Instruction 4, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 5, Read from 2: Instruction Cache to L1C
+Instruction 5, HIT in L1, fetching from Victime Cache
+Instruction 4, Read from 130, L1D to L1C: Data from address 130
+********************************************************
+DONE
+********************************************************
+Processed 2 instructions...
+Finished processing instruction 5, read from address 2, with result = 2
+Finished processing instruction 4, read from address 130, with result = 130

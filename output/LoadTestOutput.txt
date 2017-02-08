@@ -1,0 +1,3588 @@
+Reading Instructions...
+360 instructions read in...
+Initializing components...
+Processing instructions...
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 0, Read from 201: Instruction Cache to L1C
+Instruction 0, MISS in L1C, retrieving from L2
+Instruction 0, Read from 201, L1C to L2C: MISS in L2 for address 201, fetching from memory
+Instruction 0, Read from 201, Memory: Fetching data from address 201
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 1, Write 90 to 904: Instruction Cache to L1C
+Instruction 1, MISS in L1C, retrieving from L2
+Instruction 1, Write 90 to 904, L1C to L2C: MISS in L2 for address 904, fetching from memory
+Instruction 0, Read from 201, Memory to L2C: Data from address 201
+L2D: Putting data for address 201 into L2D
+Instruction 1, Write 90 to 904, Memory: Fetching data from address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 2, Read from 0: Instruction Cache to L1C
+Instruction 2, MISS in L1C, retrieving from L2
+Instruction 0, Read from 201, L2C to L1C: Data from address 201
+L1D: Putting data from address 201 into L1D
+Instruction 2, Read from 0, L1C to L2C: MISS in L2 for address 0, fetching from memory
+Instruction 1, Write 90 to 904, Memory to L2C: Data from address 904
+L2D: Putting data for address 904 into L2D
+Instruction 2, Read from 0, Memory: Fetching data from address 0
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 3, Read from 12: Instruction Cache to L1C
+Instruction 3, MISS in L1C, retrieving from L2
+Instruction 1, Write 90 to 904, L2C to L1C: Data from address 904
+Instruction 3, Read from 12, L1C to L2C: MISS in L2 for address 12, fetching from memory
+Instruction 2, Read from 0, Memory to L2C: Data from address 0
+L2D: Putting data for address 0 into L2D
+Instruction 3, Read from 12, Memory: Fetching data from address 12
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 0, Read from 201, L1D to L1C: Data from address 201
+Instruction 2, Read from 0, L2C to L1C: Data from address 0
+L1D: Putting data from address 904 into L1D
+Instruction 3, Read from 12, Memory to L2C: Data from address 12
+L2D: Putting data for address 12 into L2D
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 3, Read from 12, L2C to L1C: Data from address 12
+Instruction 1, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 6
+********************************************************
+Instruction 1, Write 90 to 904, L1D to L1C: Wrote to address 904
+L1D: Putting data from address 0 into L1D
+********************************************************
+CYCLE 7
+********************************************************
+********************************************************
+CYCLE 8
+********************************************************
+Instruction 2, Read from 0, L1D to L1C: Data from address 0
+L1D: Putting data from address 12 into L1D
+********************************************************
+CYCLE 9
+********************************************************
+********************************************************
+CYCLE 10
+********************************************************
+Instruction 3, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 0, read from address 201, with result = 201
+Finished processing instruction 1, write 90 to address 904
+Finished processing instruction 2, read from address 0, with result = 0
+Finished processing instruction 3, read from address 12, with result = 12
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 4, Write 256 to 12: Instruction Cache to L1C
+Instruction 4, HIT in L1, fetching from L1D
+Instruction 4, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 5, Write 1 to 904: Instruction Cache to L1C
+Instruction 5, HIT in L1, fetching from L1D
+Instruction 4, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 5, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 6, Write 23 to 928: Instruction Cache to L1C
+Instruction 6, MISS in L1C, retrieving from L2
+Instruction 5, Write 1 to 904, L1D to L1C: Wrote to address 904
+Instruction 6, Write 23 to 928, L1C to L2C: MISS in L2 for address 928, fetching from memory
+Instruction 6, Write 23 to 928, Memory: Fetching data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 7, Read from 2093: Instruction Cache to L1C
+Instruction 7, MISS in L1C, retrieving from L2
+Instruction 7, Read from 2093, L1C to L2C: MISS in L2 for address 2093, fetching from memory
+Instruction 6, Write 23 to 928, Memory to L2C: Data from address 928
+L2D: Putting data for address 928 into L2D
+Instruction 7, Read from 2093, Memory: Fetching data from address 2093
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 6, Write 23 to 928, L2C to L1C: Data from address 928
+L1D: Putting data from address 928 into L1D
+Instruction 7, Read from 2093, Memory to L2C: Data from address 2093
+L2D: Putting data for address 2093 into L2D
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 7, Read from 2093, L2C to L1C: Data from address 2093
+Instruction 6, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 6
+********************************************************
+Instruction 6, Write 23 to 928, L1D to L1C: Wrote to address 928
+L1D: Putting data from address 2093 into L1D
+********************************************************
+CYCLE 7
+********************************************************
+********************************************************
+CYCLE 8
+********************************************************
+Instruction 7, Read from 2093, L1D to L1C: Data from address 2093
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 4, write 256 to address 12
+Finished processing instruction 5, write 1 to address 904
+Finished processing instruction 6, write 23 to address 928
+Finished processing instruction 7, read from address 2093, with result = 2093
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 8, Write 999 to 2093: Instruction Cache to L1C
+Instruction 8, HIT in L1, fetching from L1D
+Instruction 8, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 9, Read from 928: Instruction Cache to L1C
+Instruction 9, HIT in L1, fetching from L1D
+Instruction 8, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 10, Read from 201: Instruction Cache to L1C
+Instruction 10, HIT in L1, fetching from L1D
+Instruction 9, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 11, Read from 1928: Instruction Cache to L1C
+Instruction 11, MISS in L1C, retrieving from L2
+Instruction 10, Read from 201, L1D to L1C: Data from address 201
+Instruction 11, Read from 1928, L1C to L2C: MISS in L2 for address 1928, fetching from memory
+Instruction 11, Read from 1928, Memory: Fetching data from address 1928
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 11, Read from 1928, Memory to L2C: Data from address 1928
+L2D: Evicting (clean) address 904, resetting entry
+L2C: Evicting address 904 from L1 in order to maintain mutual exclusion
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 11, Read from 1928, L2C to L1C: Data from address 1928
+L1D: Putting data from address 1928 into L1D
+L2D: Putting data for address 1928 into L2D
+********************************************************
+CYCLE 6
+********************************************************
+L1: Evicting address 904 in order to maintain mutual inclusion
+********************************************************
+CYCLE 7
+********************************************************
+Instruction 11, Read from 1928, L1D to L1C: Data from address 1928
+L1D: Evicting address 904 from L1D, L1C will decide where to put it
+********************************************************
+CYCLE 8
+********************************************************
+L1C: L1D evicted data from address 904 in order to maintain mutual exclusion, passing back to L2C
+L2C: Passing along eviction for address 1928 to L2D in order to make room for dirty line that was evicted from L1 at address 904
+L2C: L1 evicted (dirty) address 904 back to L2, passing data along to L2D to store
+L2D: Evicting (clean) address 1928, resetting entry
+L2C: Evicting address 1928 from L1 in order to maintain mutual exclusion
+********************************************************
+CYCLE 9
+********************************************************
+L1: Evicting address 1928 in order to maintain mutual inclusion
+L1D: Evicting address 1928 from L1D, L1C will decide where to put it
+L2D: Putting data for address 904 into L2D
+********************************************************
+CYCLE 10
+********************************************************
+L1C: L1D evicted data from address 1928 in order to maintain mutual exclusion, passing back to L2C
+L2C: Passing along eviction for address 904 to L2D in order to make room for dirty line that was evicted from L1 at address 1928
+L2C: L1 evicted (dirty) address 1928 back to L2, passing data along to L2D to store
+L2D: Evicting (dirty) address 904, passing back to L2C
+********************************************************
+CYCLE 11
+********************************************************
+L2C: Wrote address 904 into L2 Write Buffer
+L2D: Putting data for address 1928 into L2D
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 8, write 999 to address 2093
+Finished processing instruction 9, read from address 928, with result = 23
+Finished processing instruction 10, read from address 201, with result = 201
+Finished processing instruction 11, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 12, Write 234 to 904: Instruction Cache to L1C
+Instruction 12, MISS in L1C, retrieving from L2
+Instruction 12, Write 234 to 904, L1C to L2C: HIT in L2 Write Buffer for address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 13, Read from 1928: Instruction Cache to L1C
+Instruction 13, MISS in L1C, retrieving from L2
+Instruction 12, Write 234 to 904, L2C to L1C: Data from address 904
+L1D: Putting data from address 904 into L1D
+Instruction 13, Read from 1928, L1C to L2C: HIT in L2D for address 1928
+Instruction 13, Read from 1928, L2D: Fetching data from address 1928
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 14, Write 32 to 12: Instruction Cache to L1C
+Instruction 14, HIT in L1, fetching from L1D
+Instruction 12, Write 234 to 904, L1D: Writing 234 to address 904
+Instruction 13, Read from 1928, L2D to L1C: Data from address 1928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 15, Write 84 to 904: Instruction Cache to L1C
+Instruction 15, HIT in L1, fetching from L1D
+Instruction 12, Write 234 to 904, L1D to L1C: Wrote to address 904
+Instruction 13, Read from 1928, L2C to L1C: Data from address 1928
+Instruction 14, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 14, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 15, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 15, Write 84 to 904, L1D to L1C: Wrote to address 904
+L1D: Putting data from address 1928 into L1D
+********************************************************
+CYCLE 6
+********************************************************
+********************************************************
+CYCLE 7
+********************************************************
+Instruction 13, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 12, write 234 to address 904
+Finished processing instruction 14, write 32 to address 12
+Finished processing instruction 15, write 84 to address 904
+Finished processing instruction 13, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 16, Read from 12: Instruction Cache to L1C
+Instruction 16, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 17, Read from 3374: Instruction Cache to L1C
+Instruction 17, MISS in L1C, retrieving from L2
+Instruction 16, Read from 12, L1D to L1C: Data from address 12
+Instruction 17, Read from 3374, L1C to L2C: MISS in L2 for address 3374, fetching from memory
+Instruction 17, Read from 3374, Memory: Fetching data from address 3374
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 18, Write 938 to 201: Instruction Cache to L1C
+Instruction 18, HIT in L1, fetching from L1D
+Instruction 18, Write 938 to 201, L1D: Writing 938 to address 201
+Instruction 17, Read from 3374, Memory to L2C: Data from address 3374
+L2D: Putting data for address 3374 into L2D
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 19, Read from 1928: Instruction Cache to L1C
+Instruction 19, HIT in L1, fetching from L1D
+Instruction 18, Write 938 to 201, L1D to L1C: Wrote to address 201
+Instruction 17, Read from 3374, L2C to L1C: Data from address 3374
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 19, Read from 1928, L1D to L1C: Data from address 1928
+L1D: Putting data from address 3374 into L1D
+********************************************************
+CYCLE 5
+********************************************************
+********************************************************
+CYCLE 6
+********************************************************
+Instruction 17, Read from 3374, L1D to L1C: Data from address 3374
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 16, read from address 12, with result = 32
+Finished processing instruction 18, write 938 to address 201
+Finished processing instruction 19, read from address 1928, with result = 1928
+Finished processing instruction 17, read from address 3374, with result = 3374
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 20, Write 0 to 0: Instruction Cache to L1C
+Instruction 20, HIT in L1, fetching from L1D
+Instruction 20, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 21, Read from 928: Instruction Cache to L1C
+Instruction 21, HIT in L1, fetching from L1D
+Instruction 20, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 22, Read from 201: Instruction Cache to L1C
+Instruction 22, HIT in L1, fetching from L1D
+Instruction 21, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 23, Read from 876: Instruction Cache to L1C
+Instruction 23, MISS in L1C, retrieving from L2
+Instruction 22, Read from 201, L1D to L1C: Data from address 201
+Instruction 23, Read from 876, L1C to L2C: MISS in L2 for address 876, fetching from memory
+Instruction 23, Read from 876, Memory: Fetching data from address 876
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 23, Read from 876, Memory to L2C: Data from address 876
+L2D: Putting data for address 876 into L2D
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 23, Read from 876, L2C to L1C: Data from address 876
+L1D: Putting data from address 876 into L1D
+********************************************************
+CYCLE 6
+********************************************************
+********************************************************
+CYCLE 7
+********************************************************
+Instruction 23, Read from 876, L1D to L1C: Data from address 876
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 20, write 0 to address 0
+Finished processing instruction 21, read from address 928, with result = 23
+Finished processing instruction 22, read from address 201, with result = 938
+Finished processing instruction 23, read from address 876, with result = 876
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 24, Write 89 to 4095: Instruction Cache to L1C
+Instruction 24, MISS in L1C, retrieving from L2
+Instruction 24, Write 89 to 4095, L1C to L2C: MISS in L2 for address 4095, fetching from memory
+Instruction 24, Write 89 to 4095, Memory: Fetching data from address 4095
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 25, Write 9 to 201: Instruction Cache to L1C
+Instruction 25, HIT in L1, fetching from L1D
+Instruction 25, Write 9 to 201, L1D: Writing 9 to address 201
+Instruction 24, Write 89 to 4095, Memory to L2C: Data from address 4095
+L2D: Putting data for address 4095 into L2D
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 26, Write 23 to 904: Instruction Cache to L1C
+Instruction 26, HIT in L1, fetching from L1D
+Instruction 25, Write 9 to 201, L1D to L1C: Wrote to address 201
+Instruction 24, Write 89 to 4095, L2C to L1C: Data from address 4095
+Instruction 26, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 27, Read from 3333: Instruction Cache to L1C
+Instruction 27, MISS in L1C, retrieving from L2
+Instruction 26, Write 23 to 904, L1D to L1C: Wrote to address 904
+L1D: Putting data from address 4095 into L1D
+Instruction 27, Read from 3333, L1C to L2C: MISS in L2 for address 3333, fetching from memory
+Instruction 27, Read from 3333, Memory: Fetching data from address 3333
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 24, Write 89 to 4095, L1D: Writing 89 to address 4095
+Instruction 27, Read from 3333, Memory to L2C: Data from address 3333
+L2D: Putting data for address 3333 into L2D
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 24, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 27, Read from 3333, L2C to L1C: Data from address 3333
+L1D: Putting data from address 3333 into L1D
+********************************************************
+CYCLE 6
+********************************************************
+********************************************************
+CYCLE 7
+********************************************************
+Instruction 27, Read from 3333, L1D to L1C: Data from address 3333
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 25, write 9 to address 201
+Finished processing instruction 26, write 23 to address 904
+Finished processing instruction 24, write 89 to address 4095
+Finished processing instruction 27, read from address 3333, with result = 3333
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 28, Write 756 to 3333: Instruction Cache to L1C
+Instruction 28, HIT in L1, fetching from L1D
+Instruction 28, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 29, Read from 4095: Instruction Cache to L1C
+Instruction 29, HIT in L1, fetching from L1D
+Instruction 28, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 30, Read from 201: Instruction Cache to L1C
+Instruction 30, HIT in L1, fetching from L1D
+Instruction 29, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 31, Write 90 to 904: Instruction Cache to L1C
+Instruction 31, HIT in L1, fetching from L1D
+Instruction 30, Read from 201, L1D to L1C: Data from address 201
+Instruction 31, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 31, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 28, write 756 to address 3333
+Finished processing instruction 29, read from address 4095, with result = 89
+Finished processing instruction 30, read from address 201, with result = 9
+Finished processing instruction 31, write 90 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 32, Read from 0: Instruction Cache to L1C
+Instruction 32, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 33, Read from 12: Instruction Cache to L1C
+Instruction 33, HIT in L1, fetching from L1D
+Instruction 32, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 34, Write 256 to 12: Instruction Cache to L1C
+Instruction 34, HIT in L1, fetching from L1D
+Instruction 33, Read from 12, L1D to L1C: Data from address 12
+Instruction 34, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 35, Write 1 to 904: Instruction Cache to L1C
+Instruction 35, HIT in L1, fetching from L1D
+Instruction 34, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 35, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 35, Write 1 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 32, read from address 0, with result = 0
+Finished processing instruction 33, read from address 12, with result = 32
+Finished processing instruction 34, write 256 to address 12
+Finished processing instruction 35, write 1 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 36, Write 23 to 928: Instruction Cache to L1C
+Instruction 36, HIT in L1, fetching from L1D
+Instruction 36, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 37, Read from 2093: Instruction Cache to L1C
+Instruction 37, HIT in L1, fetching from L1D
+Instruction 36, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 38, Write 999 to 2093: Instruction Cache to L1C
+Instruction 38, HIT in L1, fetching from L1D
+Instruction 37, Read from 2093, L1D to L1C: Data from address 2093
+Instruction 38, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 39, Read from 928: Instruction Cache to L1C
+Instruction 39, HIT in L1, fetching from L1D
+Instruction 38, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 39, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 36, write 23 to address 928
+Finished processing instruction 37, read from address 2093, with result = 999
+Finished processing instruction 38, write 999 to address 2093
+Finished processing instruction 39, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 40, Read from 201: Instruction Cache to L1C
+Instruction 40, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 41, Read from 1928: Instruction Cache to L1C
+Instruction 41, HIT in L1, fetching from L1D
+Instruction 40, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 42, Write 234 to 904: Instruction Cache to L1C
+Instruction 42, HIT in L1, fetching from L1D
+Instruction 41, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 42, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 43, Read from 1928: Instruction Cache to L1C
+Instruction 43, HIT in L1, fetching from L1D
+Instruction 42, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 43, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 40, read from address 201, with result = 9
+Finished processing instruction 41, read from address 1928, with result = 1928
+Finished processing instruction 42, write 234 to address 904
+Finished processing instruction 43, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 44, Write 32 to 12: Instruction Cache to L1C
+Instruction 44, HIT in L1, fetching from L1D
+Instruction 44, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 45, Write 84 to 904: Instruction Cache to L1C
+Instruction 45, HIT in L1, fetching from L1D
+Instruction 44, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 45, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 46, Read from 12: Instruction Cache to L1C
+Instruction 46, HIT in L1, fetching from L1D
+Instruction 45, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 47, Read from 3374: Instruction Cache to L1C
+Instruction 47, HIT in L1, fetching from L1D
+Instruction 46, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 47, Read from 3374, L1D to L1C: Data from address 3374
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 44, write 32 to address 12
+Finished processing instruction 45, write 84 to address 904
+Finished processing instruction 46, read from address 12, with result = 32
+Finished processing instruction 47, read from address 3374, with result = 3374
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 48, Write 938 to 201: Instruction Cache to L1C
+Instruction 48, HIT in L1, fetching from L1D
+Instruction 48, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 49, Read from 1928: Instruction Cache to L1C
+Instruction 49, HIT in L1, fetching from L1D
+Instruction 48, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 50, Write 0 to 0: Instruction Cache to L1C
+Instruction 50, HIT in L1, fetching from L1D
+Instruction 49, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 50, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 51, Read from 928: Instruction Cache to L1C
+Instruction 51, HIT in L1, fetching from L1D
+Instruction 50, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 51, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 48, write 938 to address 201
+Finished processing instruction 49, read from address 1928, with result = 1928
+Finished processing instruction 50, write 0 to address 0
+Finished processing instruction 51, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 52, Read from 201: Instruction Cache to L1C
+Instruction 52, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 53, Read from 876: Instruction Cache to L1C
+Instruction 53, HIT in L1, fetching from L1D
+Instruction 52, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 54, Write 89 to 4095: Instruction Cache to L1C
+Instruction 54, HIT in L1, fetching from L1D
+Instruction 53, Read from 876, L1D to L1C: Data from address 876
+Instruction 54, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 55, Write 9 to 201: Instruction Cache to L1C
+Instruction 55, HIT in L1, fetching from L1D
+Instruction 54, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 55, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 55, Write 9 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 52, read from address 201, with result = 938
+Finished processing instruction 53, read from address 876, with result = 876
+Finished processing instruction 54, write 89 to address 4095
+Finished processing instruction 55, write 9 to address 201
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 56, Write 23 to 904: Instruction Cache to L1C
+Instruction 56, HIT in L1, fetching from L1D
+Instruction 56, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 57, Read from 3333: Instruction Cache to L1C
+Instruction 57, HIT in L1, fetching from L1D
+Instruction 56, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 58, Write 756 to 3333: Instruction Cache to L1C
+Instruction 58, HIT in L1, fetching from L1D
+Instruction 57, Read from 3333, L1D to L1C: Data from address 3333
+Instruction 58, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 59, Read from 4095: Instruction Cache to L1C
+Instruction 59, HIT in L1, fetching from L1D
+Instruction 58, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 59, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 56, write 23 to address 904
+Finished processing instruction 57, read from address 3333, with result = 756
+Finished processing instruction 58, write 756 to address 3333
+Finished processing instruction 59, read from address 4095, with result = 89
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 60, Read from 201: Instruction Cache to L1C
+Instruction 60, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 61, Write 90 to 904: Instruction Cache to L1C
+Instruction 61, HIT in L1, fetching from L1D
+Instruction 60, Read from 201, L1D to L1C: Data from address 201
+Instruction 61, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 62, Read from 0: Instruction Cache to L1C
+Instruction 62, HIT in L1, fetching from L1D
+Instruction 61, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 63, Read from 12: Instruction Cache to L1C
+Instruction 63, HIT in L1, fetching from L1D
+Instruction 62, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 63, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 60, read from address 201, with result = 9
+Finished processing instruction 61, write 90 to address 904
+Finished processing instruction 62, read from address 0, with result = 0
+Finished processing instruction 63, read from address 12, with result = 32
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 64, Write 256 to 12: Instruction Cache to L1C
+Instruction 64, HIT in L1, fetching from L1D
+Instruction 64, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 65, Write 1 to 904: Instruction Cache to L1C
+Instruction 65, HIT in L1, fetching from L1D
+Instruction 64, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 65, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 66, Write 23 to 928: Instruction Cache to L1C
+Instruction 66, HIT in L1, fetching from L1D
+Instruction 65, Write 1 to 904, L1D to L1C: Wrote to address 904
+Instruction 66, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 67, Read from 2093: Instruction Cache to L1C
+Instruction 67, HIT in L1, fetching from L1D
+Instruction 66, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 67, Read from 2093, L1D to L1C: Data from address 2093
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 64, write 256 to address 12
+Finished processing instruction 65, write 1 to address 904
+Finished processing instruction 66, write 23 to address 928
+Finished processing instruction 67, read from address 2093, with result = 999
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 68, Write 999 to 2093: Instruction Cache to L1C
+Instruction 68, HIT in L1, fetching from L1D
+Instruction 68, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 69, Read from 928: Instruction Cache to L1C
+Instruction 69, HIT in L1, fetching from L1D
+Instruction 68, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 70, Read from 201: Instruction Cache to L1C
+Instruction 70, HIT in L1, fetching from L1D
+Instruction 69, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 71, Read from 1928: Instruction Cache to L1C
+Instruction 71, HIT in L1, fetching from L1D
+Instruction 70, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 71, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 68, write 999 to address 2093
+Finished processing instruction 69, read from address 928, with result = 23
+Finished processing instruction 70, read from address 201, with result = 9
+Finished processing instruction 71, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 72, Write 234 to 904: Instruction Cache to L1C
+Instruction 72, HIT in L1, fetching from L1D
+Instruction 72, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 73, Read from 1928: Instruction Cache to L1C
+Instruction 73, HIT in L1, fetching from L1D
+Instruction 72, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 74, Write 32 to 12: Instruction Cache to L1C
+Instruction 74, HIT in L1, fetching from L1D
+Instruction 73, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 74, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 75, Write 84 to 904: Instruction Cache to L1C
+Instruction 75, HIT in L1, fetching from L1D
+Instruction 74, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 75, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 75, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 72, write 234 to address 904
+Finished processing instruction 73, read from address 1928, with result = 1928
+Finished processing instruction 74, write 32 to address 12
+Finished processing instruction 75, write 84 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 76, Read from 12: Instruction Cache to L1C
+Instruction 76, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 77, Read from 3374: Instruction Cache to L1C
+Instruction 77, HIT in L1, fetching from L1D
+Instruction 76, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 78, Write 938 to 201: Instruction Cache to L1C
+Instruction 78, HIT in L1, fetching from L1D
+Instruction 77, Read from 3374, L1D to L1C: Data from address 3374
+Instruction 78, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 79, Read from 1928: Instruction Cache to L1C
+Instruction 79, HIT in L1, fetching from L1D
+Instruction 78, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 79, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 76, read from address 12, with result = 32
+Finished processing instruction 77, read from address 3374, with result = 3374
+Finished processing instruction 78, write 938 to address 201
+Finished processing instruction 79, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 80, Write 0 to 0: Instruction Cache to L1C
+Instruction 80, HIT in L1, fetching from L1D
+Instruction 80, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 81, Read from 928: Instruction Cache to L1C
+Instruction 81, HIT in L1, fetching from L1D
+Instruction 80, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 82, Read from 201: Instruction Cache to L1C
+Instruction 82, HIT in L1, fetching from L1D
+Instruction 81, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 83, Read from 876: Instruction Cache to L1C
+Instruction 83, HIT in L1, fetching from L1D
+Instruction 82, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 83, Read from 876, L1D to L1C: Data from address 876
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 80, write 0 to address 0
+Finished processing instruction 81, read from address 928, with result = 23
+Finished processing instruction 82, read from address 201, with result = 938
+Finished processing instruction 83, read from address 876, with result = 876
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 84, Write 89 to 4095: Instruction Cache to L1C
+Instruction 84, HIT in L1, fetching from L1D
+Instruction 84, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 85, Write 9 to 201: Instruction Cache to L1C
+Instruction 85, HIT in L1, fetching from L1D
+Instruction 84, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 85, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 86, Write 23 to 904: Instruction Cache to L1C
+Instruction 86, HIT in L1, fetching from L1D
+Instruction 85, Write 9 to 201, L1D to L1C: Wrote to address 201
+Instruction 86, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 87, Read from 3333: Instruction Cache to L1C
+Instruction 87, HIT in L1, fetching from L1D
+Instruction 86, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 87, Read from 3333, L1D to L1C: Data from address 3333
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 84, write 89 to address 4095
+Finished processing instruction 85, write 9 to address 201
+Finished processing instruction 86, write 23 to address 904
+Finished processing instruction 87, read from address 3333, with result = 756
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 88, Write 756 to 3333: Instruction Cache to L1C
+Instruction 88, HIT in L1, fetching from L1D
+Instruction 88, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 89, Read from 4095: Instruction Cache to L1C
+Instruction 89, HIT in L1, fetching from L1D
+Instruction 88, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 90, Read from 201: Instruction Cache to L1C
+Instruction 90, HIT in L1, fetching from L1D
+Instruction 89, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 91, Write 90 to 904: Instruction Cache to L1C
+Instruction 91, HIT in L1, fetching from L1D
+Instruction 90, Read from 201, L1D to L1C: Data from address 201
+Instruction 91, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 91, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 88, write 756 to address 3333
+Finished processing instruction 89, read from address 4095, with result = 89
+Finished processing instruction 90, read from address 201, with result = 9
+Finished processing instruction 91, write 90 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 92, Read from 0: Instruction Cache to L1C
+Instruction 92, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 93, Read from 12: Instruction Cache to L1C
+Instruction 93, HIT in L1, fetching from L1D
+Instruction 92, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 94, Write 256 to 12: Instruction Cache to L1C
+Instruction 94, HIT in L1, fetching from L1D
+Instruction 93, Read from 12, L1D to L1C: Data from address 12
+Instruction 94, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 95, Write 1 to 904: Instruction Cache to L1C
+Instruction 95, HIT in L1, fetching from L1D
+Instruction 94, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 95, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 95, Write 1 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 92, read from address 0, with result = 0
+Finished processing instruction 93, read from address 12, with result = 32
+Finished processing instruction 94, write 256 to address 12
+Finished processing instruction 95, write 1 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 96, Write 23 to 928: Instruction Cache to L1C
+Instruction 96, HIT in L1, fetching from L1D
+Instruction 96, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 97, Read from 2093: Instruction Cache to L1C
+Instruction 97, HIT in L1, fetching from L1D
+Instruction 96, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 98, Write 999 to 2093: Instruction Cache to L1C
+Instruction 98, HIT in L1, fetching from L1D
+Instruction 97, Read from 2093, L1D to L1C: Data from address 2093
+Instruction 98, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 99, Read from 928: Instruction Cache to L1C
+Instruction 99, HIT in L1, fetching from L1D
+Instruction 98, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 99, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 96, write 23 to address 928
+Finished processing instruction 97, read from address 2093, with result = 999
+Finished processing instruction 98, write 999 to address 2093
+Finished processing instruction 99, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 100, Read from 201: Instruction Cache to L1C
+Instruction 100, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 101, Read from 1928: Instruction Cache to L1C
+Instruction 101, HIT in L1, fetching from L1D
+Instruction 100, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 102, Write 234 to 904: Instruction Cache to L1C
+Instruction 102, HIT in L1, fetching from L1D
+Instruction 101, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 102, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 103, Read from 1928: Instruction Cache to L1C
+Instruction 103, HIT in L1, fetching from L1D
+Instruction 102, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 103, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 100, read from address 201, with result = 9
+Finished processing instruction 101, read from address 1928, with result = 1928
+Finished processing instruction 102, write 234 to address 904
+Finished processing instruction 103, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 104, Write 32 to 12: Instruction Cache to L1C
+Instruction 104, HIT in L1, fetching from L1D
+Instruction 104, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 105, Write 84 to 904: Instruction Cache to L1C
+Instruction 105, HIT in L1, fetching from L1D
+Instruction 104, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 105, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 106, Read from 12: Instruction Cache to L1C
+Instruction 106, HIT in L1, fetching from L1D
+Instruction 105, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 107, Read from 3374: Instruction Cache to L1C
+Instruction 107, HIT in L1, fetching from L1D
+Instruction 106, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 107, Read from 3374, L1D to L1C: Data from address 3374
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 104, write 32 to address 12
+Finished processing instruction 105, write 84 to address 904
+Finished processing instruction 106, read from address 12, with result = 32
+Finished processing instruction 107, read from address 3374, with result = 3374
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 108, Write 938 to 201: Instruction Cache to L1C
+Instruction 108, HIT in L1, fetching from L1D
+Instruction 108, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 109, Read from 1928: Instruction Cache to L1C
+Instruction 109, HIT in L1, fetching from L1D
+Instruction 108, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 110, Write 0 to 0: Instruction Cache to L1C
+Instruction 110, HIT in L1, fetching from L1D
+Instruction 109, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 110, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 111, Read from 928: Instruction Cache to L1C
+Instruction 111, HIT in L1, fetching from L1D
+Instruction 110, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 111, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 108, write 938 to address 201
+Finished processing instruction 109, read from address 1928, with result = 1928
+Finished processing instruction 110, write 0 to address 0
+Finished processing instruction 111, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 112, Read from 201: Instruction Cache to L1C
+Instruction 112, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 113, Read from 876: Instruction Cache to L1C
+Instruction 113, HIT in L1, fetching from L1D
+Instruction 112, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 114, Write 89 to 4095: Instruction Cache to L1C
+Instruction 114, HIT in L1, fetching from L1D
+Instruction 113, Read from 876, L1D to L1C: Data from address 876
+Instruction 114, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 115, Write 9 to 201: Instruction Cache to L1C
+Instruction 115, HIT in L1, fetching from L1D
+Instruction 114, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 115, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 115, Write 9 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 112, read from address 201, with result = 938
+Finished processing instruction 113, read from address 876, with result = 876
+Finished processing instruction 114, write 89 to address 4095
+Finished processing instruction 115, write 9 to address 201
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 116, Write 23 to 904: Instruction Cache to L1C
+Instruction 116, HIT in L1, fetching from L1D
+Instruction 116, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 117, Read from 3333: Instruction Cache to L1C
+Instruction 117, HIT in L1, fetching from L1D
+Instruction 116, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 118, Write 756 to 3333: Instruction Cache to L1C
+Instruction 118, HIT in L1, fetching from L1D
+Instruction 117, Read from 3333, L1D to L1C: Data from address 3333
+Instruction 118, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 119, Read from 4095: Instruction Cache to L1C
+Instruction 119, HIT in L1, fetching from L1D
+Instruction 118, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 119, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 116, write 23 to address 904
+Finished processing instruction 117, read from address 3333, with result = 756
+Finished processing instruction 118, write 756 to address 3333
+Finished processing instruction 119, read from address 4095, with result = 89
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 120, Read from 201: Instruction Cache to L1C
+Instruction 120, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 121, Write 90 to 904: Instruction Cache to L1C
+Instruction 121, HIT in L1, fetching from L1D
+Instruction 120, Read from 201, L1D to L1C: Data from address 201
+Instruction 121, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 122, Read from 0: Instruction Cache to L1C
+Instruction 122, HIT in L1, fetching from L1D
+Instruction 121, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 123, Read from 12: Instruction Cache to L1C
+Instruction 123, HIT in L1, fetching from L1D
+Instruction 122, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 123, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 120, read from address 201, with result = 9
+Finished processing instruction 121, write 90 to address 904
+Finished processing instruction 122, read from address 0, with result = 0
+Finished processing instruction 123, read from address 12, with result = 32
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 124, Write 256 to 12: Instruction Cache to L1C
+Instruction 124, HIT in L1, fetching from L1D
+Instruction 124, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 125, Write 1 to 904: Instruction Cache to L1C
+Instruction 125, HIT in L1, fetching from L1D
+Instruction 124, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 125, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 126, Write 23 to 928: Instruction Cache to L1C
+Instruction 126, HIT in L1, fetching from L1D
+Instruction 125, Write 1 to 904, L1D to L1C: Wrote to address 904
+Instruction 126, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 127, Read from 2093: Instruction Cache to L1C
+Instruction 127, HIT in L1, fetching from L1D
+Instruction 126, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 127, Read from 2093, L1D to L1C: Data from address 2093
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 124, write 256 to address 12
+Finished processing instruction 125, write 1 to address 904
+Finished processing instruction 126, write 23 to address 928
+Finished processing instruction 127, read from address 2093, with result = 999
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 128, Write 999 to 2093: Instruction Cache to L1C
+Instruction 128, HIT in L1, fetching from L1D
+Instruction 128, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 129, Read from 928: Instruction Cache to L1C
+Instruction 129, HIT in L1, fetching from L1D
+Instruction 128, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 130, Read from 201: Instruction Cache to L1C
+Instruction 130, HIT in L1, fetching from L1D
+Instruction 129, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 131, Read from 1928: Instruction Cache to L1C
+Instruction 131, HIT in L1, fetching from L1D
+Instruction 130, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 131, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 128, write 999 to address 2093
+Finished processing instruction 129, read from address 928, with result = 23
+Finished processing instruction 130, read from address 201, with result = 9
+Finished processing instruction 131, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 132, Write 234 to 904: Instruction Cache to L1C
+Instruction 132, HIT in L1, fetching from L1D
+Instruction 132, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 133, Read from 1928: Instruction Cache to L1C
+Instruction 133, HIT in L1, fetching from L1D
+Instruction 132, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 134, Write 32 to 12: Instruction Cache to L1C
+Instruction 134, HIT in L1, fetching from L1D
+Instruction 133, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 134, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 135, Write 84 to 904: Instruction Cache to L1C
+Instruction 135, HIT in L1, fetching from L1D
+Instruction 134, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 135, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 135, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 132, write 234 to address 904
+Finished processing instruction 133, read from address 1928, with result = 1928
+Finished processing instruction 134, write 32 to address 12
+Finished processing instruction 135, write 84 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 136, Read from 12: Instruction Cache to L1C
+Instruction 136, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 137, Read from 3374: Instruction Cache to L1C
+Instruction 137, HIT in L1, fetching from L1D
+Instruction 136, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 138, Write 938 to 201: Instruction Cache to L1C
+Instruction 138, HIT in L1, fetching from L1D
+Instruction 137, Read from 3374, L1D to L1C: Data from address 3374
+Instruction 138, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 139, Read from 1928: Instruction Cache to L1C
+Instruction 139, HIT in L1, fetching from L1D
+Instruction 138, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 139, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 136, read from address 12, with result = 32
+Finished processing instruction 137, read from address 3374, with result = 3374
+Finished processing instruction 138, write 938 to address 201
+Finished processing instruction 139, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 140, Write 0 to 0: Instruction Cache to L1C
+Instruction 140, HIT in L1, fetching from L1D
+Instruction 140, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 141, Read from 928: Instruction Cache to L1C
+Instruction 141, HIT in L1, fetching from L1D
+Instruction 140, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 142, Read from 201: Instruction Cache to L1C
+Instruction 142, HIT in L1, fetching from L1D
+Instruction 141, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 143, Read from 876: Instruction Cache to L1C
+Instruction 143, HIT in L1, fetching from L1D
+Instruction 142, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 143, Read from 876, L1D to L1C: Data from address 876
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 140, write 0 to address 0
+Finished processing instruction 141, read from address 928, with result = 23
+Finished processing instruction 142, read from address 201, with result = 938
+Finished processing instruction 143, read from address 876, with result = 876
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 144, Write 89 to 4095: Instruction Cache to L1C
+Instruction 144, HIT in L1, fetching from L1D
+Instruction 144, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 145, Write 9 to 201: Instruction Cache to L1C
+Instruction 145, HIT in L1, fetching from L1D
+Instruction 144, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 145, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 146, Write 23 to 904: Instruction Cache to L1C
+Instruction 146, HIT in L1, fetching from L1D
+Instruction 145, Write 9 to 201, L1D to L1C: Wrote to address 201
+Instruction 146, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 147, Read from 3333: Instruction Cache to L1C
+Instruction 147, HIT in L1, fetching from L1D
+Instruction 146, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 147, Read from 3333, L1D to L1C: Data from address 3333
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 144, write 89 to address 4095
+Finished processing instruction 145, write 9 to address 201
+Finished processing instruction 146, write 23 to address 904
+Finished processing instruction 147, read from address 3333, with result = 756
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 148, Write 756 to 3333: Instruction Cache to L1C
+Instruction 148, HIT in L1, fetching from L1D
+Instruction 148, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 149, Read from 4095: Instruction Cache to L1C
+Instruction 149, HIT in L1, fetching from L1D
+Instruction 148, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 150, Read from 201: Instruction Cache to L1C
+Instruction 150, HIT in L1, fetching from L1D
+Instruction 149, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 151, Write 90 to 904: Instruction Cache to L1C
+Instruction 151, HIT in L1, fetching from L1D
+Instruction 150, Read from 201, L1D to L1C: Data from address 201
+Instruction 151, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 151, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 148, write 756 to address 3333
+Finished processing instruction 149, read from address 4095, with result = 89
+Finished processing instruction 150, read from address 201, with result = 9
+Finished processing instruction 151, write 90 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 152, Read from 0: Instruction Cache to L1C
+Instruction 152, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 153, Read from 12: Instruction Cache to L1C
+Instruction 153, HIT in L1, fetching from L1D
+Instruction 152, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 154, Write 256 to 12: Instruction Cache to L1C
+Instruction 154, HIT in L1, fetching from L1D
+Instruction 153, Read from 12, L1D to L1C: Data from address 12
+Instruction 154, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 155, Write 1 to 904: Instruction Cache to L1C
+Instruction 155, HIT in L1, fetching from L1D
+Instruction 154, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 155, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 155, Write 1 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 152, read from address 0, with result = 0
+Finished processing instruction 153, read from address 12, with result = 32
+Finished processing instruction 154, write 256 to address 12
+Finished processing instruction 155, write 1 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 156, Write 23 to 928: Instruction Cache to L1C
+Instruction 156, HIT in L1, fetching from L1D
+Instruction 156, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 157, Read from 2093: Instruction Cache to L1C
+Instruction 157, HIT in L1, fetching from L1D
+Instruction 156, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 158, Write 999 to 2093: Instruction Cache to L1C
+Instruction 158, HIT in L1, fetching from L1D
+Instruction 157, Read from 2093, L1D to L1C: Data from address 2093
+Instruction 158, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 159, Read from 928: Instruction Cache to L1C
+Instruction 159, HIT in L1, fetching from L1D
+Instruction 158, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 159, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 156, write 23 to address 928
+Finished processing instruction 157, read from address 2093, with result = 999
+Finished processing instruction 158, write 999 to address 2093
+Finished processing instruction 159, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 160, Read from 201: Instruction Cache to L1C
+Instruction 160, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 161, Read from 1928: Instruction Cache to L1C
+Instruction 161, HIT in L1, fetching from L1D
+Instruction 160, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 162, Write 234 to 904: Instruction Cache to L1C
+Instruction 162, HIT in L1, fetching from L1D
+Instruction 161, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 162, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 163, Read from 1928: Instruction Cache to L1C
+Instruction 163, HIT in L1, fetching from L1D
+Instruction 162, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 163, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 160, read from address 201, with result = 9
+Finished processing instruction 161, read from address 1928, with result = 1928
+Finished processing instruction 162, write 234 to address 904
+Finished processing instruction 163, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 164, Write 32 to 12: Instruction Cache to L1C
+Instruction 164, HIT in L1, fetching from L1D
+Instruction 164, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 165, Write 84 to 904: Instruction Cache to L1C
+Instruction 165, HIT in L1, fetching from L1D
+Instruction 164, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 165, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 166, Read from 12: Instruction Cache to L1C
+Instruction 166, HIT in L1, fetching from L1D
+Instruction 165, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 167, Read from 3374: Instruction Cache to L1C
+Instruction 167, HIT in L1, fetching from L1D
+Instruction 166, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 167, Read from 3374, L1D to L1C: Data from address 3374
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 164, write 32 to address 12
+Finished processing instruction 165, write 84 to address 904
+Finished processing instruction 166, read from address 12, with result = 32
+Finished processing instruction 167, read from address 3374, with result = 3374
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 168, Write 938 to 201: Instruction Cache to L1C
+Instruction 168, HIT in L1, fetching from L1D
+Instruction 168, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 169, Read from 1928: Instruction Cache to L1C
+Instruction 169, HIT in L1, fetching from L1D
+Instruction 168, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 170, Write 0 to 0: Instruction Cache to L1C
+Instruction 170, HIT in L1, fetching from L1D
+Instruction 169, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 170, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 171, Read from 928: Instruction Cache to L1C
+Instruction 171, HIT in L1, fetching from L1D
+Instruction 170, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 171, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 168, write 938 to address 201
+Finished processing instruction 169, read from address 1928, with result = 1928
+Finished processing instruction 170, write 0 to address 0
+Finished processing instruction 171, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 172, Read from 201: Instruction Cache to L1C
+Instruction 172, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 173, Read from 876: Instruction Cache to L1C
+Instruction 173, HIT in L1, fetching from L1D
+Instruction 172, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 174, Write 89 to 4095: Instruction Cache to L1C
+Instruction 174, HIT in L1, fetching from L1D
+Instruction 173, Read from 876, L1D to L1C: Data from address 876
+Instruction 174, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 175, Write 9 to 201: Instruction Cache to L1C
+Instruction 175, HIT in L1, fetching from L1D
+Instruction 174, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 175, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 175, Write 9 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 172, read from address 201, with result = 938
+Finished processing instruction 173, read from address 876, with result = 876
+Finished processing instruction 174, write 89 to address 4095
+Finished processing instruction 175, write 9 to address 201
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 176, Write 23 to 904: Instruction Cache to L1C
+Instruction 176, HIT in L1, fetching from L1D
+Instruction 176, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 177, Read from 3333: Instruction Cache to L1C
+Instruction 177, HIT in L1, fetching from L1D
+Instruction 176, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 178, Write 756 to 3333: Instruction Cache to L1C
+Instruction 178, HIT in L1, fetching from L1D
+Instruction 177, Read from 3333, L1D to L1C: Data from address 3333
+Instruction 178, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 179, Read from 4095: Instruction Cache to L1C
+Instruction 179, HIT in L1, fetching from L1D
+Instruction 178, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 179, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 176, write 23 to address 904
+Finished processing instruction 177, read from address 3333, with result = 756
+Finished processing instruction 178, write 756 to address 3333
+Finished processing instruction 179, read from address 4095, with result = 89
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 180, Read from 201: Instruction Cache to L1C
+Instruction 180, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 181, Write 90 to 904: Instruction Cache to L1C
+Instruction 181, HIT in L1, fetching from L1D
+Instruction 180, Read from 201, L1D to L1C: Data from address 201
+Instruction 181, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 182, Read from 0: Instruction Cache to L1C
+Instruction 182, HIT in L1, fetching from L1D
+Instruction 181, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 183, Read from 12: Instruction Cache to L1C
+Instruction 183, HIT in L1, fetching from L1D
+Instruction 182, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 183, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 180, read from address 201, with result = 9
+Finished processing instruction 181, write 90 to address 904
+Finished processing instruction 182, read from address 0, with result = 0
+Finished processing instruction 183, read from address 12, with result = 32
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 184, Write 256 to 12: Instruction Cache to L1C
+Instruction 184, HIT in L1, fetching from L1D
+Instruction 184, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 185, Write 1 to 904: Instruction Cache to L1C
+Instruction 185, HIT in L1, fetching from L1D
+Instruction 184, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 185, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 186, Write 23 to 928: Instruction Cache to L1C
+Instruction 186, HIT in L1, fetching from L1D
+Instruction 185, Write 1 to 904, L1D to L1C: Wrote to address 904
+Instruction 186, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 187, Read from 2093: Instruction Cache to L1C
+Instruction 187, HIT in L1, fetching from L1D
+Instruction 186, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 187, Read from 2093, L1D to L1C: Data from address 2093
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 184, write 256 to address 12
+Finished processing instruction 185, write 1 to address 904
+Finished processing instruction 186, write 23 to address 928
+Finished processing instruction 187, read from address 2093, with result = 999
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 188, Write 999 to 2093: Instruction Cache to L1C
+Instruction 188, HIT in L1, fetching from L1D
+Instruction 188, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 189, Read from 928: Instruction Cache to L1C
+Instruction 189, HIT in L1, fetching from L1D
+Instruction 188, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 190, Read from 201: Instruction Cache to L1C
+Instruction 190, HIT in L1, fetching from L1D
+Instruction 189, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 191, Read from 1928: Instruction Cache to L1C
+Instruction 191, HIT in L1, fetching from L1D
+Instruction 190, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 191, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 188, write 999 to address 2093
+Finished processing instruction 189, read from address 928, with result = 23
+Finished processing instruction 190, read from address 201, with result = 9
+Finished processing instruction 191, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 192, Write 234 to 904: Instruction Cache to L1C
+Instruction 192, HIT in L1, fetching from L1D
+Instruction 192, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 193, Read from 1928: Instruction Cache to L1C
+Instruction 193, HIT in L1, fetching from L1D
+Instruction 192, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 194, Write 32 to 12: Instruction Cache to L1C
+Instruction 194, HIT in L1, fetching from L1D
+Instruction 193, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 194, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 195, Write 84 to 904: Instruction Cache to L1C
+Instruction 195, HIT in L1, fetching from L1D
+Instruction 194, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 195, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 195, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 192, write 234 to address 904
+Finished processing instruction 193, read from address 1928, with result = 1928
+Finished processing instruction 194, write 32 to address 12
+Finished processing instruction 195, write 84 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 196, Read from 12: Instruction Cache to L1C
+Instruction 196, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 197, Read from 3374: Instruction Cache to L1C
+Instruction 197, HIT in L1, fetching from L1D
+Instruction 196, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 198, Write 938 to 201: Instruction Cache to L1C
+Instruction 198, HIT in L1, fetching from L1D
+Instruction 197, Read from 3374, L1D to L1C: Data from address 3374
+Instruction 198, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 199, Read from 1928: Instruction Cache to L1C
+Instruction 199, HIT in L1, fetching from L1D
+Instruction 198, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 199, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 196, read from address 12, with result = 32
+Finished processing instruction 197, read from address 3374, with result = 3374
+Finished processing instruction 198, write 938 to address 201
+Finished processing instruction 199, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 200, Write 0 to 0: Instruction Cache to L1C
+Instruction 200, HIT in L1, fetching from L1D
+Instruction 200, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 201, Read from 928: Instruction Cache to L1C
+Instruction 201, HIT in L1, fetching from L1D
+Instruction 200, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 202, Read from 201: Instruction Cache to L1C
+Instruction 202, HIT in L1, fetching from L1D
+Instruction 201, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 203, Read from 876: Instruction Cache to L1C
+Instruction 203, HIT in L1, fetching from L1D
+Instruction 202, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 203, Read from 876, L1D to L1C: Data from address 876
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 200, write 0 to address 0
+Finished processing instruction 201, read from address 928, with result = 23
+Finished processing instruction 202, read from address 201, with result = 938
+Finished processing instruction 203, read from address 876, with result = 876
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 204, Write 89 to 4095: Instruction Cache to L1C
+Instruction 204, HIT in L1, fetching from L1D
+Instruction 204, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 205, Write 9 to 201: Instruction Cache to L1C
+Instruction 205, HIT in L1, fetching from L1D
+Instruction 204, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 205, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 206, Write 23 to 904: Instruction Cache to L1C
+Instruction 206, HIT in L1, fetching from L1D
+Instruction 205, Write 9 to 201, L1D to L1C: Wrote to address 201
+Instruction 206, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 207, Read from 3333: Instruction Cache to L1C
+Instruction 207, HIT in L1, fetching from L1D
+Instruction 206, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 207, Read from 3333, L1D to L1C: Data from address 3333
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 204, write 89 to address 4095
+Finished processing instruction 205, write 9 to address 201
+Finished processing instruction 206, write 23 to address 904
+Finished processing instruction 207, read from address 3333, with result = 756
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 208, Write 756 to 3333: Instruction Cache to L1C
+Instruction 208, HIT in L1, fetching from L1D
+Instruction 208, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 209, Read from 4095: Instruction Cache to L1C
+Instruction 209, HIT in L1, fetching from L1D
+Instruction 208, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 210, Read from 201: Instruction Cache to L1C
+Instruction 210, HIT in L1, fetching from L1D
+Instruction 209, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 211, Write 90 to 904: Instruction Cache to L1C
+Instruction 211, HIT in L1, fetching from L1D
+Instruction 210, Read from 201, L1D to L1C: Data from address 201
+Instruction 211, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 211, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 208, write 756 to address 3333
+Finished processing instruction 209, read from address 4095, with result = 89
+Finished processing instruction 210, read from address 201, with result = 9
+Finished processing instruction 211, write 90 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 212, Read from 0: Instruction Cache to L1C
+Instruction 212, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 213, Read from 12: Instruction Cache to L1C
+Instruction 213, HIT in L1, fetching from L1D
+Instruction 212, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 214, Write 256 to 12: Instruction Cache to L1C
+Instruction 214, HIT in L1, fetching from L1D
+Instruction 213, Read from 12, L1D to L1C: Data from address 12
+Instruction 214, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 215, Write 1 to 904: Instruction Cache to L1C
+Instruction 215, HIT in L1, fetching from L1D
+Instruction 214, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 215, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 215, Write 1 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 212, read from address 0, with result = 0
+Finished processing instruction 213, read from address 12, with result = 32
+Finished processing instruction 214, write 256 to address 12
+Finished processing instruction 215, write 1 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 216, Write 23 to 928: Instruction Cache to L1C
+Instruction 216, HIT in L1, fetching from L1D
+Instruction 216, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 217, Read from 2093: Instruction Cache to L1C
+Instruction 217, HIT in L1, fetching from L1D
+Instruction 216, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 218, Write 999 to 2093: Instruction Cache to L1C
+Instruction 218, HIT in L1, fetching from L1D
+Instruction 217, Read from 2093, L1D to L1C: Data from address 2093
+Instruction 218, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 219, Read from 928: Instruction Cache to L1C
+Instruction 219, HIT in L1, fetching from L1D
+Instruction 218, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 219, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 216, write 23 to address 928
+Finished processing instruction 217, read from address 2093, with result = 999
+Finished processing instruction 218, write 999 to address 2093
+Finished processing instruction 219, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 220, Read from 201: Instruction Cache to L1C
+Instruction 220, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 221, Read from 1928: Instruction Cache to L1C
+Instruction 221, HIT in L1, fetching from L1D
+Instruction 220, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 222, Write 234 to 904: Instruction Cache to L1C
+Instruction 222, HIT in L1, fetching from L1D
+Instruction 221, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 222, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 223, Read from 1928: Instruction Cache to L1C
+Instruction 223, HIT in L1, fetching from L1D
+Instruction 222, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 223, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 220, read from address 201, with result = 9
+Finished processing instruction 221, read from address 1928, with result = 1928
+Finished processing instruction 222, write 234 to address 904
+Finished processing instruction 223, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 224, Write 32 to 12: Instruction Cache to L1C
+Instruction 224, HIT in L1, fetching from L1D
+Instruction 224, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 225, Write 84 to 904: Instruction Cache to L1C
+Instruction 225, HIT in L1, fetching from L1D
+Instruction 224, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 225, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 226, Read from 12: Instruction Cache to L1C
+Instruction 226, HIT in L1, fetching from L1D
+Instruction 225, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 227, Read from 3374: Instruction Cache to L1C
+Instruction 227, HIT in L1, fetching from L1D
+Instruction 226, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 227, Read from 3374, L1D to L1C: Data from address 3374
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 224, write 32 to address 12
+Finished processing instruction 225, write 84 to address 904
+Finished processing instruction 226, read from address 12, with result = 32
+Finished processing instruction 227, read from address 3374, with result = 3374
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 228, Write 938 to 201: Instruction Cache to L1C
+Instruction 228, HIT in L1, fetching from L1D
+Instruction 228, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 229, Read from 1928: Instruction Cache to L1C
+Instruction 229, HIT in L1, fetching from L1D
+Instruction 228, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 230, Write 0 to 0: Instruction Cache to L1C
+Instruction 230, HIT in L1, fetching from L1D
+Instruction 229, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 230, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 231, Read from 928: Instruction Cache to L1C
+Instruction 231, HIT in L1, fetching from L1D
+Instruction 230, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 231, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 228, write 938 to address 201
+Finished processing instruction 229, read from address 1928, with result = 1928
+Finished processing instruction 230, write 0 to address 0
+Finished processing instruction 231, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 232, Read from 201: Instruction Cache to L1C
+Instruction 232, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 233, Read from 876: Instruction Cache to L1C
+Instruction 233, HIT in L1, fetching from L1D
+Instruction 232, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 234, Write 89 to 4095: Instruction Cache to L1C
+Instruction 234, HIT in L1, fetching from L1D
+Instruction 233, Read from 876, L1D to L1C: Data from address 876
+Instruction 234, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 235, Write 9 to 201: Instruction Cache to L1C
+Instruction 235, HIT in L1, fetching from L1D
+Instruction 234, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 235, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 235, Write 9 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 232, read from address 201, with result = 938
+Finished processing instruction 233, read from address 876, with result = 876
+Finished processing instruction 234, write 89 to address 4095
+Finished processing instruction 235, write 9 to address 201
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 236, Write 23 to 904: Instruction Cache to L1C
+Instruction 236, HIT in L1, fetching from L1D
+Instruction 236, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 237, Read from 3333: Instruction Cache to L1C
+Instruction 237, HIT in L1, fetching from L1D
+Instruction 236, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 238, Write 756 to 3333: Instruction Cache to L1C
+Instruction 238, HIT in L1, fetching from L1D
+Instruction 237, Read from 3333, L1D to L1C: Data from address 3333
+Instruction 238, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 239, Read from 4095: Instruction Cache to L1C
+Instruction 239, HIT in L1, fetching from L1D
+Instruction 238, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 239, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 236, write 23 to address 904
+Finished processing instruction 237, read from address 3333, with result = 756
+Finished processing instruction 238, write 756 to address 3333
+Finished processing instruction 239, read from address 4095, with result = 89
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 240, Read from 201: Instruction Cache to L1C
+Instruction 240, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 241, Write 90 to 904: Instruction Cache to L1C
+Instruction 241, HIT in L1, fetching from L1D
+Instruction 240, Read from 201, L1D to L1C: Data from address 201
+Instruction 241, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 242, Read from 0: Instruction Cache to L1C
+Instruction 242, HIT in L1, fetching from L1D
+Instruction 241, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 243, Read from 12: Instruction Cache to L1C
+Instruction 243, HIT in L1, fetching from L1D
+Instruction 242, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 243, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 240, read from address 201, with result = 9
+Finished processing instruction 241, write 90 to address 904
+Finished processing instruction 242, read from address 0, with result = 0
+Finished processing instruction 243, read from address 12, with result = 32
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 244, Write 256 to 12: Instruction Cache to L1C
+Instruction 244, HIT in L1, fetching from L1D
+Instruction 244, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 245, Write 1 to 904: Instruction Cache to L1C
+Instruction 245, HIT in L1, fetching from L1D
+Instruction 244, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 245, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 246, Write 23 to 928: Instruction Cache to L1C
+Instruction 246, HIT in L1, fetching from L1D
+Instruction 245, Write 1 to 904, L1D to L1C: Wrote to address 904
+Instruction 246, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 247, Read from 2093: Instruction Cache to L1C
+Instruction 247, HIT in L1, fetching from L1D
+Instruction 246, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 247, Read from 2093, L1D to L1C: Data from address 2093
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 244, write 256 to address 12
+Finished processing instruction 245, write 1 to address 904
+Finished processing instruction 246, write 23 to address 928
+Finished processing instruction 247, read from address 2093, with result = 999
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 248, Write 999 to 2093: Instruction Cache to L1C
+Instruction 248, HIT in L1, fetching from L1D
+Instruction 248, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 249, Read from 928: Instruction Cache to L1C
+Instruction 249, HIT in L1, fetching from L1D
+Instruction 248, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 250, Read from 201: Instruction Cache to L1C
+Instruction 250, HIT in L1, fetching from L1D
+Instruction 249, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 251, Read from 1928: Instruction Cache to L1C
+Instruction 251, HIT in L1, fetching from L1D
+Instruction 250, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 251, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 248, write 999 to address 2093
+Finished processing instruction 249, read from address 928, with result = 23
+Finished processing instruction 250, read from address 201, with result = 9
+Finished processing instruction 251, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 252, Write 234 to 904: Instruction Cache to L1C
+Instruction 252, HIT in L1, fetching from L1D
+Instruction 252, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 253, Read from 1928: Instruction Cache to L1C
+Instruction 253, HIT in L1, fetching from L1D
+Instruction 252, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 254, Write 32 to 12: Instruction Cache to L1C
+Instruction 254, HIT in L1, fetching from L1D
+Instruction 253, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 254, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 255, Write 84 to 904: Instruction Cache to L1C
+Instruction 255, HIT in L1, fetching from L1D
+Instruction 254, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 255, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 255, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 252, write 234 to address 904
+Finished processing instruction 253, read from address 1928, with result = 1928
+Finished processing instruction 254, write 32 to address 12
+Finished processing instruction 255, write 84 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 256, Read from 12: Instruction Cache to L1C
+Instruction 256, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 257, Read from 3374: Instruction Cache to L1C
+Instruction 257, HIT in L1, fetching from L1D
+Instruction 256, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 258, Write 938 to 201: Instruction Cache to L1C
+Instruction 258, HIT in L1, fetching from L1D
+Instruction 257, Read from 3374, L1D to L1C: Data from address 3374
+Instruction 258, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 259, Read from 1928: Instruction Cache to L1C
+Instruction 259, HIT in L1, fetching from L1D
+Instruction 258, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 259, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 256, read from address 12, with result = 32
+Finished processing instruction 257, read from address 3374, with result = 3374
+Finished processing instruction 258, write 938 to address 201
+Finished processing instruction 259, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 260, Write 0 to 0: Instruction Cache to L1C
+Instruction 260, HIT in L1, fetching from L1D
+Instruction 260, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 261, Read from 928: Instruction Cache to L1C
+Instruction 261, HIT in L1, fetching from L1D
+Instruction 260, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 262, Read from 201: Instruction Cache to L1C
+Instruction 262, HIT in L1, fetching from L1D
+Instruction 261, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 263, Read from 876: Instruction Cache to L1C
+Instruction 263, HIT in L1, fetching from L1D
+Instruction 262, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 263, Read from 876, L1D to L1C: Data from address 876
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 260, write 0 to address 0
+Finished processing instruction 261, read from address 928, with result = 23
+Finished processing instruction 262, read from address 201, with result = 938
+Finished processing instruction 263, read from address 876, with result = 876
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 264, Write 89 to 4095: Instruction Cache to L1C
+Instruction 264, HIT in L1, fetching from L1D
+Instruction 264, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 265, Write 9 to 201: Instruction Cache to L1C
+Instruction 265, HIT in L1, fetching from L1D
+Instruction 264, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 265, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 266, Write 23 to 904: Instruction Cache to L1C
+Instruction 266, HIT in L1, fetching from L1D
+Instruction 265, Write 9 to 201, L1D to L1C: Wrote to address 201
+Instruction 266, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 267, Read from 3333: Instruction Cache to L1C
+Instruction 267, HIT in L1, fetching from L1D
+Instruction 266, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 267, Read from 3333, L1D to L1C: Data from address 3333
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 264, write 89 to address 4095
+Finished processing instruction 265, write 9 to address 201
+Finished processing instruction 266, write 23 to address 904
+Finished processing instruction 267, read from address 3333, with result = 756
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 268, Write 756 to 3333: Instruction Cache to L1C
+Instruction 268, HIT in L1, fetching from L1D
+Instruction 268, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 269, Read from 4095: Instruction Cache to L1C
+Instruction 269, HIT in L1, fetching from L1D
+Instruction 268, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 270, Read from 201: Instruction Cache to L1C
+Instruction 270, HIT in L1, fetching from L1D
+Instruction 269, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 271, Write 90 to 904: Instruction Cache to L1C
+Instruction 271, HIT in L1, fetching from L1D
+Instruction 270, Read from 201, L1D to L1C: Data from address 201
+Instruction 271, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 271, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 268, write 756 to address 3333
+Finished processing instruction 269, read from address 4095, with result = 89
+Finished processing instruction 270, read from address 201, with result = 9
+Finished processing instruction 271, write 90 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 272, Read from 0: Instruction Cache to L1C
+Instruction 272, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 273, Read from 12: Instruction Cache to L1C
+Instruction 273, HIT in L1, fetching from L1D
+Instruction 272, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 274, Write 256 to 12: Instruction Cache to L1C
+Instruction 274, HIT in L1, fetching from L1D
+Instruction 273, Read from 12, L1D to L1C: Data from address 12
+Instruction 274, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 275, Write 1 to 904: Instruction Cache to L1C
+Instruction 275, HIT in L1, fetching from L1D
+Instruction 274, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 275, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 275, Write 1 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 272, read from address 0, with result = 0
+Finished processing instruction 273, read from address 12, with result = 32
+Finished processing instruction 274, write 256 to address 12
+Finished processing instruction 275, write 1 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 276, Write 23 to 928: Instruction Cache to L1C
+Instruction 276, HIT in L1, fetching from L1D
+Instruction 276, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 277, Read from 2093: Instruction Cache to L1C
+Instruction 277, HIT in L1, fetching from L1D
+Instruction 276, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 278, Write 999 to 2093: Instruction Cache to L1C
+Instruction 278, HIT in L1, fetching from L1D
+Instruction 277, Read from 2093, L1D to L1C: Data from address 2093
+Instruction 278, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 279, Read from 928: Instruction Cache to L1C
+Instruction 279, HIT in L1, fetching from L1D
+Instruction 278, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 279, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 276, write 23 to address 928
+Finished processing instruction 277, read from address 2093, with result = 999
+Finished processing instruction 278, write 999 to address 2093
+Finished processing instruction 279, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 280, Read from 201: Instruction Cache to L1C
+Instruction 280, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 281, Read from 1928: Instruction Cache to L1C
+Instruction 281, HIT in L1, fetching from L1D
+Instruction 280, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 282, Write 234 to 904: Instruction Cache to L1C
+Instruction 282, HIT in L1, fetching from L1D
+Instruction 281, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 282, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 283, Read from 1928: Instruction Cache to L1C
+Instruction 283, HIT in L1, fetching from L1D
+Instruction 282, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 283, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 280, read from address 201, with result = 9
+Finished processing instruction 281, read from address 1928, with result = 1928
+Finished processing instruction 282, write 234 to address 904
+Finished processing instruction 283, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 284, Write 32 to 12: Instruction Cache to L1C
+Instruction 284, HIT in L1, fetching from L1D
+Instruction 284, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 285, Write 84 to 904: Instruction Cache to L1C
+Instruction 285, HIT in L1, fetching from L1D
+Instruction 284, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 285, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 286, Read from 12: Instruction Cache to L1C
+Instruction 286, HIT in L1, fetching from L1D
+Instruction 285, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 287, Read from 3374: Instruction Cache to L1C
+Instruction 287, HIT in L1, fetching from L1D
+Instruction 286, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 287, Read from 3374, L1D to L1C: Data from address 3374
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 284, write 32 to address 12
+Finished processing instruction 285, write 84 to address 904
+Finished processing instruction 286, read from address 12, with result = 32
+Finished processing instruction 287, read from address 3374, with result = 3374
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 288, Write 938 to 201: Instruction Cache to L1C
+Instruction 288, HIT in L1, fetching from L1D
+Instruction 288, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 289, Read from 1928: Instruction Cache to L1C
+Instruction 289, HIT in L1, fetching from L1D
+Instruction 288, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 290, Write 0 to 0: Instruction Cache to L1C
+Instruction 290, HIT in L1, fetching from L1D
+Instruction 289, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 290, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 291, Read from 928: Instruction Cache to L1C
+Instruction 291, HIT in L1, fetching from L1D
+Instruction 290, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 291, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 288, write 938 to address 201
+Finished processing instruction 289, read from address 1928, with result = 1928
+Finished processing instruction 290, write 0 to address 0
+Finished processing instruction 291, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 292, Read from 201: Instruction Cache to L1C
+Instruction 292, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 293, Read from 876: Instruction Cache to L1C
+Instruction 293, HIT in L1, fetching from L1D
+Instruction 292, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 294, Write 89 to 4095: Instruction Cache to L1C
+Instruction 294, HIT in L1, fetching from L1D
+Instruction 293, Read from 876, L1D to L1C: Data from address 876
+Instruction 294, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 295, Write 9 to 201: Instruction Cache to L1C
+Instruction 295, HIT in L1, fetching from L1D
+Instruction 294, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 295, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 295, Write 9 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 292, read from address 201, with result = 938
+Finished processing instruction 293, read from address 876, with result = 876
+Finished processing instruction 294, write 89 to address 4095
+Finished processing instruction 295, write 9 to address 201
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 296, Write 23 to 904: Instruction Cache to L1C
+Instruction 296, HIT in L1, fetching from L1D
+Instruction 296, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 297, Read from 3333: Instruction Cache to L1C
+Instruction 297, HIT in L1, fetching from L1D
+Instruction 296, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 298, Write 756 to 3333: Instruction Cache to L1C
+Instruction 298, HIT in L1, fetching from L1D
+Instruction 297, Read from 3333, L1D to L1C: Data from address 3333
+Instruction 298, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 299, Read from 4095: Instruction Cache to L1C
+Instruction 299, HIT in L1, fetching from L1D
+Instruction 298, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 299, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 296, write 23 to address 904
+Finished processing instruction 297, read from address 3333, with result = 756
+Finished processing instruction 298, write 756 to address 3333
+Finished processing instruction 299, read from address 4095, with result = 89
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 300, Read from 201: Instruction Cache to L1C
+Instruction 300, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 301, Write 90 to 904: Instruction Cache to L1C
+Instruction 301, HIT in L1, fetching from L1D
+Instruction 300, Read from 201, L1D to L1C: Data from address 201
+Instruction 301, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 302, Read from 0: Instruction Cache to L1C
+Instruction 302, HIT in L1, fetching from L1D
+Instruction 301, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 303, Read from 12: Instruction Cache to L1C
+Instruction 303, HIT in L1, fetching from L1D
+Instruction 302, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 303, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 300, read from address 201, with result = 9
+Finished processing instruction 301, write 90 to address 904
+Finished processing instruction 302, read from address 0, with result = 0
+Finished processing instruction 303, read from address 12, with result = 32
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 304, Write 256 to 12: Instruction Cache to L1C
+Instruction 304, HIT in L1, fetching from L1D
+Instruction 304, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 305, Write 1 to 904: Instruction Cache to L1C
+Instruction 305, HIT in L1, fetching from L1D
+Instruction 304, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 305, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 306, Write 23 to 928: Instruction Cache to L1C
+Instruction 306, HIT in L1, fetching from L1D
+Instruction 305, Write 1 to 904, L1D to L1C: Wrote to address 904
+Instruction 306, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 307, Read from 2093: Instruction Cache to L1C
+Instruction 307, HIT in L1, fetching from L1D
+Instruction 306, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 307, Read from 2093, L1D to L1C: Data from address 2093
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 304, write 256 to address 12
+Finished processing instruction 305, write 1 to address 904
+Finished processing instruction 306, write 23 to address 928
+Finished processing instruction 307, read from address 2093, with result = 999
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 308, Write 999 to 2093: Instruction Cache to L1C
+Instruction 308, HIT in L1, fetching from L1D
+Instruction 308, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 309, Read from 928: Instruction Cache to L1C
+Instruction 309, HIT in L1, fetching from L1D
+Instruction 308, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 310, Read from 201: Instruction Cache to L1C
+Instruction 310, HIT in L1, fetching from L1D
+Instruction 309, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 311, Read from 1928: Instruction Cache to L1C
+Instruction 311, HIT in L1, fetching from L1D
+Instruction 310, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 311, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 308, write 999 to address 2093
+Finished processing instruction 309, read from address 928, with result = 23
+Finished processing instruction 310, read from address 201, with result = 9
+Finished processing instruction 311, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 312, Write 234 to 904: Instruction Cache to L1C
+Instruction 312, HIT in L1, fetching from L1D
+Instruction 312, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 313, Read from 1928: Instruction Cache to L1C
+Instruction 313, HIT in L1, fetching from L1D
+Instruction 312, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 314, Write 32 to 12: Instruction Cache to L1C
+Instruction 314, HIT in L1, fetching from L1D
+Instruction 313, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 314, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 315, Write 84 to 904: Instruction Cache to L1C
+Instruction 315, HIT in L1, fetching from L1D
+Instruction 314, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 315, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 315, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 312, write 234 to address 904
+Finished processing instruction 313, read from address 1928, with result = 1928
+Finished processing instruction 314, write 32 to address 12
+Finished processing instruction 315, write 84 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 316, Read from 12: Instruction Cache to L1C
+Instruction 316, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 317, Read from 3374: Instruction Cache to L1C
+Instruction 317, HIT in L1, fetching from L1D
+Instruction 316, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 318, Write 938 to 201: Instruction Cache to L1C
+Instruction 318, HIT in L1, fetching from L1D
+Instruction 317, Read from 3374, L1D to L1C: Data from address 3374
+Instruction 318, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 319, Read from 1928: Instruction Cache to L1C
+Instruction 319, HIT in L1, fetching from L1D
+Instruction 318, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 319, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 316, read from address 12, with result = 32
+Finished processing instruction 317, read from address 3374, with result = 3374
+Finished processing instruction 318, write 938 to address 201
+Finished processing instruction 319, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 320, Write 0 to 0: Instruction Cache to L1C
+Instruction 320, HIT in L1, fetching from L1D
+Instruction 320, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 321, Read from 928: Instruction Cache to L1C
+Instruction 321, HIT in L1, fetching from L1D
+Instruction 320, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 322, Read from 201: Instruction Cache to L1C
+Instruction 322, HIT in L1, fetching from L1D
+Instruction 321, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 323, Read from 876: Instruction Cache to L1C
+Instruction 323, HIT in L1, fetching from L1D
+Instruction 322, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 323, Read from 876, L1D to L1C: Data from address 876
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 320, write 0 to address 0
+Finished processing instruction 321, read from address 928, with result = 23
+Finished processing instruction 322, read from address 201, with result = 938
+Finished processing instruction 323, read from address 876, with result = 876
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 324, Write 89 to 4095: Instruction Cache to L1C
+Instruction 324, HIT in L1, fetching from L1D
+Instruction 324, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 325, Write 9 to 201: Instruction Cache to L1C
+Instruction 325, HIT in L1, fetching from L1D
+Instruction 324, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 325, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 326, Write 23 to 904: Instruction Cache to L1C
+Instruction 326, HIT in L1, fetching from L1D
+Instruction 325, Write 9 to 201, L1D to L1C: Wrote to address 201
+Instruction 326, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 327, Read from 3333: Instruction Cache to L1C
+Instruction 327, HIT in L1, fetching from L1D
+Instruction 326, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 327, Read from 3333, L1D to L1C: Data from address 3333
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 324, write 89 to address 4095
+Finished processing instruction 325, write 9 to address 201
+Finished processing instruction 326, write 23 to address 904
+Finished processing instruction 327, read from address 3333, with result = 756
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 328, Write 756 to 3333: Instruction Cache to L1C
+Instruction 328, HIT in L1, fetching from L1D
+Instruction 328, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 329, Read from 4095: Instruction Cache to L1C
+Instruction 329, HIT in L1, fetching from L1D
+Instruction 328, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 330, Read from 201: Instruction Cache to L1C
+Instruction 330, HIT in L1, fetching from L1D
+Instruction 329, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 331, Write 90 to 904: Instruction Cache to L1C
+Instruction 331, HIT in L1, fetching from L1D
+Instruction 330, Read from 201, L1D to L1C: Data from address 201
+Instruction 331, Write 90 to 904, L1D: Writing 90 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 331, Write 90 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 328, write 756 to address 3333
+Finished processing instruction 329, read from address 4095, with result = 89
+Finished processing instruction 330, read from address 201, with result = 9
+Finished processing instruction 331, write 90 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 332, Read from 0: Instruction Cache to L1C
+Instruction 332, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 333, Read from 12: Instruction Cache to L1C
+Instruction 333, HIT in L1, fetching from L1D
+Instruction 332, Read from 0, L1D to L1C: Data from address 0
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 334, Write 256 to 12: Instruction Cache to L1C
+Instruction 334, HIT in L1, fetching from L1D
+Instruction 333, Read from 12, L1D to L1C: Data from address 12
+Instruction 334, Write 256 to 12, L1D: Writing 256 to address 12
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 335, Write 1 to 904: Instruction Cache to L1C
+Instruction 335, HIT in L1, fetching from L1D
+Instruction 334, Write 256 to 12, L1D to L1C: Wrote to address 12
+Instruction 335, Write 1 to 904, L1D: Writing 1 to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 335, Write 1 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 332, read from address 0, with result = 0
+Finished processing instruction 333, read from address 12, with result = 32
+Finished processing instruction 334, write 256 to address 12
+Finished processing instruction 335, write 1 to address 904
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 336, Write 23 to 928: Instruction Cache to L1C
+Instruction 336, HIT in L1, fetching from L1D
+Instruction 336, Write 23 to 928, L1D: Writing 23 to address 928
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 337, Read from 2093: Instruction Cache to L1C
+Instruction 337, HIT in L1, fetching from L1D
+Instruction 336, Write 23 to 928, L1D to L1C: Wrote to address 928
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 338, Write 999 to 2093: Instruction Cache to L1C
+Instruction 338, HIT in L1, fetching from L1D
+Instruction 337, Read from 2093, L1D to L1C: Data from address 2093
+Instruction 338, Write 999 to 2093, L1D: Writing 999 to address 2093
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 339, Read from 928: Instruction Cache to L1C
+Instruction 339, HIT in L1, fetching from L1D
+Instruction 338, Write 999 to 2093, L1D to L1C: Wrote to address 2093
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 339, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 336, write 23 to address 928
+Finished processing instruction 337, read from address 2093, with result = 999
+Finished processing instruction 338, write 999 to address 2093
+Finished processing instruction 339, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 340, Read from 201: Instruction Cache to L1C
+Instruction 340, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 341, Read from 1928: Instruction Cache to L1C
+Instruction 341, HIT in L1, fetching from L1D
+Instruction 340, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 342, Write 234 to 904: Instruction Cache to L1C
+Instruction 342, HIT in L1, fetching from L1D
+Instruction 341, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 342, Write 234 to 904, L1D: Writing 234 to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 343, Read from 1928: Instruction Cache to L1C
+Instruction 343, HIT in L1, fetching from L1D
+Instruction 342, Write 234 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 343, Read from 1928, L1D to L1C: Data from address 1928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 340, read from address 201, with result = 9
+Finished processing instruction 341, read from address 1928, with result = 1928
+Finished processing instruction 342, write 234 to address 904
+Finished processing instruction 343, read from address 1928, with result = 1928
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 344, Write 32 to 12: Instruction Cache to L1C
+Instruction 344, HIT in L1, fetching from L1D
+Instruction 344, Write 32 to 12, L1D: Writing 32 to address 12
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 345, Write 84 to 904: Instruction Cache to L1C
+Instruction 345, HIT in L1, fetching from L1D
+Instruction 344, Write 32 to 12, L1D to L1C: Wrote to address 12
+Instruction 345, Write 84 to 904, L1D: Writing 84 to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 346, Read from 12: Instruction Cache to L1C
+Instruction 346, HIT in L1, fetching from L1D
+Instruction 345, Write 84 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 347, Read from 3374: Instruction Cache to L1C
+Instruction 347, HIT in L1, fetching from L1D
+Instruction 346, Read from 12, L1D to L1C: Data from address 12
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 347, Read from 3374, L1D to L1C: Data from address 3374
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 344, write 32 to address 12
+Finished processing instruction 345, write 84 to address 904
+Finished processing instruction 346, read from address 12, with result = 32
+Finished processing instruction 347, read from address 3374, with result = 3374
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 348, Write 938 to 201: Instruction Cache to L1C
+Instruction 348, HIT in L1, fetching from L1D
+Instruction 348, Write 938 to 201, L1D: Writing 938 to address 201
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 349, Read from 1928: Instruction Cache to L1C
+Instruction 349, HIT in L1, fetching from L1D
+Instruction 348, Write 938 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 350, Write 0 to 0: Instruction Cache to L1C
+Instruction 350, HIT in L1, fetching from L1D
+Instruction 349, Read from 1928, L1D to L1C: Data from address 1928
+Instruction 350, Write 0 to 0, L1D: Writing 0 to address 0
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 351, Read from 928: Instruction Cache to L1C
+Instruction 351, HIT in L1, fetching from L1D
+Instruction 350, Write 0 to 0, L1D to L1C: Wrote to address 0
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 351, Read from 928, L1D to L1C: Data from address 928
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 348, write 938 to address 201
+Finished processing instruction 349, read from address 1928, with result = 1928
+Finished processing instruction 350, write 0 to address 0
+Finished processing instruction 351, read from address 928, with result = 23
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 352, Read from 201: Instruction Cache to L1C
+Instruction 352, HIT in L1, fetching from L1D
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 353, Read from 876: Instruction Cache to L1C
+Instruction 353, HIT in L1, fetching from L1D
+Instruction 352, Read from 201, L1D to L1C: Data from address 201
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 354, Write 89 to 4095: Instruction Cache to L1C
+Instruction 354, HIT in L1, fetching from L1D
+Instruction 353, Read from 876, L1D to L1C: Data from address 876
+Instruction 354, Write 89 to 4095, L1D: Writing 89 to address 4095
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 355, Write 9 to 201: Instruction Cache to L1C
+Instruction 355, HIT in L1, fetching from L1D
+Instruction 354, Write 89 to 4095, L1D to L1C: Wrote to address 4095
+Instruction 355, Write 9 to 201, L1D: Writing 9 to address 201
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 355, Write 9 to 201, L1D to L1C: Wrote to address 201
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 352, read from address 201, with result = 938
+Finished processing instruction 353, read from address 876, with result = 876
+Finished processing instruction 354, write 89 to address 4095
+Finished processing instruction 355, write 9 to address 201
+Instruction Cache: Loaded 4 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 356, Write 23 to 904: Instruction Cache to L1C
+Instruction 356, HIT in L1, fetching from L1D
+Instruction 356, Write 23 to 904, L1D: Writing 23 to address 904
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 357, Read from 3333: Instruction Cache to L1C
+Instruction 357, HIT in L1, fetching from L1D
+Instruction 356, Write 23 to 904, L1D to L1C: Wrote to address 904
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 358, Write 756 to 3333: Instruction Cache to L1C
+Instruction 358, HIT in L1, fetching from L1D
+Instruction 357, Read from 3333, L1D to L1C: Data from address 3333
+Instruction 358, Write 756 to 3333, L1D: Writing 756 to address 3333
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 359, Read from 4095: Instruction Cache to L1C
+Instruction 359, HIT in L1, fetching from L1D
+Instruction 358, Write 756 to 3333, L1D to L1C: Wrote to address 3333
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 359, Read from 4095, L1D to L1C: Data from address 4095
+********************************************************
+DONE
+********************************************************
+Processed 4 instructions...
+Finished processing instruction 356, write 23 to address 904
+Finished processing instruction 357, read from address 3333, with result = 756
+Finished processing instruction 358, write 756 to address 3333
+Finished processing instruction 359, read from address 4095, with result = 89

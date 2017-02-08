@@ -1,0 +1,39 @@
+This was a read with an address of 10008, at this address is a value of 10008
+10008 in binary is 0010011100011000
+This number with a 1-byte offset is: 00100111 = 39
+We expect a read result of 39 from this address. Actual output:
+
+Reading Instructions...
+1 instructions read in...
+Initializing components...
+Processing instructions...
+Instruction Cache: Loaded 1 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 0, Read from 10008: Instruction Cache to L1C
+Instruction 0, MISS in L1C, retrieving from L2
+Instruction 0, Read from 10008, L1C to L2C: MISS in L2 for address 10008, fetching from memory
+Instruction 0, Read from 10008, Memory: Fetching data from address 10008
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 0, Read from 10008, Memory to L2C: Data from address 10008
+L2D: Putting data for address 10008 into L2D
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 0, Read from 10008, L2C to L1C: Data from address 10008
+L1D: Putting data from address 10008 into L1D
+********************************************************
+CYCLE 3
+********************************************************
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 0, Read from 10008, L1D to L1C: Data from address 10008
+********************************************************
+DONE
+********************************************************
+Processed 1 instructions...
+Finished processing instruction 0, read from address 10008, with offset = 1, with result = 39

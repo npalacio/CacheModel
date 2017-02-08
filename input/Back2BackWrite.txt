@@ -1,0 +1,5 @@
+read 7463
+write 7463 4823
+read 7463
+write 7463 1000
+read 7463

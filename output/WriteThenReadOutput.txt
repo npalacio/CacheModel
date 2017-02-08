@@ -1,0 +1,45 @@
+We first write to address 82733 a value of 69, this address originally stores a value of 82733.
+Then we immediately read from this address, expecting a result of 69. Actual Output:
+
+Reading Instructions...
+2 instructions read in...
+Initializing components...
+Processing instructions...
+Instruction Cache: Loaded 2 instructions for L1 to process
+********************************************************
+CYCLE 0
+********************************************************
+Instruction 0, Write 69 to 82733: Instruction Cache to L1C
+Instruction 0, MISS in L1C, retrieving from L2
+Instruction 0, Write 69 to 82733, L1C to L2C: MISS in L2 for address 82733, fetching from memory
+Instruction 0, Write 69 to 82733, Memory: Fetching data from address 82733
+********************************************************
+CYCLE 1
+********************************************************
+Instruction 1, Read from 82733: Instruction Cache to L1C
+Instruction 1, MISS in L1C, Data is already being retrieved from L2
+Instruction 0, Write 69 to 82733, Memory to L2C: Data from address 82733
+L2D: Putting data for address 82733 into L2D
+********************************************************
+CYCLE 2
+********************************************************
+Instruction 0, Write 69 to 82733, L2C to L1C: Data from address 82733
+L1D: Putting data from address 82733 into L1D
+********************************************************
+CYCLE 3
+********************************************************
+Instruction 0, Write 69 to 82733, L1D: Writing 69 to address 82733
+********************************************************
+CYCLE 4
+********************************************************
+Instruction 0, Write 69 to 82733, L1D to L1C: Wrote to address 82733
+********************************************************
+CYCLE 5
+********************************************************
+Instruction 1, Read from 82733, L1D to L1C: Data from address 82733
+********************************************************
+DONE
+********************************************************
+Processed 2 instructions...
+Finished processing instruction 0, write 69 to address 82733
+Finished processing instruction 1, read from address 82733, with result = 69
