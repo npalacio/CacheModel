@@ -1,4 +1,5 @@
-Reading from and writing to 2 different addresses. Actual output:
+Reading from and writing to 2 different addresses. 
+Actual output:
 
 Reading Instructions...
 6 instructions read in...
