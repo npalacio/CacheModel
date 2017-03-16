@@ -1,0 +1,15 @@
+1 w 200
+
+Processor 1 write to address 200
+1. Bus controller read in instruction
+2. BC passes instruction to node, node passes it to instruction cache
+3. Instruction cache passes it to L1 cache
+4. L1 cache discovers it is a miss, sends instruction to request controller
+5. Processor 1 request controller requests control of the bus, node 1 continues processing and uses q's like before for waiting instructions
+6. Bus controller eventually grants processor 1 control of the bus
+7. Request controller sends out BusReadExcl to Bus Controller
+-Bus controller calls snoop method on other nodes, passing in the instruction
+-Nodes return (from snoop method) a BusItem (Ack/AckI/data), if data is needed and still not given, get from memory
+8. All other nodes respond with AckI's, memory responds with data to request controller of node 1
+9. Node 1 relinquishes control of the bus
+10. Response controller passes data to L1C which stores it and continues processing

@@ -1,0 +1,44 @@
+Will have:
+-bus controller
+	-Bus: component that is in charge of broadcasting messages on bus
+	-takes in all requests (BusRd, BusRdX, BusUp) and 'allows' all other nodes to snoop
+-node
+	-processor
+		-L1 cache
+	-instruction cache
+	-request controller: will have BusItems
+	-response controller: will only ever have data since BC is in charge of gathering responses/data for a bus request
+-memory/memory controller
+-BusItem
+	-BusRd, BusRdX, BusUpgrade
+
+Notes:
+-separate q for instructions from bus controller to nodes
+-maybe have method on each node to 'process' (returns 1 if still things to do, 0 otherwise) and 'terminate' (write output)
+-How to 'snoop' for processors that do not currently have the bus?
+-how to deal with write propagation, when should it happen?
+	-When block is in modified state and there is a BusRd for it
+	-On termination
+-Is complete bus transaction done without node processing in between?
+
+Todo:
+-decide structure and objects
+-delegate responsibilities of objects and how they will communicate
+-add MESI protocol to L1C
+-decide how to broadcast things on the bus and how to pull them off
+-Each node needs to write its output to different files -use stringbuilder and write at end?
+-Decide what output in each node will be
+
+Flow:
+-Load instructions into nodes
+1. Call process on nodes 1..N
+-Grant access to bus to someone (if any)
+	-Process bus request
+		-Distribute request to each node and get response (snooping)
+		-Get data from memory if needed
+		-Send data and anything else? to node that requested it
+-Repeat from 1
+		
+Process method in nodes:
+-Grab anything from response controller (anything besides data?)
+	-Pass any data from response controller to L1C (how?)

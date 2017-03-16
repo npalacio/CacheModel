@@ -1,0 +1,15 @@
+1 r 200
+
+Processor 1 has an instruction to read address 200
+1. Bus controller reads in the instructions and passes them out to nodes (who put them into their instruction caches)
+2. Processor 1 receives instruction in instruction cache
+3. Instruction cache sends instruction to L1 cache
+4. L1 cache discovers it is a miss, passes instruction to response controller
+5. Response controller requests control of bus, processor 1 continues processing reads (uses q's like before for instructions waiting on same thing)
+6. Bus controller gives processor 1 control of bus
+7. Processor 1 sends out BusRead request to bus controller
+- Bus controller calls snoop method on other nodes passing in the bus instruction?
+8. All other processors respond with Ack (not I since it is just a read) without data (Loop through all other processors)
+9. Memory responds with the data
+10. Processor 1 receives all the AckI's and the data, relinquishes control of bus
+11. Processor 1 stores the data in L1 and continues processing
