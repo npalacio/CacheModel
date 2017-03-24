@@ -2,14 +2,15 @@ package general;
 
 public abstract class Instruction {
 
+	private int node;
 	private int instrNum;
 	private int address;
 	
-	public Instruction(int addr){
+	public Instruction(int addr, int nodeNum){
 		this.address = addr;
 	}
 
-	public Instruction(int addr, int num){
+	public Instruction(int addr, int num, int nodeNum){
 		this.address = addr;
 		this.instrNum = num;
 	}
@@ -28,5 +29,13 @@ public abstract class Instruction {
 
 	public void setNumber(int number) {
 		this.instrNum = number;
+	}
+
+	public int getNode() {
+		return node;
+	}
+
+	public void setNode(int node) {
+		this.node = node;
 	}
 }

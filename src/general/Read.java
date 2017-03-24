@@ -4,13 +4,13 @@ public class Read extends Instruction {
 
 	private int byteOffset;
 	
-	public Read(int num, int addr) {
-		super(addr, num);
+	public Read(int num, int addr, int nodeNum) {
+		super(addr, num, nodeNum);
 		this.byteOffset = 0;
 	}
 	
-	public Read(int num, int addr, int byteOff) {
-		super(addr, num);
+	public Read(int num, int addr, int byteOff, int nodeNum) {
+		super(addr, num, nodeNum);
 		this.byteOffset = byteOff;
 	}
 

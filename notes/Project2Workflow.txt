@@ -20,6 +20,11 @@ Notes:
 	-When block is in modified state and there is a BusRd for it
 	-On termination
 -Is complete bus transaction done without node processing in between?
+-need to support priority mode
+	-nodes peek at response q and grab data that they need before replying to requests from other nodes?
+-what exactly goes in the response q?
+	-data from request, requests from other nodes?
+-BC takes in request from node then distributes that request out to other nodes?
 
 Todo:
 -decide structure and objects
@@ -39,6 +44,51 @@ Flow:
 		-Send data and anything else? to node that requested it
 -Repeat from 1
 		
-Process method in nodes:
--Grab anything from response controller (anything besides data?)
-	-Pass any data from response controller to L1C (how?)
+Process method in nodes (returns 0 if done with all instructions, 1 otherwise):
+-Grab anything from response controller (might need to snoop for data if in priority mode?) = ResponseController.Process()
+	-if Ack/AckI
+		-figure out which address it is for, put it somewhere to keep track of how many responses you have
+		-if you have all responses then you should have the data too = pass to L1C to store in L1D
+	-if data
+		-put in q from response controller to L1C
+	-if requests from other nodes
+		-change state of appropriate address and put response in request q
+-Process all instructions until you cannot anymore, this will process anything that just got its data from response controller
+-return 1 if still instructions to process, 0 if done
+
+IC.Process:
+-pass x instructions to L1C q, none if done
+
+ResponseController.Process:
+-grab anything from BC (which would just be data) and pass to L1C q
+-grab any acknowledgements from L1C q and put in separate ack q for BC
+
+L1C.Process:
+-grab anything from ResponseController q and store in memory
+-process any instructions that just got the data they needed
+-process any instructions from IC q
+-any instructions that need data or an upgrade, pass to RequestController q
+-grab any requests from other nodes from ResponseController and give acknowledgements
+
+RequestController.Process:
+-grab everything from L1C q and put in q to BC in form of BusInstruction
+
+Bus Controller flow for cycle (once all nodes return 0, we are done):
+-if bus is free = grants a node the bus, receives bus instruction from that node
+	-can only send instruction out to 1 node at a time and get response
+	-the bus will need to gather/keep track of acknowledgements so that it knows when to switch bus owners
+-distributes that request to one node's response controller (per cycle)
+-call process on nodes
+-polls separate q's in response controllers of nodes looking for acknowledgements for another nodes request
+	-if all acknowledgements in and it needs data but does not have it, grab data from memory
+		-give whatever data to node
+
+BusController:
+-owns:
+	-list of nodes
+		-q's for each node:
+			-from 
+	-memory
+	
+
+

@@ -18,43 +18,21 @@ import general.QItem;
 import general.Read;
 import general.Write;
 import level2.L2Controller;
+import project2.BusItem;
+import project2.NodeQManager;
+import project2.QManager;
 
 public class L1Controller {
 
-	//Each piece of memory will have an address. That address will tell us what set in L1 it would go in.
-	//MemoryBlock will give L1C its address, L1C will see which set it would go in and check there, decide hit or miss 
-	//and either go to L1D
-	
-	//L1C needs to know state of each cache line (valid/invalid, dirty/clean and address of block there)
-	//If not the right address and dirty, will need to evict first from L1D then put correct line in that place
-	
-	//Maybe when L1D and L2D process their queues they always go through all of them to figure out any evictions 
-	//before they are replaced?
-	
-	//On writes to the cache we will need to set dirty bit test
-	
+	private StringBuilder sb;
 	private List<ArrayList<ControllerEntry>> sets;
 	private int numberOfSets = 128;
 	private L1Data backingData;
-
-//	private List<ControllerEntry> writeBuf;
-//	private List<CacheEntry> writeBufData;
-//	
-//	private List<ControllerEntry> victim;
-//	private List<CacheEntry> victimData;
-
-//	private int bufVicSize = 4;
-
-	private Queue<QItem> toInstrCache;
-	private Queue<QItem> fromInstrCache;
-
-	private Queue<QItem> toData;
-//	private Queue<QItem> toL2;
-
-	private Queue<QItem> fromData;
-//	private Queue<QItem> fromL2;
+	private NodeQManager qman;
 	
-//	private L2Controller L2C;
+	private Queue<QItem> toData;
+	private Queue<QItem> fromData;
+
 	
 	//Create a mapping of addresses to queues so that instructions going to the same address
 	//that is not in the cache can all wait in line together for it
@@ -62,18 +40,14 @@ public class L1Controller {
 	
 	//Since processor owns L1C it will pass in the queues to communicate with it
 	//L1C initializes the other queues
-	public L1Controller(Queue<QItem> toP, Queue<QItem> fromP) {		
-		this.toInstrCache = toP;
-		this.fromInstrCache = fromP;
+	public L1Controller(StringBuilder stringB, NodeQManager qmanager) {
 
+		this.sb = stringB;
+		this.qman = qmanager;
 		this.toData = new LinkedList<QItem>();
 		this.fromData = new LinkedList<QItem>();
-
-//		this.toL2 = new LinkedList<QItem>();
-//		this.fromL2 = new LinkedList<QItem>();
 				
 		this.backingData = new L1Data(this.toData, this.fromData);
-//		this.L2C = new L2Controller(this.fromL2, this.toL2);
 		initialize();
 	}
 	

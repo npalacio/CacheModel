@@ -5,20 +5,30 @@ Processor 1 read address 100, processor 2 read address 200
 -Bus controller reads in instructions
 -BC passes instructions to corresponding nodes
 -Nodes pass instructions to their instruction caches
--BC calls process method on node 1
-	-Node 1 IC passes instructions to L1C
-	-L1C realizes miss for address 100
-	-L1C sends instruction to request controller
-	-request controller requests control of bus (puts in queue?)
--BC calls process method on node 2
-	-Node 2 IC passes instruction to L1c
-	-L1C realizes miss for address 200
-	-L1C sends instruction to request controller
-	-request controller requests control of bus
--BC grants bus to node 1
--Node 1 sends BusRd(100) to BC
--BC calls snoop on all other nodes passing in the BusRd(100) and gets BusItem's as responses
--BC realizes no data from nodes was sent so it retrieves address 100 from memory
--BC sends data back to node 1's response controller
--BC calls process method on node 1
-	-Node 1
+-BC enters cycle 1
+	-BC checks if anyone needs control of bus (no one does)
+	-BC calls process method on node 1
+		-Node 1 IC passes instructions to L1C
+		-L1C realizes miss for address 100
+		-L1C sends instruction to request controller
+		-request controller requests control of bus (puts in queue?)
+	-BC calls process method on node 2
+		-Node 2 IC passes instruction to L1c
+		-L1C realizes miss for address 200
+		-L1C sends instruction to request controller
+		-request controller requests control of bus
+	-Node 1 sends BusRd(100) to BC
+	-BC polls q's that hold acknowledgements from other nodes, gets nothing
+-BC enters cycle 2
+	-BC grants bus to node 1 and receives BusRd(100)
+	-BC sends out BusRd(100) to next node that needs to receive it (2)
+	-BC calls process on node 1
+		-Node 1 looks for anything in its response controller, which would just be data if any or requests from other nodes -nothing there this time
+			-if data found, pass from response to L1C
+		-Node 1 IC loads more instructions to L1C, if any left -none left here
+		-Node 1 L1C processes all instructions that it has, checking for any incoming data from ResponseController -just waiting on 100
+		-Node 1 L1C sends any data requests to request controller -none
+	-BC calls process on node 2
+		-node 2 checks response controller for data -none there
+		-node 2 calls process on IC -nothing left
+		-node 2 
