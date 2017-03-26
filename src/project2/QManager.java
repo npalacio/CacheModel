@@ -46,7 +46,7 @@ public class QManager {
 		List<Queue<BusItem>> Qs = this.nodeQs.get(nodeNum);
 		Queue<BusItem> BC2Resp = Qs.get(1);
 		if(!BC2Resp.offer(item)) {
-			System.out.println("ERROR: Failed to add item to Q in QManager.BC2RespPush");
+			System.out.println("ERROR: Failed to add item to Q for node " + nodeNum + " in QManager.BC2RespPush");
 		}
 	}
 	public BusItem BC2RespPull(int nodeNum) {
@@ -61,7 +61,7 @@ public class QManager {
 		List<Queue<BusItem>> Qs = this.nodeQs.get(nodeNum);
 		Queue<BusItem> Resp2BC = Qs.get(2);
 		if(!Resp2BC.offer(item)) {
-			System.out.println("ERROR: Failed to add item to Q in QManager.Resp2BCPush");
+			System.out.println("ERROR: Failed to add item to Q for node " + nodeNum + " in QManager.Resp2BCPush");
 		}
 	}
 	public BusItem Resp2BCPull(int nodeNum) {
@@ -76,7 +76,7 @@ public class QManager {
 		List<Queue<BusItem>> Qs = this.nodeQs.get(nodeNum);
 		Queue<BusItem> Requ2BC = Qs.get(0);
 		if(!Requ2BC.offer(item)) {
-			System.out.println("ERROR: Failed to add item to Q in QManager.Requ2BCPush");
+			System.out.println("ERROR: Failed to add item to Q for node " + nodeNum + " in QManager.Requ2BCPush");
 		}
 	}
 	public BusItem Requ2BCPull(int nodeNum) {

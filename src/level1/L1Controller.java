@@ -21,6 +21,7 @@ import level2.L2Controller;
 import project2.BusItem;
 import project2.NodeQManager;
 import project2.QManager;
+import project2.State;
 
 public class L1Controller {
 
@@ -29,10 +30,6 @@ public class L1Controller {
 	private int numberOfSets = 128;
 	private L1Data backingData;
 	private NodeQManager qman;
-	
-	private Queue<QItem> toData;
-	private Queue<QItem> fromData;
-
 	
 	//Create a mapping of addresses to queues so that instructions going to the same address
 	//that is not in the cache can all wait in line together for it
@@ -44,144 +41,209 @@ public class L1Controller {
 
 		this.sb = stringB;
 		this.qman = qmanager;
-		this.toData = new LinkedList<QItem>();
-		this.fromData = new LinkedList<QItem>();
 				
-		this.backingData = new L1Data(this.toData, this.fromData);
-		initialize();
+		Initialize();
 	}
 	
-	private void initialize() {
+	private void Initialize() {
 		//Initialize L1Controller entries
 		List<ArrayList<ControllerEntry>> newSets = new ArrayList<ArrayList<ControllerEntry>>(numberOfSets);
 		for(int i = 0; i < this.numberOfSets; i++) {
 			ArrayList<ControllerEntry> set = new ArrayList<ControllerEntry>(2);
-			ControllerEntry entry0 = new ControllerEntry(false, false, Location.L1D, -1);
-			ControllerEntry entry1 = new ControllerEntry(false, false, Location.L1D, -1);
+			ControllerEntry entry0 = new ControllerEntry(State.INVALID, -1, new byte[32]);
+			ControllerEntry entry1 = new ControllerEntry(State.INVALID, -1, new byte[32]);
 			set.add(0, entry0);
 			set.add(1, entry1);
 			newSets.add(i, set);
 		}
 		sets = newSets;
 		
-		//Initialize writeBuf and victim caches
-//		List<ControllerEntry> wBuf = new ArrayList<ControllerEntry>(this.bufVicSize);
-//		List<ControllerEntry> vic = new ArrayList<ControllerEntry>(this.bufVicSize);
-//		List<CacheEntry> wBData = new ArrayList<CacheEntry>(this.bufVicSize);
-//		List<CacheEntry> vicData = new ArrayList<CacheEntry>(this.bufVicSize);
-//		for(int i = 0; i < this.bufVicSize; i++) {
-//			ControllerEntry wBufEntry = new ControllerEntry(false, false, Location.WRITE_BUFFER, -1);
-//			ControllerEntry vicEntry = new ControllerEntry(false, false, Location.VICTIM, -1);
-//			CacheEntry wBufE = new CacheEntry(-1, new byte[32]);
-//			CacheEntry vicE = new CacheEntry(-1, new byte[32]);
-//			wBuf.add(i, wBufEntry);
-//			vic.add(i, vicEntry);
-//			wBData.add(i, wBufE);
-//			vicData.add(i, vicE);
-//		}
-//		this.writeBuf = wBuf;
-//		this.victim = vic;
-//		this.writeBufData = wBData;
-//		this.victimData = vicData;
-		
 		//Initialize waiting line for instructions that miss going to the same address
 		this.instructionMisses = new HashMap<Integer, Queue<Instruction>>();
 	}
 	
-	//This method should only return false if every single Queue is empty
-	//Potential pointer problem reusing same var for each QItem?
-	public void process() {
-		//This method will go to all 3 from-q's and pull one off the top
-		QItem q = this.fromInstrCache.poll();
-		if(q != null) {
-			processFromProc(q);
+	public boolean Process() {
+		//TODO: Implement
+		boolean ret = false;
+		if(ProcessFromResp()) {
+			ret = true;
 		}
-		q = this.fromData.poll();
-		if(q != null) {
-			processFromData(q);
+		if(ProcessWaitingInstructions()) {
+			ret = true;
 		}
-//		q = this.fromL2.poll();
-//		if(q != null) {
-//			processFromL2(q);
-//		}
-		this.backingData.process();
-//		this.L2C.process();
+		if(ProcessFromIC()) {
+			ret = true;
+		}
+		if(ProcessAcks()) {
+			ret = true;
+		}
+		return ret;
 	}
 	
-	//Hit and valid: tell L1Data to give us the data
-	//Miss or Invalid: check for a waiting line in case the data is already on its way for this address, 
-	//otherwise tell L2C to give us the data
-	//This will always only be a read or a write
-	private void processFromProc(QItem q) {
-		Instruction instr = q.getInstruction();
-		int instrAddress = instr.getAddress();
-		System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ": Instruction Cache to L1C");
-		int setNum = getSet(instrAddress);
-		//Get the set that the address would be in if it is in cache
-		ArrayList<ControllerEntry> set = this.sets.get(setNum);
-		ControllerEntry matchingEntry = null;
-		boolean foundMatch = false;
-		for(ControllerEntry e : set) {
-			if(instrAddress == e.getAddress()) {
-				matchingEntry = e;
-				foundMatch = true;
-			}
-		}
-//		if(!foundMatch) {
-//			for(ControllerEntry e : this.writeBuf) {
-//				if(instrAddress == e.getAddress() && e.isValid()) {
-//					matchingEntry = e;
-//					foundMatch = true;
-//					processInWriteBuf(q, e);
-//					return;
+	private boolean ProcessFromResp() {
+		//TODO: Implement
+		//if data/acks from request = either store the data or just process instructions for that address depending on what the request was
+			//If request was for an upgrade
+		//if request from node = put in q for processing at end
+	}
+	
+	private boolean ProcessWaitingInstructions() {
+		//TODO: Implement
+		//Check if there are any waiting lines and try to resolve them
+	}
+	
+	private boolean ProcessFromIC() {
+		//TODO: Implement
+		//Load new instructions from IC
+	}
+	
+	private boolean ProcessAcks() {
+		//TODO: Implement
+		//Service requests from other nodes
+	}
+	
+//	private void processFromData(QItem q) {
+//		//This is either:
+//		//1. Data coming back from a read instruction: pass it along to the processor
+//		//2. Data coming back from an eviction: put it in WB or Victim
+//		Instruction instr = q.getInstruction();
+//		if(instr instanceof Read) {
+//			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L1D to L1C: Data from address " + instr.getAddress());
+//			//It is data coming back from cache, send it to processor
+//			if(q.getData() != null) {
+//				this.toInstrCache.offer(q);
+//			} else {
+//				System.out.println("ERROR: Read coming back from L1D to L1C did not contain data!");
+//			}
+//		} else if(instr instanceof Write) {
+//			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L1D to L1C: Wrote to address " + instr.getAddress());
+//			this.toInstrCache.offer(q);
+//		} else if(instr instanceof Eviction) {
+//			processL1DEviction(q);
+////		} else if(instr instanc) {
+//			
+//		} else {
+//			System.out.println("ERROR: QItem coming back from L1D to L1C was not of type Read or Eviction!");
+//		}
+//	}
+//	
+//	private int getSet(int addr) {
+//		int setNum = addr % this.numberOfSets;
+//		return setNum;
+//	}
+	
+//	public boolean areAnyLeft() {
+//		boolean result = false;
+//		if(this.fromInstrCache.size() > 0) {
+//			result = true;
+//		} else if(this.toData.size() > 0) {
+//			result = true;
+//		} else if(this.fromData.size() > 0) {
+//			result = true;
+//		}
+//		return result;
+//	}
+//	
+//	public void printL1Cache() {
+//		System.out.println("Printing L1 Cache...");
+//		if(sets == null) {
+//			System.out.println("\tL1C not initialized!");
+//			return;
+//		}
+//		int i = 0;
+//		for(List<ControllerEntry> set : this.sets) {
+//			System.out.println("Set " + i);
+//			int j = 0;
+//			for(ControllerEntry entry : set) {
+//				System.out.println("\tEntry " + j);
+//				int L1CAddr = entry.getAddress();
+//				CacheEntry dataEntry = backingData.getSets().get(i).get(j);
+//				int L1DAddr = dataEntry.getAddress();
+//				if(L1CAddr == L1DAddr) {
+//					System.out.println("\t\tAddress = " + L1CAddr + ", data = " + java.nio.ByteBuffer.wrap(dataEntry.getData()).getInt() + 
+//									   ", isValid = " + entry.isValid() + ", isDirty = " + entry.isDirty());
+//				} else {
+//					System.out.println("ERROR: Controller address = " + L1CAddr + ", Data address = " + L1DAddr);
 //				}
+//				j++;
+//			}
+//			i++;
+//		}
+//	}
+//	//Hit and valid: tell L1Data to give us the data
+//	//Miss or Invalid: check for a waiting line in case the data is already on its way for this address, 
+//	//otherwise tell L2C to give us the data
+//	//This will always only be a read or a write
+//	private void processFromProc(QItem q) {
+//		Instruction instr = q.getInstruction();
+//		int instrAddress = instr.getAddress();
+//		System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ": Instruction Cache to L1C");
+//		int setNum = getSet(instrAddress);
+//		//Get the set that the address would be in if it is in cache
+//		ArrayList<ControllerEntry> set = this.sets.get(setNum);
+//		ControllerEntry matchingEntry = null;
+//		boolean foundMatch = false;
+//		for(ControllerEntry e : set) {
+//			if(instrAddress == e.getAddress()) {
+//				matchingEntry = e;
+//				foundMatch = true;
 //			}
 //		}
-//		if(!foundMatch) {
-//			for(ControllerEntry e : this.victim) {
-//				if(instrAddress == e.getAddress() && e.isValid()) {
-//					matchingEntry = e;
-//					foundMatch = true;
-//					processInVictim(q, e);
-//					return;
-//				}
-//			}			
-//		}
-		if(matchingEntry != null) {
-			if(matchingEntry.isValid()) {
-				//HIT
-				System.out.println("Instruction " + instr.getNumber() + ", HIT in L1, fetching from L1D");
-				QItem qu = new QItem(instr);
-				this.toData.offer(qu);
-				//If it is a write instruction and we have it then that entry is now dirty
-				if(instr instanceof Write) {
-					matchingEntry.setDirty(true);
-				} else if(instr instanceof Eviction) {
-					//Set valid, dirty and address for controller
-					matchingEntry.setValid(false);
-					matchingEntry.setDirty(false);
-					matchingEntry.setLoc(Location.L1D);
-					matchingEntry.setAddress(-1);
-				}
-			}
-		} else {
-			//MISS
-			//Check if a waiting line already exists
-			Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
-			if(waitingLine != null) {
-				//There is already a line for this address, put the instruction in line
-				System.out.println("Instruction " + instr.getNumber() + ", MISS in L1C, Data is either being retrieved from L2 or evicted from L1D and will be in L1 WB or L1 Victim cache");
-				waitingLine.offer(instr);
-			} else {
-				//There is no line for this, we need to tell L2 to give us the data and then create the line
-//				System.out.println("Instruction " + instr.getNumber() + ", MISS in L1C, retrieving from L2");
+////		if(!foundMatch) {
+////			for(ControllerEntry e : this.writeBuf) {
+////				if(instrAddress == e.getAddress() && e.isValid()) {
+////					matchingEntry = e;
+////					foundMatch = true;
+////					processInWriteBuf(q, e);
+////					return;
+////				}
+////			}
+////		}
+////		if(!foundMatch) {
+////			for(ControllerEntry e : this.victim) {
+////				if(instrAddress == e.getAddress() && e.isValid()) {
+////					matchingEntry = e;
+////					foundMatch = true;
+////					processInVictim(q, e);
+////					return;
+////				}
+////			}			
+////		}
+//		if(matchingEntry != null) {
+//			if(matchingEntry.isValid()) {
+//				//HIT
+//				System.out.println("Instruction " + instr.getNumber() + ", HIT in L1, fetching from L1D");
 //				QItem qu = new QItem(instr);
-//				this.toL2.offer(qu);
-//				this.instructionMisses.put(instr.getAddress(), new LinkedList<Instruction>());
-				//TODO: I think this is where I issue a bus request for the data?
-			}
-		}
-	}
+//				this.toData.offer(qu);
+//				//If it is a write instruction and we have it then that entry is now dirty
+//				if(instr instanceof Write) {
+//					matchingEntry.setDirty(true);
+//				} else if(instr instanceof Eviction) {
+//					//Set valid, dirty and address for controller
+//					matchingEntry.setValid(false);
+//					matchingEntry.setDirty(false);
+//					matchingEntry.setLoc(Location.L1D);
+//					matchingEntry.setAddress(-1);
+//				}
+//			}
+//		} else {
+//			//MISS
+//			//Check if a waiting line already exists
+//			Queue<Instruction> waitingLine = this.instructionMisses.get(new Integer(instrAddress));
+//			if(waitingLine != null) {
+//				//There is already a line for this address, put the instruction in line
+//				System.out.println("Instruction " + instr.getNumber() + ", MISS in L1C, Data is either being retrieved from L2 or evicted from L1D and will be in L1 WB or L1 Victim cache");
+//				waitingLine.offer(instr);
+//			} else {
+//				//There is no line for this, we need to tell L2 to give us the data and then create the line
+////				System.out.println("Instruction " + instr.getNumber() + ", MISS in L1C, retrieving from L2");
+////				QItem qu = new QItem(instr);
+////				this.toL2.offer(qu);
+////				this.instructionMisses.put(instr.getAddress(), new LinkedList<Instruction>());
+//				//TODO: I think this is where I issue a bus request for the data?
+//			}
+//		}
+//	}
 	
 	//Method to process the data that comes back from L2C
 //	private void processFromL2(QItem q) {						
@@ -377,35 +439,10 @@ public class L1Controller {
 //			System.out.println("ERROR: L2C sent L1C something other than a read, write or eviction instruction!");
 //		}
 //	}
-	
-	private void processFromData(QItem q) {
-		//This is either:
-		//1. Data coming back from a read instruction: pass it along to the processor
-		//2. Data coming back from an eviction: put it in WB or Victim
-		Instruction instr = q.getInstruction();
-		if(instr instanceof Read) {
-			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L1D to L1C: Data from address " + instr.getAddress());
-			//It is data coming back from cache, send it to processor
-			if(q.getData() != null) {
-				this.toInstrCache.offer(q);
-			} else {
-				System.out.println("ERROR: Read coming back from L1D to L1C did not contain data!");
-			}
-		} else if(instr instanceof Write) {
-			System.out.println("Instruction " + instr.getNumber() + ", " + instr.toString() + ", L1D to L1C: Wrote to address " + instr.getAddress());
-			this.toInstrCache.offer(q);
-		} else if(instr instanceof Eviction) {
-			processL1DEviction(q);
-//		} else if(instr instanc) {
-			
-		} else {
-			System.out.println("ERROR: QItem coming back from L1D to L1C was not of type Read or Eviction!");
-		}
-	}
-	
+
 	//If L1D has sent an eviction then that eviction had to go through L1C first meaning that the L1C entry has already been cleared
 	//This puts the evicted line from L1D in either WB or Victim cache depending on if it is dirty or not
-	private void processL1DEviction(QItem q) {
+//	private void processL1DEviction(QItem q) {
 		//TODO: Figure out new way to process eviction from L1Data
 //		Eviction e = (Eviction) q.getInstruction();
 //		int instrAddress = e.getAddress();
@@ -541,7 +578,7 @@ public class L1Controller {
 //				}
 //			}
 //		}
-	}
+//	}
 	
 	//Processes an instruction that needs an address that is currently in the write buffer
 	//WARNING: Any changes in here you should double check processInVictim, duplicate code
@@ -647,60 +684,7 @@ public class L1Controller {
 //		}
 //	}
 	
-	private int getSet(int addr) {
-		int setNum = addr % this.numberOfSets;
-		return setNum;
-	}
-	
-	public boolean areAnyLeft() {
-		boolean result = false;
-//		if(this.toInstrCache.size() > 0) {
-//			result = true;
-//		} else 
-		if(this.fromInstrCache.size() > 0) {
-			result = true;
-		} else if(this.toData.size() > 0) {
-			result = true;
-		} else if(this.fromData.size() > 0) {
-			result = true;
-		}
-//		} else if(this.toL2.size() > 0) {
-//			result = true;
-//		} else if(this.fromL2.size() > 0) {
-//			result = true;
-//		} else if(this.L2C.areAnyLeft()) {
-//			result = true;
-//		}
-//		System.out.println("Are any left? " + result);
-		return result;
-	}
-	
-	public void printL1Cache() {
-		System.out.println("Printing L1 Cache...");
-		if(sets == null) {
-			System.out.println("\tL1C not initialized!");
-			return;
-		}
-		int i = 0;
-		for(List<ControllerEntry> set : this.sets) {
-			System.out.println("Set " + i);
-			int j = 0;
-			for(ControllerEntry entry : set) {
-				System.out.println("\tEntry " + j);
-				int L1CAddr = entry.getAddress();
-				CacheEntry dataEntry = backingData.getSets().get(i).get(j);
-				int L1DAddr = dataEntry.getAddress();
-				if(L1CAddr == L1DAddr) {
-					System.out.println("\t\tAddress = " + L1CAddr + ", data = " + java.nio.ByteBuffer.wrap(dataEntry.getData()).getInt() + 
-									   ", isValid = " + entry.isValid() + ", isDirty = " + entry.isDirty());
-				} else {
-					System.out.println("ERROR: Controller address = " + L1CAddr + ", Data address = " + L1DAddr);
-				}
-				j++;
-			}
-			i++;
-		}
-	}
+
 	
 //	public void printL2Cache() {
 //		this.L2C.printCache();

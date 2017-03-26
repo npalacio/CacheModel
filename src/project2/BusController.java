@@ -13,26 +13,38 @@ import java.util.Map;
 import java.util.Queue;
 
 import general.Instruction;
+import general.Memory;
 import general.Read;
 import general.Write;
 
 public class BusController {
 
+	//Communications
 	private QManager qman;
+
+	//Nodes
 	private List<Node> nodes = new ArrayList<Node>();
 	private Integer numberOfNodes = -1;
 	private List<List<Instruction>> nodeInstructions;
-	//Maps a node to the q's between that node and this BC
-	private Map<Node, List<Queue<BusItem>>> nodesToQs = new HashMap<Node, List<Queue<BusItem>>>();
+	
+	//State of bus
 	private Integer busOwner = -1;
 	private Integer prevBusOwner = -1;
+	
+	//State of request
 	private Integer responseNum = 0;
-	private boolean acksReady = false;
+	private Integer busReqAddr;
 	private byte[] dataForRequest;
+	private boolean acksReady = false;
+	
+	//State of processing instructions
 	private Integer cycleCount = 0;
 	
+	//Memory
+	private Integer memSize = 131072;
+	private Memory memory;
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		BusController bc = new BusController();
 		bc.Initialize(args);
 	}
@@ -40,8 +52,13 @@ public class BusController {
 	private void Initialize(String[] args) {
 		String fileName = args[0];
 		//-1 implies no one owns the bus
+		InitializeMemory();
 		InitializeNodes();
 		ProcessInstructions(fileName);
+	}
+	
+	private void InitializeMemory() {
+		this.memory = new Memory(this.memSize);
 	}
 	
 	private void ProcessInstructions(String fileName) {
@@ -82,6 +99,7 @@ public class BusController {
 				line = reader.readLine();
 			}
 			//TODO: Loop through process until we are done (FinishOutProcessing()?)
+			FinishProcessing();
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -102,13 +120,17 @@ public class BusController {
 	}
 	
 	private void SendInstructionBatch() {
-		//TODO: Implement
+		for(int i = 0; i < this.numberOfNodes; i++) {
+			List<Instruction> instructions = this.nodeInstructions.get(i);
+			Node n = this.nodes.get(i);
+			n.AddInstructions(instructions);
+		}
+		this.nodeInstructions = new ArrayList<List<Instruction>>(this.numberOfNodes);
 		//Call process
 		Process();
 	}
 	
 	private void InitializeNodes() {
-		//TODO: Implement
 		this.nodeInstructions = new ArrayList<List<Instruction>>(this.numberOfNodes);
 		this.qman = new QManager(this.numberOfNodes);
 		for(int i = 0; i < this.numberOfNodes; i++) {
@@ -117,12 +139,18 @@ public class BusController {
 	}
 
 	private void CreateNode(int i) {
-		Node node = new Node(i, qman);
+		Node node = new Node(i, this.qman);
 		this.nodes.add(i, node);
 	}
 	
+	private void FinishProcessing() {
+		while(Process()) {
+			//Keep going
+		}
+		//We are done
+	}
+	
 	private boolean Process() {
-		//TODO: Implement
 		//Every cycle we can only do 1 of these things:
 			//Broadcast a request for a node
 			//Send data to a node (if all acks are in)
@@ -130,7 +158,7 @@ public class BusController {
 		//Check if anyone needs the bus (if no one currently owns it) and grant them the bus
 		//If someone got the bus, broadcast their request if necessary
 		boolean notDone = false;
-		if(acksReady) {
+		if(this.acksReady) {
 			//Acks are all in, pass data/acks
 			PassDataToOwner();
 			if(ProcessNodes()) {
@@ -149,10 +177,6 @@ public class BusController {
 			}
 			TryGrabAcks();
 		}		
-		//Call QManager.Resp2BCPull(nodeNum) on all nodes to grab any acknowledgements available
-		if(this.busOwner != -1) {
-			TryGrabAcks();
-		}
 		this.cycleCount++;
 		//If any nodes are still processing we are not done
 		//If there is a bus owner still we are not done (waiting on acks)
@@ -172,16 +196,34 @@ public class BusController {
 	}
 	
 	private void PassDataToOwner() {
-		//TODO: Implement
 		//All the acks are in for a nodes request, send them the data/acks
+		if(this.busOwner == -1) {
+			System.out.println("ERROR: In PassDataToOwner, the bus owner is not set, returning");
+			return;
+		}
+		if(this.busReqAddr == -1) {
+			System.out.println("ERROR: In PassDataToOwner, bus request address is not set, returning");
+			return;
+		}
+		BusItem item;
+		if(this.dataForRequest != null) {
+			//Data is there
+			//Create the BusAcks item and pass to the bus owning node
+			item = new BusAcks(this.busReqAddr.intValue(), this.dataForRequest.clone());
+		} else {
+			//Data is not there, need to grab it from memory
+			byte[] data = this.memory.getData(this.busReqAddr);
+			item = new BusAcks(this.busReqAddr, data);
+		}
+		this.qman.BC2RespPush(item, this.busOwner);
+		ResetBusRequestValues();
 	}
 	
 	private void TryGrantBus() {
-		//TODO: Implement
 		//See if anyone wants the bus, if they do grab the item from their Q and broadcast it
 		BusItem bi = FindItem();
 		if(bi != null) {
-			Broadcast(bi);
+			ProcessRequest(bi);
 		}
 	}
 	
@@ -189,35 +231,99 @@ public class BusController {
 	private BusItem FindItem() {
 		//Need to fairly grant bus ownership
 		BusItem bi = null;
-		int start;
+		int curr;
 		if(this.prevBusOwner == -1) {
-			start = 0;
+			curr = 0;
 		} else {
-			start = (this.prevBusOwner + 1) % 3;
+			curr = (this.prevBusOwner + 1) % 3;
 		}
 		for(int i = 0; i < this.numberOfNodes; i++) {
-			bi = qman.Requ2BCPull(start);
+			bi = qman.Requ2BCPull(curr);
 			if(bi != null) {
 				//We have a request
-				break;
+				if(bi instanceof BusRequest) {
+					this.busOwner = curr;
+					break;
+				} else {
+					System.out.println("ERROR: In FindItem, item pulled from Requ2BC for node " + i + "was not of type BusRequest, returning null");
+					return null;
+				}
 			}
-			start = (start + 1) % 3;
+			curr = (curr + 1) % 3;
 		}
 		return bi;
 	}
 	
 	private void TryGrabAcks() {
-		//TODO: Implement
 		//Loop through each node and check QManager.Resp2BC (which will return an ack if any exist)
-			//BREAK AFTER GRABBING ONE ACK
-			//Grab any data that the node sent back
-			//Increment this.responseNum
-		//if all acks are in and you take away bus ownership be sure to keep track of prevBusOwner and reset responseNum
-		//and set acksReady = true
-		//if it needed data be sure to give it data, grab from memory if necessary
+		BusItem item = null;
+		for(int i = 0; i < this.numberOfNodes; i++) {
+			if(i == this.busOwner) continue;
+			item = this.qman.Resp2BCPull(i);
+			if(item != null) {
+				if(!(item instanceof BusAck)) {
+					System.out.println("ERROR: Inside TryGrabAcks, item pulled from node " + i + " Resp2BC was not of type BusAcks, returning");
+					return;
+				}
+				//We have an ack
+				ProcessAck((BusAck) item);
+				break;
+			}
+		}
 	}
 	
-	private void Broadcast(BusItem item) {
-		//TODO: Implement
+	private void ProcessRequest(BusItem item) {
+		//Set other BC vars to the new request we have
+		BusRequest br = (BusRequest) item;
+		this.busReqAddr = br.getAddress();
+		
+		//TODO: Handle the case if the request is just to write something back?
+		//Unless the write back always comes as part of an acknowledgement?
+		
+		//Broadcast a request for a node to all other nodes
+		for(int i = 0; i < this.numberOfNodes; i++) {
+			//Send out request to all nodes besides the one who sent the request (aka busOwner)
+			if(i == this.busOwner) continue;
+			//Put this request into the response controller for each node
+			this.qman.BC2RespPush(item, i);
+		}
+	}
+	
+	private void ResetBusRequestValues() {
+		this.busReqAddr = -1;
+		this.dataForRequest = null;
+		this.prevBusOwner = this.busOwner;
+		this.busOwner = -1;
+		this.acksReady = false;
+	}
+	
+	private void ProcessAck(BusAck item) {
+		//Grab variables
+		byte[] dataFromNode = item.getData();
+		Integer address = item.getAddress();
+		if(address != this.busReqAddr) {
+			System.out.println("ERROR: In ProcessAck, node " + item.getNodeNum() + " returned BusAck with address " + 
+								address + ", but the BC was waiting for BusAck for address " + this.busReqAddr);
+			return;
+		}
+		
+		this.responseNum++;
+
+		//Grab any data that the node sent back = if node sent data back it needs to be written to memory
+		if(dataFromNode != null) {
+			this.memory.setData(address, dataFromNode.clone());
+			if(this.dataForRequest != null)
+				System.out.println("WARNING: In ProcessAck, a node sent back data with an ack but the BC dataForRequest has already been set");
+			this.dataForRequest = dataFromNode.clone();
+		}
+
+		//if all acks are in, Set acksReady = true
+		if(this.responseNum == this.numberOfNodes - 1) {
+			//All acks are in
+			this.acksReady = true;
+		} else if(this.responseNum > this.numberOfNodes - 1) {
+			System.out.println("ERROR: In ProcessAck, the number of responses received > number of nodes who need to send a reponse, returning");
+			return;
+		}
 	}
 }

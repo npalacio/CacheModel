@@ -64,7 +64,7 @@ ResponseController.Process:
 -grab any acknowledgements from L1C q and put in separate ack q for BC
 
 L1C.Process:
--grab anything from ResponseController q and store in memory
+-grab anything from ResponseController q and store in memory (if data) otherwise give ack/ackI
 -process any instructions that just got the data they needed
 -process any instructions from IC q
 -any instructions that need data or an upgrade, pass to RequestController q
@@ -83,12 +83,12 @@ Bus Controller flow for cycle (once all nodes return 0, we are done):
 	-if all acknowledgements in and it needs data but does not have it, grab data from memory
 		-give whatever data to node
 
-BusController:
--owns:
-	-list of nodes
-		-q's for each node:
-			-from 
-	-memory
+Avoiding deadlock:
+	If nodes A and B want the same address, one of them will get control of the bus, lets say A. A broadcasts a request for that
+	address. All other nodes see that request and process it eventually. 'A' eventually gets that address and as soon as A
+	gives up control of the bus, B gets control of the bus and then sends out a request for that same address. So right now
+	B is waiting to process instructions to that address until it gets that address. A will receive that request but A will already
+	have that address and A will process any instructions that it has for that address before giving it up.
 	
-
+Maybe take away L1Data and move data to inside of a controller entry?
 

@@ -36,20 +36,40 @@ public class Node {
 		this.nodeQman = new NodeQManager();
 		this.RequContr = new RequestController(sb, nodeQman);
 		this.RespContr = new ResponseController(sb, nodeQman);
-		//START HERE!!!!
 		this.L1C = new L1Controller(sb, nodeQman);
+		this.IC = new InstructionCache(sb, nodeQman);
 	}
 	
 	//Return true if still stuff to do, false otherwise
 	public boolean Process() {
-		
+		//TODO: Implement
+		boolean ret = false;
+		if(this.RespContr.Process()) {
+			ret = true;
+		}
+		if(this.IC.Process()){
+			ret = true;
+		}
+		if(this.L1C.Process()) {
+			ret = true;
+		}
+		if(this.RequContr.Process()) {
+			ret = true;
+		}
+		return ret;
 	}
 	
-	public void addInstructions(List<Instruction> instructions) {
+	//TODO: Create methods that Requ/Resp controllers can call to communicate with BC since only the node
+	//knows what number it is
+	
+	public void AddInstructions(List<Instruction> instructions) {
 		//TODO: Implement method to put these into IC
+		if(instructions.size() > 0) {
+			this.IC.AddInstructions(instructions);
+		}
 	}
 	
-	private void writeToOutputFile() {
+	private void WriteToOutputFile() {
 		//TODO: Implement
 	}
 
