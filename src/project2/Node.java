@@ -34,8 +34,8 @@ public class Node {
 	
 	private void Initialize() {
 		this.nodeQman = new NodeQManager();
-		this.RequContr = new RequestController(sb, nodeQman);
-		this.RespContr = new ResponseController(sb, nodeQman);
+		this.RequContr = new RequestController(sb, nodeQman, this);
+		this.RespContr = new ResponseController(sb, nodeQman, this);
 		this.L1C = new L1Controller(sb, nodeQman);
 		this.IC = new InstructionCache(sb, nodeQman);
 	}
@@ -58,10 +58,7 @@ public class Node {
 		}
 		return ret;
 	}
-	
-	//TODO: Create methods that Requ/Resp controllers can call to communicate with BC since only the node
-	//knows what number it is
-	
+		
 	public void AddInstructions(List<Instruction> instructions) {
 		//TODO: Implement method to put these into IC
 		if(instructions.size() > 0) {
@@ -73,4 +70,18 @@ public class Node {
 		//TODO: Implement
 	}
 
+	//TODO: Create methods that Requ/Resp controllers can call to communicate with BC since only the node
+	//knows what number it is
+	public void Requ2BCPush(BusItem item) {
+		this.qman.Requ2BCPush(item, this.nodeNum);
+	}
+
+	public void Resp2BCPush(BusItem item) {
+		this.qman.Resp2BCPush(item, this.nodeNum);
+	}
+
+	public Integer getNodeNum() {
+		return nodeNum;
+	}
+	
 }

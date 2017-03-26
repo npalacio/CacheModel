@@ -6,10 +6,12 @@ public class ResponseController {
 	
 	private StringBuilder sb;
 	private NodeQManager qman;
+	private Node parent;
 	
-	public ResponseController(StringBuilder s, NodeQManager nodeQmanager) {
+	public ResponseController(StringBuilder s, NodeQManager nodeQmanager, Node parent) {
 		this.sb = s;
 		this.qman = nodeQmanager;
+		this.parent = parent;
 	}
 	
 	public boolean Process() {

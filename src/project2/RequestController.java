@@ -9,10 +9,12 @@ public class RequestController {
 	
 	private StringBuilder sb;
 	private NodeQManager nodeQ;
+	private Node parent;
 	
-	public RequestController(StringBuilder s, NodeQManager nodeQmanager) {
+	public RequestController(StringBuilder s, NodeQManager nodeQmanager, Node parent) {
 		this.sb = s;
 		this.nodeQ = nodeQmanager;
+		this.parent = parent;
 	}
 	
 	public boolean Process() {
@@ -22,32 +24,30 @@ public class RequestController {
 		if(ProcessFromL1C()) {
 			ret = true;
 		}
-		//Push bus instructions to BC Q
-		if(ProcessToBus()) {
-			ret = true;
-		}
 		return ret;
 	}
 	
-	//TODO: Create methods to communicate with BC that go through node
-	
 	private boolean ProcessFromL1C() {
-		//TODO: Implement
 		boolean ret  = false;
 		QItem item = this.nodeQ.L1C2RequPull();
 		while(item != null) {
 			ret = true;
 			ProcessQItem(item);
 		}
+		return ret;
 	}
 	
 	private void ProcessQItem(QItem item) {
 		//This is L1C saying it needs an address from the bus
-		Integer requAddr = item.getInstruction().getAddress();
-		BusItem br = new BusRequest();
+		Instruction instr = item.getInstruction();
+		Integer requAddr = instr.getAddress();
+		RequestType type = item.getType();
+		if(type == null) {
+			System.out.println("ERROR: Inside ProcessQItem in RequController, item grabbed from L1C did not have RequestType set, returning");
+			return;
+		}
+		BusItem br = new BusRequest(requAddr, type);
+		this.parent.Requ2BCPush(br);
 	}
 	
-	private boolean ProcessToBus() {
-		//TODO: Implement
-	}
 }
