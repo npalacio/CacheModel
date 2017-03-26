@@ -206,6 +206,7 @@ public class BusController {
 			return;
 		}
 		BusItem item;
+		//TODO: Figure out how to get state of address (Exclusive/shared)
 		if(this.dataForRequest != null) {
 			//Data is there
 			//Create the BusAcks item and pass to the bus owning node

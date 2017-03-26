@@ -18,7 +18,10 @@ import general.QItem;
 import general.Read;
 import general.Write;
 import level2.L2Controller;
+import project2.BusAcks;
 import project2.BusItem;
+import project2.BusRequest;
+import project2.BusWriteBack;
 import project2.NodeQManager;
 import project2.QManager;
 import project2.State;
@@ -30,6 +33,7 @@ public class L1Controller {
 	private int numberOfSets = 128;
 	private L1Data backingData;
 	private NodeQManager qman;
+	private Queue<BusRequest> busRequests = new LinkedList<BusRequest>();
 	
 	//Create a mapping of addresses to queues so that instructions going to the same address
 	//that is not in the cache can all wait in line together for it
@@ -63,7 +67,6 @@ public class L1Controller {
 	}
 	
 	public boolean Process() {
-		//TODO: Implement
 		boolean ret = false;
 		if(ProcessFromResp()) {
 			ret = true;
@@ -84,7 +87,20 @@ public class L1Controller {
 		//TODO: Implement
 		//if data/acks from request = either store the data or just process instructions for that address depending on what the request was
 			//If request was for an upgrade
-		//if request from node = put in q for processing at end
+		//if request from node = put in q for processing at end (will do action then pass back to Resp)
+		boolean ret = false;
+		BusItem item = this.qman.Resp2L1CPull();
+		while(item != null) {
+			ret = true;
+			if(item instanceof BusAcks) {
+				ProcessBusAcks((BusAcks) item);
+			} else if(item instanceof BusRequest) {
+				ProcessBusRequest((BusRequest) item);
+			}
+		}
+		return ret;
+		//if: data that this node requested = pass to L1C Q
+		//if: a request for an ack from another node = pass to L1C Q
 	}
 	
 	private boolean ProcessWaitingInstructions() {
@@ -100,6 +116,73 @@ public class L1Controller {
 	private boolean ProcessAcks() {
 		//TODO: Implement
 		//Service requests from other nodes
+	}
+	
+	private void ProcessBusAcks(BusAcks acks) {
+		//TODO: Implement
+		//These are bus acks from the BC
+		//Meaning we had a request that was filled, could be acks with data or just acks (meaning we already had the data)
+		Integer address = acks.getAddress();
+		byte[] data = acks.getData();
+		State state = acks.getState();
+		if(data != null) {
+			StoreData(address, data, state);
+		}
+	}
+	
+	private void ProcessBusRequest(BusRequest br) {
+		//TODO: Implement
+		//Just need to put it into a waiting line, will process this waiting line at end
+		this.busRequests.offer(br);
+	}
+	
+	private void StoreData(Integer address, byte[] data, State state) {
+		Integer setNum = getSet(address);
+		List<ControllerEntry> set = this.sets.get(setNum);
+		for(ControllerEntry e : set) {
+			if(IsSetAvailable(e, address)) {
+				//Store data here
+				WriteEntry(e, address, data, state);
+				return;
+			}
+		}
+		//If we get here, the data has not been stored yet
+		int chosenEntry = ThreadLocalRandom.current().nextInt(0, 2);
+		FreeEntry(set.get(chosenEntry));
+	}
+	
+	//Returns true if the address currently in the entry is -1 or
+	//the same as the address we are trying to store there
+	private boolean IsSetAvailable(ControllerEntry e, Integer dataAddress) {
+		Integer addr = e.getAddress();
+		if(addr == -1 || addr == dataAddress || e.getState() == State.INVALID) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void FreeEntry(ControllerEntry e) {
+		//TODO: Figure out how to synchronize 
+		//If this L1C gets an ackI request for an address that it requested to write back, then it needs
+		//to write that address back/give the asking node the new data for that address
+		if(e.getAddress() == -1) {
+			System.out.println("WARNING: In L1C, trying to free ControllerEntry that already has no address stored there");
+		}
+		Integer address = e.getAddress();
+		byte[] dataToWriteBack = e.getData().clone();
+		BusItem bwb = new BusWriteBack(address, dataToWriteBack);
+	}
+	
+	private void WriteEntry(ControllerEntry e, Integer addr, byte[] data, State s) {
+		e.setAddress(addr);
+		e.setData(data);
+		e.setState(s);
+	}
+	
+	private int getSet(int addr) {
+		int setNum = addr % this.numberOfSets;
+		return setNum;
 	}
 	
 //	private void processFromData(QItem q) {
@@ -127,10 +210,6 @@ public class L1Controller {
 //		}
 //	}
 //	
-//	private int getSet(int addr) {
-//		int setNum = addr % this.numberOfSets;
-//		return setNum;
-//	}
 	
 //	public boolean areAnyLeft() {
 //		boolean result = false;

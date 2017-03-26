@@ -36,12 +36,13 @@ public class ControllerEntry {
 	public void setAddress(int address) {
 		this.address = address;
 	}
-	
-	public Location getLoc() {
-		return loc;
+
+	public byte[] getData() {
+		return data;
 	}
 
-	public void setLoc(Location loc) {
-		this.loc = loc;
+	public void setData(byte[] data) {
+		this.data = data;
 	}
+
 }

@@ -80,6 +80,10 @@ public class Node {
 		this.qman.Resp2BCPush(item, this.nodeNum);
 	}
 
+	public BusItem BC2RespPull() {
+		return this.qman.BC2RespPull(this.nodeNum);
+	}
+
 	public Integer getNodeNum() {
 		return nodeNum;
 	}

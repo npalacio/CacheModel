@@ -6,9 +6,28 @@ public class BusAcks extends BusItem {
 	//when all the acks were in for that nodes request
 	
 	private byte[] data;
+	private State state;
 	
-	public BusAcks(int address, byte[] data) {
+	public BusAcks(int address, byte[] data, State state) {
 		super(address);
 		this.data = data;
+		this.state = state;
 	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+	
 }

@@ -15,7 +15,6 @@ public class ResponseController {
 	}
 	
 	public boolean Process() {
-		//TODO: Implement
 		boolean ret = false;
 		if(ProcessFromBC()) {
 			ret = true;
@@ -26,19 +25,43 @@ public class ResponseController {
 	}
 
 	private boolean ProcessFromBC() {
-		//TODO: Implement
-		//Grab all items from BC Q:
-			//if: data that this node requested = pass to L1C Q
-			//if: a request for an ack from another node = pass to L1C Q
+		//Grab all items from BC Q
 		//Be careful with the requests from other nodes coming in, they are shared with all other nodes currently
 		//processing that request too
+		boolean ret = false;
+		BusItem item = this.parent.BC2RespPull();
+		while(item != null) {
+			ret = true;
+			ProcessBCItem(item);
+		}
+		return ret;
 	}
 	
 	private boolean ProcessFromL1C() {
-		//TODO: Implement
 		//Grab all items from L1C Q:
 			//Should only be acks (requests for data go to requestContr) = pass to BC Q
+		boolean ret = false;
+		BusItem item = this.qman.L1C2RespPull();
+		while(item != null) {
+			ret = true;
+			ProcessL1CItem(item);
+		}
+		return ret;
 	}
 	
-	//TODO: Create methods to communicate with BC that go through node
+	private void ProcessBCItem(BusItem item) {
+		if(item instanceof BusAcks || item instanceof BusRequest) {
+			this.qman.Resp2L1CPush(item);
+		} else {
+			System.out.println("ERROR: In response controller, BC sent item that was not BusAcks or BusRequest, continuing processing");
+		}
+	}
+	
+	private void ProcessL1CItem(BusItem item) {
+		if(item instanceof BusAck) {
+			this.parent.Resp2BCPush(item);
+		} else {
+			System.out.println("ERROR: In response controller, L1C sent item that was not BusAck, continuing processing");
+		}
+	}
 }
