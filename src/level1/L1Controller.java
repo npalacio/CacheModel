@@ -37,7 +37,7 @@ public class L1Controller {
 	
 	//Create a mapping of addresses to queues so that instructions going to the same address
 	//that is not in the cache can all wait in line together for it
-	private Map<Integer, Queue<Instruction>> instructionMisses;
+	private Map<Integer, Queue<Instruction>> waitingLines;
 	
 	//Since processor owns L1C it will pass in the queues to communicate with it
 	//L1C initializes the other queues
@@ -63,15 +63,12 @@ public class L1Controller {
 		sets = newSets;
 		
 		//Initialize waiting line for instructions that miss going to the same address
-		this.instructionMisses = new HashMap<Integer, Queue<Instruction>>();
+		this.waitingLines = new HashMap<Integer, Queue<Instruction>>();
 	}
 	
 	public boolean Process() {
 		boolean ret = false;
 		if(ProcessFromResp()) {
-			ret = true;
-		}
-		if(ProcessWaitingInstructions()) {
 			ret = true;
 		}
 		if(ProcessFromIC()) {
@@ -103,23 +100,20 @@ public class L1Controller {
 		//if: a request for an ack from another node = pass to L1C Q
 	}
 	
-	private boolean ProcessWaitingInstructions() {
-		//TODO: Implement
-		//Check if there are any waiting lines and try to resolve them
-	}
-	
 	private boolean ProcessFromIC() {
 		//TODO: Implement
 		//Load new instructions from IC
 	}
 	
-	private boolean ProcessAcks() {
+	private boolean ProcessBusRequests() {
 		//TODO: Implement
 		//Service requests from other nodes
+		
 	}
 	
 	private void ProcessBusAcks(BusAcks acks) {
-		//TODO: Implement
+		//TODO: Make sure that we do not assume that we have this address because in between sending out this request
+		//and getting it back we might have had to evict it
 		//These are bus acks from the BC
 		//Meaning we had a request that was filled, could be acks with data or just acks (meaning we already had the data)
 		Integer address = acks.getAddress();
@@ -128,14 +122,172 @@ public class L1Controller {
 		if(data != null) {
 			StoreData(address, data, state);
 		}
+		//Here we need to process any instructions that were waiting on this address
+		//If we already had the data and just needed an upgrade/acks that we can write then:
+			//Change the state of the address
+			//Process the waiting line of instructions
+		UpdateState(address, state);
+		ProcessWaitingInstructions(address);
 	}
 	
 	private void ProcessBusRequest(BusRequest br) {
-		//TODO: Implement
 		//Just need to put it into a waiting line, will process this waiting line at end
 		this.busRequests.offer(br);
 	}
+
+	private void ProcessWaitingInstructions(Integer address) {
+		//TODO: Implement
+		//Check if there are any waiting lines and try to resolve them
+		//I may or may not have the necessary state to do what I want:
+			//If I sent a BRead and got it back I can only read from that address
+			//If there is a write instruction waiting in line I need to recognize that and send 
+			//another bus request to upgrade
+		Queue<Instruction> waitingLine = this.waitingLines.get(address);
+		Instruction instr = waitingLine.poll();
+		while(instr != null) {
+			//Process instruction here
+			ProcessInstruction(instr);
+			//Grab next item
+			instr = waitingLine.poll();
+		}
+	}
 	
+	private void ProcessInstruction(Instruction instr) {
+		//TODO: Implement
+		//This needs to handle everything
+		Integer address = instr.getAddress();
+		State addrState = GetState(address);
+		if(instr instanceof Read) {
+			Read r = (Read) instr;
+			switch(addrState) {
+				case EXCLUSIVE:
+					Exclusive(r);
+					break;
+				case INVALID:
+					Invalid(r);
+					break;
+				case MODIFIED:
+					Modified(r);
+					break;
+				case SHARED:
+					Shared(r);
+					break;
+				default:
+					System.out.println("ERROR: State of instruction address is not caught in ProcessInstruction, returing");
+					return;
+			}
+		} else if(instr instanceof Write) {
+			Write w = (Write) instr;			
+			switch(addrState) {
+				case EXCLUSIVE:
+					Exclusive(w);
+					break;
+				case INVALID:
+					Invalid(w);
+					break;
+				case MODIFIED:
+					Modified(w);
+					break;
+				case SHARED:
+					Shared(w);
+					break;
+				default:
+					System.out.println("ERROR: State of instruction address is not caught in ProcessInstruction, returing");
+					return;
+			}
+		} else {
+			System.out.println("ERROR: Inside L1C, Instruction was not instance of a Read or Write, returning");
+			return;
+		}
+	}
+	
+	private void Exclusive(Read r) {
+		//TODO: Implement
+		//I have the most current version of this block, proceed with read
+		ProcessRead(r);
+	}
+	private void Exclusive(Write w) {
+		//TODO: Implement
+		Integer address = w.getAddress();
+		//I have the most current version of this block, proceed with write
+		ProcessWrite(w);
+		//Change state of entry to modified
+		UpdateState(address, State.MODIFIED);
+	}
+
+	private void Invalid(Read r) {
+		//TODO: Implement
+		Integer address = r.getAddress();
+		//I am missing this address, send a request (BusRead) to the bus for it
+		SendOutBusRead(address);
+		//Put this address into a waiting line
+		PutInWaitingLine(r);
+	}
+	private void Invalid(Write w) {
+		//TODO: Implement
+		Integer address = w.getAddress();
+		//I am missing this address, send a request (BusReadEx) to the bus for it
+		SendOutBusReadEx(address);
+		//Put this address into a waiting line
+		PutInWaitingLine(w);
+	}
+
+	private void Modified(Read r) {
+		//TODO: Implement
+		//I have the most current version of this block, proceed with read
+		ProcessRead(r);
+	}
+	private void Modified(Write w) {
+		//TODO: Implement
+		//I have the most current version of this block, proceed with write
+		ProcessWrite(w);
+	}
+
+	private void Shared(Read r) {
+		//TODO: Implement
+		//I have the most current version of this block, proceed with read
+		ProcessRead(r);
+	}
+	private void Shared(Write w) {
+		//TODO: Implement
+		Integer address = w.getAddress();
+		//Send a request (BusUpgrade) to the bus for it
+		SendOutBusUpgrade(address);
+		//Put this address into a waiting line
+		PutInWaitingLine(w);
+	}
+	
+	private void ProcessRead(Read r) {
+		//TODO: Implement
+		//At this point we can assume we have the data in the correct state
+		//We just need to finish processing the instruction and pass it to the node
+	}
+
+	private void ProcessWrite(Write r) {
+		//TODO: Implement
+		//At this point we can assume we have the data in the correct state
+		//We just need to finish processing the instruction and pass it to the node
+	}
+	
+	private void PutInWaitingLine(Instruction i) {
+		//TODO: Implement
+	}
+	
+	private void SendOutBusRead(Integer addr) {
+		//TODO: Implement
+		//Send out bus request for this address
+	}
+
+	private void SendOutBusReadEx(Integer addr) {
+		//TODO: Implement
+		//Send out bus request for this address
+	}
+
+	private void SendOutBusUpgrade(Integer addr) {
+		//TODO: Implement
+		//Send out bus request for this address
+	}
+
 	private void StoreData(Integer address, byte[] data, State state) {
 		Integer setNum = getSet(address);
 		List<ControllerEntry> set = this.sets.get(setNum);
@@ -148,7 +300,9 @@ public class L1Controller {
 		}
 		//If we get here, the data has not been stored yet
 		int chosenEntry = ThreadLocalRandom.current().nextInt(0, 2);
-		FreeEntry(set.get(chosenEntry));
+		ControllerEntry e = set.get(chosenEntry);
+		FreeEntry(e);
+		WriteEntry(e, address, data, state);
 	}
 	
 	//Returns true if the address currently in the entry is -1 or
@@ -163,21 +317,68 @@ public class L1Controller {
 	}
 
 	private void FreeEntry(ControllerEntry e) {
-		//TODO: Figure out how to synchronize 
 		//If this L1C gets an ackI request for an address that it requested to write back, then it needs
 		//to write that address back/give the asking node the new data for that address
 		if(e.getAddress() == -1) {
-			System.out.println("WARNING: In L1C, trying to free ControllerEntry that already has no address stored there");
+			System.out.println("WARNING: In L1C, trying to free ControllerEntry that already has no address stored there, returning");
+			return;
 		}
 		Integer address = e.getAddress();
 		byte[] dataToWriteBack = e.getData().clone();
 		BusItem bwb = new BusWriteBack(address, dataToWriteBack);
+		WriteEntry(e, -1, new byte[32], State.INVALID);
+		//TODO: Figure out how to synchronize/where to send this
+	}
+	
+	//TODO:
+	//What if we send out a request for an address and then right after that we receive a request for that same address from
+	//another node?
+	//This would not happen because we would not receive anything other than what we requested until after we got our request back
+	//since we own the bus that whole time
+	//This could happen if we have a request waiting for the bus meanwhile we service another request for that same address
+	//and invalidate our own address
+	//Solution: every request we send out needs to come back with data and write backs need to propagate immediately from a
+	//node to the BC/Memory as soon as we realize we need it (but wouldnt that already happen since we would send a request
+	//from another node with the data that we have thats modified?)
+	
+	private void UpdateState(Integer address, State state) {
+		ControllerEntry e = FindEntry(address);
+		if(e != null) {
+			//Update only the state for this entry
+			byte[] sameData = e.getData().clone();
+			WriteEntry(e, address, sameData, state);
+		} else {
+			System.out.println("ERROR: In L1C, in UpdateState, could not find the controller entry that we are trying to update, returning");
+		}
 	}
 	
 	private void WriteEntry(ControllerEntry e, Integer addr, byte[] data, State s) {
 		e.setAddress(addr);
 		e.setData(data);
 		e.setState(s);
+	}
+	
+	private ControllerEntry FindEntry(Integer address) {
+		Integer setNum = getSet(address);
+		List<ControllerEntry> set = this.sets.get(setNum);
+		for(ControllerEntry e : set) {
+			Integer entryAddr = e.getAddress();
+			if(entryAddr == address) {
+				return e;
+			}
+		}
+		return null;
+	}
+	
+	private State GetState(Integer addr) {
+		Integer setNum = getSet(addr);
+		ArrayList<ControllerEntry> set = this.sets.get(setNum);
+		for(ControllerEntry e : set) {
+			if(e.getAddress() == addr) {
+				return e.getState();
+			}
+		}
+		return State.INVALID;
 	}
 	
 	private int getSet(int addr) {
