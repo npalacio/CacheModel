@@ -36,7 +36,7 @@ public class Node {
 		this.nodeQman = new NodeQManager();
 		this.RequContr = new RequestController(sb, nodeQman, this);
 		this.RespContr = new ResponseController(sb, nodeQman, this);
-		this.L1C = new L1Controller(sb, nodeQman);
+		this.L1C = new L1Controller(sb, nodeQman, this);
 		this.IC = new InstructionCache(sb, nodeQman);
 	}
 	

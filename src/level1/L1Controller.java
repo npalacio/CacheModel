@@ -18,12 +18,15 @@ import general.QItem;
 import general.Read;
 import general.Write;
 import level2.L2Controller;
+import project2.BusAck;
 import project2.BusAcks;
 import project2.BusItem;
 import project2.BusRequest;
 import project2.BusWriteBack;
+import project2.Node;
 import project2.NodeQManager;
 import project2.QManager;
+import project2.RequestType;
 import project2.State;
 
 public class L1Controller {
@@ -34,6 +37,7 @@ public class L1Controller {
 	private L1Data backingData;
 	private NodeQManager qman;
 	private Queue<BusRequest> busRequests = new LinkedList<BusRequest>();
+	private Node parent;
 	
 	//Create a mapping of addresses to queues so that instructions going to the same address
 	//that is not in the cache can all wait in line together for it
@@ -41,10 +45,11 @@ public class L1Controller {
 	
 	//Since processor owns L1C it will pass in the queues to communicate with it
 	//L1C initializes the other queues
-	public L1Controller(StringBuilder stringB, NodeQManager qmanager) {
+	public L1Controller(StringBuilder stringB, NodeQManager qmanager, Node parent) {
 
 		this.sb = stringB;
 		this.qman = qmanager;
+		this.parent = parent;
 				
 		Initialize();
 	}
@@ -68,20 +73,22 @@ public class L1Controller {
 	
 	public boolean Process() {
 		boolean ret = false;
+		//Grab Acks (data and acknowledgements from other nodes --> us) and process
 		if(ProcessFromResp()) {
 			ret = true;
 		}
+		//Grab the next instructions if any there
 		if(ProcessFromIC()) {
 			ret = true;
 		}
-		if(ProcessAcks()) {
+		//Service the requests of other nodes
+		if(ProcessBusRequests()) {
 			ret = true;
 		}
 		return ret;
 	}
 	
 	private boolean ProcessFromResp() {
-		//TODO: Implement
 		//if data/acks from request = either store the data or just process instructions for that address depending on what the request was
 			//If request was for an upgrade
 		//if request from node = put in q for processing at end (will do action then pass back to Resp)
@@ -90,34 +97,177 @@ public class L1Controller {
 		while(item != null) {
 			ret = true;
 			if(item instanceof BusAcks) {
+				//if: data that this node requested = store data and process waiting instruction
 				ProcessBusAcks((BusAcks) item);
 			} else if(item instanceof BusRequest) {
-				ProcessBusRequest((BusRequest) item);
+				//if: a request for an ack from another node = pass to L1C Q
+				StallBusRequest((BusRequest) item);
 			}
 		}
 		return ret;
-		//if: data that this node requested = pass to L1C Q
-		//if: a request for an ack from another node = pass to L1C Q
 	}
 	
 	private boolean ProcessFromIC() {
-		//TODO: Implement
 		//Load new instructions from IC
+		boolean ret = false;
+		Instruction instr = this.qman.IC2L1CPull();
+		while(instr != null) {
+			ret = true;
+			ProcessInstruction(instr);
+		}
+		return ret;
 	}
 	
 	private boolean ProcessBusRequests() {
-		//TODO: Implement
+		boolean ret = false;
 		//Service requests from other nodes
-		
+		BusRequest br = this.busRequests.poll();
+		while(br != null) {
+			ret = true;
+			ProcessBusRequest(br);
+		}
+		return ret;
+	}
+	
+	private void ProcessBusRequest(BusRequest br) {
+		//TODO: Implement
+		Integer address = br.getAddress();
+		RequestType requType = br.getType();
+		if(requType == null) {
+			System.out.println("ERROR: In L1C.ProcessBusRequest, the RequestType was null");
+		}
+		ControllerEntry e = FindEntry(address);
+		if(e != null) {
+			//We have it
+			//Send ack with data
+			//Modify our entry as needed
+			State currentState = e.getState();
+			switch(currentState) {
+				case EXCLUSIVE:
+					ServiceExclusive(e, requType);
+					break;
+				case INVALID:
+					ServiceInvalid(e, requType);
+					break;
+				case MODIFIED:
+					ServiceModified(e, requType);
+					break;
+				case SHARED:
+					ServiceShared(e, requType);
+					break;
+				default:
+					System.out.println("ERROR: In L1C.ProcessBusRequest(), state of instruction address is not caught, returing");
+			}
+		} else {
+			//We do not have it
+			//Send ack
+			Integer nodeNum = this.parent.getNodeNum();
+			SendAck(nodeNum, address);
+		}
+	}
+	
+	private void ServiceExclusive(ControllerEntry e, RequestType type) {
+		Integer address = e.getAddress();
+		byte[] data = e.getData().clone();
+		switch(type) {
+			case BUSREAD:
+				//Update state to shared
+				UpdateState(address, State.SHARED);
+				SendAck(this.parent.getNodeNum(), e.getAddress());
+				break;
+			case BUSREADEX:
+				//Update state to invalid
+				UpdateState(address, State.INVALID);
+				SendAck(this.parent.getNodeNum(), e.getAddress());
+				break;
+			case BUSUPGRADE:
+				//Send the data back
+				//Update to invalid
+				UpdateState(address, State.INVALID);
+				SendAck(this.parent.getNodeNum(), e.getAddress());
+				break;
+			default:
+				System.out.println("ERROR: In L1C.ServiceExclusive(), RequestType not caught in switch statement, returning");
+				return;
+		}
+	}
+
+	private void ServiceInvalid(ControllerEntry e, RequestType type) {
+		Integer address = e.getAddress();
+		SendAck(this.parent.getNodeNum(), address);
+	}
+	
+	private void ServiceModified(ControllerEntry e, RequestType type) {
+		Integer address = e.getAddress();
+		byte[] data = e.getData().clone();
+		switch(type) {
+			case BUSREAD:
+				//Send the data back
+				//Update state to shared
+				UpdateState(address, State.SHARED);
+				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				break;
+			case BUSREADEX:
+				//Send the data back along with this request
+				//Update state to invalid
+				UpdateState(address, State.INVALID);
+				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				break;
+			case BUSUPGRADE:
+				//Send the data back
+				//Update to invalid
+				UpdateState(address, State.INVALID);
+				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				break;
+			default:
+				System.out.println("ERROR: In L1C.ServiceExclusive(), RequestType not caught in switch statement, returning");
+				return;
+		}
+	}
+
+	private void ServiceShared(ControllerEntry e, RequestType type) {
+		Integer address = e.getAddress();
+		byte[] data = e.getData().clone();
+		switch(type) {
+			case BUSREAD:
+				//Send the data back
+				//Update state to shared
+				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				break;
+			case BUSREADEX:
+				//Send the data back along with this request
+				//Update state to invalid
+				UpdateState(address, State.INVALID);
+				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				break;
+			case BUSUPGRADE:
+				//Send the data back
+				//Update to invalid
+				UpdateState(address, State.INVALID);
+				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				break;
+			default:
+				System.out.println("ERROR: In L1C.ServiceExclusive(), RequestType not caught in switch statement, returning");
+				return;
+		}
+	}
+
+	private void SendAck(Integer nodeNum, Integer address) {
+		BusAck ba = new BusAck(nodeNum, address);
+		this.qman.L1C2RespPush(ba);
+	}
+	
+	private void SendAck(Integer nodeNum, Integer address, byte[] data) {
+		BusAck ba = new BusAck(nodeNum, address, data.clone());
+		this.qman.L1C2RespPush(ba);
 	}
 	
 	private void ProcessBusAcks(BusAcks acks) {
-		//TODO: Make sure that we do not assume that we have this address because in between sending out this request
 		//and getting it back we might have had to evict it
 		//These are bus acks from the BC
 		//Meaning we had a request that was filled, could be acks with data or just acks (meaning we already had the data)
 		Integer address = acks.getAddress();
-		byte[] data = acks.getData();
+		byte[] data = acks.getData().clone();
 		State state = acks.getState();
 		if(data != null) {
 			StoreData(address, data, state);
@@ -130,13 +280,12 @@ public class L1Controller {
 		ProcessWaitingInstructions(address);
 	}
 	
-	private void ProcessBusRequest(BusRequest br) {
+	private void StallBusRequest(BusRequest br) {
 		//Just need to put it into a waiting line, will process this waiting line at end
 		this.busRequests.offer(br);
 	}
 
 	private void ProcessWaitingInstructions(Integer address) {
-		//TODO: Implement
 		//Check if there are any waiting lines and try to resolve them
 		//I may or may not have the necessary state to do what I want:
 			//If I sent a BRead and got it back I can only read from that address
@@ -153,7 +302,6 @@ public class L1Controller {
 	}
 	
 	private void ProcessInstruction(Instruction instr) {
-		//TODO: Implement
 		//This needs to handle everything
 		Integer address = instr.getAddress();
 		State addrState = GetState(address);
@@ -174,7 +322,6 @@ public class L1Controller {
 					break;
 				default:
 					System.out.println("ERROR: State of instruction address is not caught in ProcessInstruction, returing");
-					return;
 			}
 		} else if(instr instanceof Write) {
 			Write w = (Write) instr;			
@@ -193,21 +340,17 @@ public class L1Controller {
 					break;
 				default:
 					System.out.println("ERROR: State of instruction address is not caught in ProcessInstruction, returing");
-					return;
 			}
 		} else {
 			System.out.println("ERROR: Inside L1C, Instruction was not instance of a Read or Write, returning");
-			return;
 		}
 	}
 	
 	private void Exclusive(Read r) {
-		//TODO: Implement
 		//I have the most current version of this block, proceed with read
 		ProcessRead(r);
 	}
 	private void Exclusive(Write w) {
-		//TODO: Implement
 		Integer address = w.getAddress();
 		//I have the most current version of this block, proceed with write
 		ProcessWrite(w);
@@ -216,78 +359,90 @@ public class L1Controller {
 	}
 
 	private void Invalid(Read r) {
-		//TODO: Implement
-		Integer address = r.getAddress();
 		//I am missing this address, send a request (BusRead) to the bus for it
-		SendOutBusRead(address);
+		SendOutBusRequest(r, RequestType.BUSREAD);
 		//Put this address into a waiting line
 		PutInWaitingLine(r);
 	}
 	private void Invalid(Write w) {
-		//TODO: Implement
-		Integer address = w.getAddress();
 		//I am missing this address, send a request (BusReadEx) to the bus for it
-		SendOutBusReadEx(address);
+		SendOutBusRequest(w, RequestType.BUSREADEX);
 		//Put this address into a waiting line
 		PutInWaitingLine(w);
 	}
 
 	private void Modified(Read r) {
-		//TODO: Implement
 		//I have the most current version of this block, proceed with read
 		ProcessRead(r);
 	}
 	private void Modified(Write w) {
-		//TODO: Implement
 		//I have the most current version of this block, proceed with write
 		ProcessWrite(w);
 	}
 
 	private void Shared(Read r) {
-		//TODO: Implement
 		//I have the most current version of this block, proceed with read
 		ProcessRead(r);
 	}
 	private void Shared(Write w) {
-		//TODO: Implement
-		Integer address = w.getAddress();
 		//Send a request (BusUpgrade) to the bus for it
-		SendOutBusUpgrade(address);
+		SendOutBusRequest(w, RequestType.BUSUPGRADE);
 		//Put this address into a waiting line
 		PutInWaitingLine(w);
 	}
 	
 	private void ProcessRead(Read r) {
-		//TODO: Implement
 		//At this point we can assume we have the data in the correct state
 		//We just need to finish processing the instruction and pass it to the node
+		Integer address = r.getAddress();
+		ControllerEntry e = FindEntry(address);
+		if(e != null) {
+			byte[] data = e.getData().clone();
+			QItem item = new QItem(r, data);
+			this.qman.L1C2NodePush(item);
+			//The instruction is done and pushed to the node
+			return;
+		} else {
+			System.out.println("ERROR: In L1C.ProcessRead(), entry not found for address");
+		}
 	}
 
-	private void ProcessWrite(Write r) {
-		//TODO: Implement
+	private void ProcessWrite(Write w) {
 		//At this point we can assume we have the data in the correct state
 		//We just need to finish processing the instruction and pass it to the node
+		Integer address = w.getAddress();
+		ControllerEntry e = FindEntry(address);
+		if(e != null) {
+			byte[] data = w.getData().clone();
+			e.setData(data);
+			QItem item = new QItem(w, data);
+			this.qman.L1C2NodePush(item);
+			//The instruction is done and pushed to the node
+			return;
+		} else {
+			System.out.println("ERROR: In L1C.ProcessWrite(), entry not found for address");
+		}
 	}
 	
 	private void PutInWaitingLine(Instruction i) {
-		//TODO: Implement
+		Integer address = i.getAddress();
+		Queue<Instruction> waitingLine = this.waitingLines.get(address);
+		if(waitingLine != null) {
+			//We already have a waiting line, put it in there
+			waitingLine.offer(i);
+		} else {
+			//There is no waiting line, we need to create one and put it in there
+			waitingLine = new LinkedList<Instruction>();
+			waitingLine.offer(i);
+			this.waitingLines.put(address, waitingLine);
+		}
 	}
 	
-	private void SendOutBusRead(Integer addr) {
-		//TODO: Implement
-		//Send out bus request for this address
+	private void SendOutBusRequest(Instruction instr, RequestType type) {
+		QItem item = new QItem(instr, type);
+		this.qman.L1C2RequPush(item);
 	}
-
-	private void SendOutBusReadEx(Integer addr) {
-		//TODO: Implement
-		//Send out bus request for this address
-	}
-
-	private void SendOutBusUpgrade(Integer addr) {
-		//TODO: Implement
-		//Send out bus request for this address
-	}
-
+	
 	private void StoreData(Integer address, byte[] data, State state) {
 		Integer setNum = getSet(address);
 		List<ControllerEntry> set = this.sets.get(setNum);
@@ -358,6 +513,7 @@ public class L1Controller {
 		e.setState(s);
 	}
 	
+	//Returns: Entry if we have it, null otherwise
 	private ControllerEntry FindEntry(Integer address) {
 		Integer setNum = getSet(address);
 		List<ControllerEntry> set = this.sets.get(setNum);
@@ -520,7 +676,7 @@ public class L1Controller {
 ////				QItem qu = new QItem(instr);
 ////				this.toL2.offer(qu);
 ////				this.instructionMisses.put(instr.getAddress(), new LinkedList<Instruction>());
-//				//TODO: I think this is where I issue a bus request for the data?
+//				// I think this is where I issue a bus request for the data?
 //			}
 //		}
 //	}
@@ -723,7 +879,7 @@ public class L1Controller {
 	//If L1D has sent an eviction then that eviction had to go through L1C first meaning that the L1C entry has already been cleared
 	//This puts the evicted line from L1D in either WB or Victim cache depending on if it is dirty or not
 //	private void processL1DEviction(QItem q) {
-		//TODO: Figure out new way to process eviction from L1Data
+		//Figure out new way to process eviction from L1Data
 //		Eviction e = (Eviction) q.getInstruction();
 //		int instrAddress = e.getAddress();
 //		//If it came from L2, just pass along to L2

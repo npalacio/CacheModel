@@ -35,6 +35,7 @@ public class BusController {
 	private Integer responseNum = 0;
 	private Integer busReqAddr;
 	private byte[] dataForRequest;
+	private RequestType typeOfBusRequest;
 	private boolean acksReady = false;
 	
 	//State of processing instructions
@@ -207,6 +208,13 @@ public class BusController {
 		}
 		BusItem item;
 		//TODO: Figure out how to get state of address (Exclusive/shared)
+		//If BusRead:
+			//if we grabbed it from memory
+				//exclusive
+			//if another node sent us it
+				//shared
+		//If BusReadEx/BusUpgrade:
+			//modified, so that L1C knows it can write to it
 		if(this.dataForRequest != null) {
 			//Data is there
 			//Create the BusAcks item and pass to the bus owning node
@@ -277,6 +285,7 @@ public class BusController {
 		//Set other BC vars to the new request we have
 		BusRequest br = (BusRequest) item;
 		this.busReqAddr = br.getAddress();
+		this.typeOfBusRequest = br.getType();
 		
 		//TODO: Handle the case if the request is just to write something back?
 		//Unless the write back always comes as part of an acknowledgement?
@@ -296,6 +305,7 @@ public class BusController {
 		this.prevBusOwner = this.busOwner;
 		this.busOwner = -1;
 		this.acksReady = false;
+		this.typeOfBusRequest = null;
 	}
 	
 	private void ProcessAck(BusAck item) {

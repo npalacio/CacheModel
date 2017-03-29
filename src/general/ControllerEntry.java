@@ -42,7 +42,7 @@ public class ControllerEntry {
 	}
 
 	public void setData(byte[] data) {
-		this.data = data;
+		this.data = data.clone();
 	}
 
 }

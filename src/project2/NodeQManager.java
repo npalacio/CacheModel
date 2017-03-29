@@ -61,4 +61,16 @@ public class NodeQManager {
 		Instruction item = this.IC2L1C.poll();
 		return item;
 	}
+	
+	//L1C --> Node
+	public void L1C2NodePush(QItem item) {
+		if(!L1C2Node.offer(item)) {
+			System.out.println("ERROR: Failed to add item to Q in NodeQManager.IC2L1CPush");
+		}
+	}
+	public QItem L1C2NodePull() {
+		QItem item = this.L1C2Node.poll();
+		return item;
+	}
+
 }

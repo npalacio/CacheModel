@@ -9,5 +9,9 @@ public class BusRequest extends BusItem {
 		super(addr);
 		this.type = type;
 	}
-	
+
+	public RequestType getType() {
+		return type;
+	}
+
 }
