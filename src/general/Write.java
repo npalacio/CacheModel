@@ -19,6 +19,6 @@ public class Write extends Instruction {
 
 	@Override
 	public String toString() {
-		return "Write " + java.nio.ByteBuffer.wrap(this.data).getInt() + " to " + this.getAddress();
+		return "(" + this.instrNum + ") Write " + java.nio.ByteBuffer.wrap(this.data).getInt() + " to " + this.getAddress();
 	}
 }

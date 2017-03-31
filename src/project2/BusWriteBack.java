@@ -6,9 +6,29 @@ public class BusWriteBack extends BusItem {
 	//memory that L1C had to evict
 	
 	private byte[] data;
+	private Integer nodeNum;
 	
-	public BusWriteBack(Integer address, byte[] data) {
+	public BusWriteBack(Integer address, byte[] data, Integer nodeNum) {
 		super(address);
 		this.data = data;
+		this.nodeNum = nodeNum;
 	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
+	public Integer getNodeNum() {
+		return nodeNum;
+	}
+
+	public void setNodeNum(Integer nodeNum) {
+		this.nodeNum = nodeNum;
+	}
+	
+	
 }

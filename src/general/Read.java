@@ -25,6 +25,6 @@ public class Read extends Instruction {
 
 	@Override
 	public String toString() {
-		return "Read from " + this.getAddress();
+		return "(" + this.instrNum + ") Read from " + this.getAddress();
 	}
 }

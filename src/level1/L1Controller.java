@@ -8,16 +8,11 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ThreadLocalRandom;
 
-import general.CacheEntry;
 import general.ControllerEntry;
-import general.Eviction;
 import general.Instruction;
-import general.Location;
-import general.Put;
 import general.QItem;
 import general.Read;
 import general.Write;
-import level2.L2Controller;
 import project2.BusAck;
 import project2.BusAcks;
 import project2.BusItem;
@@ -25,7 +20,6 @@ import project2.BusRequest;
 import project2.BusWriteBack;
 import project2.Node;
 import project2.NodeQManager;
-import project2.QManager;
 import project2.RequestType;
 import project2.State;
 
@@ -34,7 +28,6 @@ public class L1Controller {
 	private StringBuilder sb;
 	private List<ArrayList<ControllerEntry>> sets;
 	private int numberOfSets = 128;
-	private L1Data backingData;
 	private NodeQManager qman;
 	private Queue<BusRequest> busRequests = new LinkedList<BusRequest>();
 	private Node parent;
@@ -112,6 +105,8 @@ public class L1Controller {
 		boolean ret = false;
 		Instruction instr = this.qman.IC2L1CPull();
 		while(instr != null) {
+			String s = "L1C: Receiving Instruction " + instr.toString() + " from IC";
+			WriteLine(s);
 			ret = true;
 			ProcessInstruction(instr);
 		}
@@ -130,7 +125,6 @@ public class L1Controller {
 	}
 	
 	private void ProcessBusRequest(BusRequest br) {
-		//TODO: Implement
 		Integer address = br.getAddress();
 		RequestType requType = br.getType();
 		if(requType == null) {
@@ -161,14 +155,24 @@ public class L1Controller {
 		} else {
 			//We do not have it
 			//Send ack
-			Integer nodeNum = this.parent.getNodeNum();
-			SendAck(nodeNum, address);
+			//If there was a write back for it, get the data and pass it with the ack
+
+			BusWriteBack wb = (BusWriteBack) this.parent.SnoopWriteBacks(address);
+			if(wb != null) {
+				byte[] data = wb.getData();
+				if(data != null) {
+					SendAck(this.parent.getNodeNum(), address, data);			
+				} else {
+					System.out.println("ERROR: In L1C, we snooped a WB but its data was null");
+				}
+			} else {
+				SendAck(this.parent.getNodeNum(), address);
+			}
 		}
 	}
 	
 	private void ServiceExclusive(ControllerEntry e, RequestType type) {
 		Integer address = e.getAddress();
-		byte[] data = e.getData().clone();
 		switch(type) {
 			case BUSREAD:
 				//Update state to shared
@@ -181,7 +185,6 @@ public class L1Controller {
 				SendAck(this.parent.getNodeNum(), e.getAddress());
 				break;
 			case BUSUPGRADE:
-				//Send the data back
 				//Update to invalid
 				UpdateState(address, State.INVALID);
 				SendAck(this.parent.getNodeNum(), e.getAddress());
@@ -193,8 +196,15 @@ public class L1Controller {
 	}
 
 	private void ServiceInvalid(ControllerEntry e, RequestType type) {
+		//If we find a BWB for this address, pass that data back with the ack
 		Integer address = e.getAddress();
-		SendAck(this.parent.getNodeNum(), address);
+		BusWriteBack wb = (BusWriteBack) this.parent.SnoopWriteBacks(address);
+		byte[] data = wb.getData();
+		if(data != null) {
+			SendAck(this.parent.getNodeNum(), address, data);			
+		} else {
+			SendAck(this.parent.getNodeNum(), address);
+		}
 	}
 	
 	private void ServiceModified(ControllerEntry e, RequestType type) {
@@ -276,6 +286,8 @@ public class L1Controller {
 		//If we already had the data and just needed an upgrade/acks that we can write then:
 			//Change the state of the address
 			//Process the waiting line of instructions
+		String s = "L1C: Received and stored data for address " + address;
+		WriteLine(s);
 		UpdateState(address, state);
 		ProcessWaitingInstructions(address);
 	}
@@ -294,6 +306,8 @@ public class L1Controller {
 		Queue<Instruction> waitingLine = this.waitingLines.get(address);
 		Instruction instr = waitingLine.poll();
 		while(instr != null) {
+			String s = "L1C: Processing waiting Instruction " + instr.toString();
+			WriteLine(s);
 			//Process instruction here
 			ProcessInstruction(instr);
 			//Grab next item
@@ -480,22 +494,11 @@ public class L1Controller {
 		}
 		Integer address = e.getAddress();
 		byte[] dataToWriteBack = e.getData().clone();
-		BusItem bwb = new BusWriteBack(address, dataToWriteBack);
+		BusItem bwb = new BusWriteBack(address, dataToWriteBack, this.parent.getNodeNum());
+		this.parent.ProcessL1CWriteBack(bwb);
 		WriteEntry(e, -1, new byte[32], State.INVALID);
-		//TODO: Figure out how to synchronize/where to send this
 	}
-	
-	//TODO:
-	//What if we send out a request for an address and then right after that we receive a request for that same address from
-	//another node?
-	//This would not happen because we would not receive anything other than what we requested until after we got our request back
-	//since we own the bus that whole time
-	//This could happen if we have a request waiting for the bus meanwhile we service another request for that same address
-	//and invalidate our own address
-	//Solution: every request we send out needs to come back with data and write backs need to propagate immediately from a
-	//node to the BC/Memory as soon as we realize we need it (but wouldnt that already happen since we would send a request
-	//from another node with the data that we have thats modified?)
-	
+
 	private void UpdateState(Integer address, State state) {
 		ControllerEntry e = FindEntry(address);
 		if(e != null) {
@@ -540,6 +543,11 @@ public class L1Controller {
 	private int getSet(int addr) {
 		int setNum = addr % this.numberOfSets;
 		return setNum;
+	}
+	
+	
+	private void WriteLine(String s) {
+		this.sb.append(s + "\n");
 	}
 	
 //	private void processFromData(QItem q) {

@@ -3,7 +3,7 @@ package general;
 public abstract class Instruction {
 
 	private int node;
-	private int instrNum;
+	protected int instrNum;
 	private int address;
 	
 	public Instruction(int addr, int nodeNum){
@@ -38,4 +38,5 @@ public abstract class Instruction {
 	public void setNode(int node) {
 		this.node = node;
 	}
+	
 }

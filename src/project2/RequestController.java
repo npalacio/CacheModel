@@ -1,7 +1,5 @@
 package project2;
 
-import java.util.Queue;
-
 import general.Instruction;
 import general.QItem;
 
@@ -50,4 +48,21 @@ public class RequestController {
 		this.parent.Requ2BCPush(br);
 	}
 	
+	public byte[] SnoopForWriteBack(Integer address) {
+		//Check if there is a write back request in 'your' queue and return the updated data for that
+		BusWriteBack wb = (BusWriteBack) this.parent.SnoopWriteBacks(address);
+		if(wb != null) {
+			byte[] data = wb.getData().clone();
+			if(data != null) {
+				return data.clone();
+			} else {
+				System.out.println("ERROR: In RequController.SnoopForWriteBack, write back had no data");
+			}
+		}
+		return null;
+	}
+	
+	private void WriteLine(String s) {
+		this.sb.append(s + "\n");
+	}
 }

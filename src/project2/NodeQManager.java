@@ -18,6 +18,25 @@ public class NodeQManager {
 	public NodeQManager() {
 	}
 	
+	public boolean AreAnyLeft() {
+		if(!this.Resp2L1C.isEmpty()) {
+			return true;
+		}
+		if(!this.L1C2Resp.isEmpty()) {
+			return true;
+		}
+		if(!this.L1C2Requ.isEmpty()) {
+			return true;
+		}
+		if(!this.IC2L1C.isEmpty()) {
+			return true;
+		}
+		if(!this.L1C2Node.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+	
 	//Response --> L1C
 	public void Resp2L1CPush(BusItem item) {
 		if(!Resp2L1C.offer(item)) {

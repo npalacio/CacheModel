@@ -6,11 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 
 import general.Instruction;
 import general.Memory;
@@ -86,7 +82,7 @@ public class BusController {
 						instr = new Read(i, Integer.parseInt(tokens[2]), node);
 					} else if(tokens[1].equals("read") && tokens.length == 4) {
 						node = Integer.parseInt(tokens[0]);
-						instr = new Read(i, Integer.parseInt(tokens[2]), Integer.parseInt(tokens[2]), node);
+						instr = new Read(i, Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]), node);
 					} else if(tokens[1].equals("write") && tokens.length == 4) {
 						node = Integer.parseInt(tokens[0]);
 						instr = new Write(i, Integer.parseInt(tokens[2]), ByteBuffer.allocate(32).putInt(Integer.parseInt(tokens[3])).array(), node);
@@ -99,7 +95,6 @@ public class BusController {
 				i++;
 				line = reader.readLine();
 			}
-			//TODO: Loop through process until we are done (FinishOutProcessing()?)
 			FinishProcessing();
 		} catch (Exception e) {
 			System.out.println(e);
@@ -159,7 +154,14 @@ public class BusController {
 		//Check if anyone needs the bus (if no one currently owns it) and grant them the bus
 		//If someone got the bus, broadcast their request if necessary
 		boolean notDone = false;
-		if(this.acksReady) {
+		BusItem item = this.qman.WriteBackPull();
+		if(item != null) {
+			if(item instanceof BusWriteBack) {
+				ProcessWriteBack((BusWriteBack) item);
+			} else {
+				System.out.println("ERROR: Item not instance of BusWriteBack in BC.Process");
+			}
+		} else if(this.acksReady) {
 			//Acks are all in, pass data/acks
 			PassDataToOwner();
 			if(ProcessNodes()) {
@@ -181,8 +183,19 @@ public class BusController {
 		this.cycleCount++;
 		//If any nodes are still processing we are not done
 		//If there is a bus owner still we are not done (waiting on acks)
-		boolean ret = notDone || (this.busOwner != -1);
+		boolean ret = notDone || (this.busOwner != -1) || this.qman.AreAnyLeft();
 		return ret;
+	}
+	
+	private void ProcessWriteBack(BusWriteBack wb) {
+		Integer address = wb.getAddress();
+		byte[] data = wb.getData();
+		if(data != null) {
+			this.memory.setData(address, data);
+		} else {
+			System.out.println("ERROR: In BC.ProcessWriteBack, data from WB was null, returning");
+			return;
+		}
 	}
 	
 	private boolean ProcessNodes() {
@@ -207,22 +220,16 @@ public class BusController {
 			return;
 		}
 		BusItem item;
-		//TODO: Figure out how to get state of address (Exclusive/shared)
-		//If BusRead:
-			//if we grabbed it from memory
-				//exclusive
-			//if another node sent us it
-				//shared
-		//If BusReadEx/BusUpgrade:
-			//modified, so that L1C knows it can write to it
-		if(this.dataForRequest != null) {
+		boolean dataGiven = this.dataForRequest != null;
+		State blockState = GetBlockState(dataGiven);
+		if(dataGiven) {
 			//Data is there
 			//Create the BusAcks item and pass to the bus owning node
-			item = new BusAcks(this.busReqAddr.intValue(), this.dataForRequest.clone());
+			item = new BusAcks(this.busReqAddr.intValue(), this.dataForRequest.clone(), blockState);
 		} else {
 			//Data is not there, need to grab it from memory
 			byte[] data = this.memory.getData(this.busReqAddr);
-			item = new BusAcks(this.busReqAddr, data);
+			item = new BusAcks(this.busReqAddr, data, blockState);
 		}
 		this.qman.BC2RespPush(item, this.busOwner);
 		ResetBusRequestValues();
@@ -286,10 +293,7 @@ public class BusController {
 		BusRequest br = (BusRequest) item;
 		this.busReqAddr = br.getAddress();
 		this.typeOfBusRequest = br.getType();
-		
-		//TODO: Handle the case if the request is just to write something back?
-		//Unless the write back always comes as part of an acknowledgement?
-		
+
 		//Broadcast a request for a node to all other nodes
 		for(int i = 0; i < this.numberOfNodes; i++) {
 			//Send out request to all nodes besides the one who sent the request (aka busOwner)
@@ -335,6 +339,33 @@ public class BusController {
 		} else if(this.responseNum > this.numberOfNodes - 1) {
 			System.out.println("ERROR: In ProcessAck, the number of responses received > number of nodes who need to send a reponse, returning");
 			return;
+		}
+	}
+	
+	private State GetBlockState(boolean dataGiven) {
+		//If BusRead:
+			//if we grabbed it from memory
+				//exclusive
+			//if another node sent us it
+				//shared
+		//If BusReadEx/BusUpgrade:
+			//modified, so that L1C knows it can write to it
+		switch(this.typeOfBusRequest) {
+			case BUSREAD:
+				if(dataGiven) {
+					//Another node sent us the data
+					return State.SHARED;
+				} else {
+					//We will grab the data from memory
+					return State.EXCLUSIVE;
+				}
+			case BUSREADEX:
+				return State.MODIFIED;
+			case BUSUPGRADE:
+				return State.MODIFIED;
+			default:
+				System.out.println("ERROR: In BC.GetBlockState, type of BusRequest not caught, returning null");
+				return null;
 		}
 	}
 }
