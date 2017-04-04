@@ -48,6 +48,9 @@ public class InstructionCache {
 		}
 	}
 	
+	public Integer getInstructionCount() {
+		return this.currentInstruction;
+	}
 //	//Returns true if there are still more instructions to process
 //	public boolean process() {
 //		//Load instructions and wait to finish and then check the queue coming back to make sure the instructions make it back

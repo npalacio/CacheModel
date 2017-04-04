@@ -1,5 +1,6 @@
 package level1;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -31,6 +32,7 @@ public class L1Controller {
 	private NodeQManager qman;
 	private Queue<BusRequest> busRequests = new LinkedList<BusRequest>();
 	private Node parent;
+	private boolean priorityMode;
 	
 	//Create a mapping of addresses to queues so that instructions going to the same address
 	//that is not in the cache can all wait in line together for it
@@ -38,11 +40,12 @@ public class L1Controller {
 	
 	//Since processor owns L1C it will pass in the queues to communicate with it
 	//L1C initializes the other queues
-	public L1Controller(StringBuilder stringB, NodeQManager qmanager, Node parent) {
+	public L1Controller(StringBuilder stringB, NodeQManager qmanager, Node parent, boolean priorityMode) {
 
 		this.sb = stringB;
 		this.qman = qmanager;
 		this.parent = parent;
+		this.priorityMode = priorityMode;
 				
 		Initialize();
 	}
@@ -74,9 +77,12 @@ public class L1Controller {
 		if(ProcessFromIC()) {
 			ret = true;
 		}
-		//Service the requests of other nodes
-		if(ProcessBusRequests()) {
-			ret = true;
+		//There will only be requests to service if we are in priority mode
+		if(this.priorityMode) {
+			//Service the requests of other nodes
+			if(ProcessBusRequests()) {
+				ret = true;
+			}
 		}
 		return ret;
 	}
@@ -94,7 +100,11 @@ public class L1Controller {
 				ProcessBusAcks((BusAcks) item);
 			} else if(item instanceof BusRequest) {
 				//if: a request for an ack from another node = pass to L1C Q
-				StallBusRequest((BusRequest) item);
+				if(this.priorityMode) {
+					StallBusRequest((BusRequest) item);
+				} else {
+					ProcessBusRequest((BusRequest) item);
+				}
 			}
 		}
 		return ret;
@@ -178,16 +188,19 @@ public class L1Controller {
 				//Update state to shared
 				UpdateState(address, State.SHARED);
 				SendAck(this.parent.getNodeNum(), e.getAddress());
+				WriteLine("L1C: Serviced request for address " + address + " (exclusive), a BusRead");
 				break;
 			case BUSREADEX:
 				//Update state to invalid
 				UpdateState(address, State.INVALID);
 				SendAck(this.parent.getNodeNum(), e.getAddress());
+				WriteLine("L1C: Serviced request for address " + address + " (exclusive), a BusReadEx");
 				break;
 			case BUSUPGRADE:
 				//Update to invalid
 				UpdateState(address, State.INVALID);
 				SendAck(this.parent.getNodeNum(), e.getAddress());
+				WriteLine("L1C: Serviced request for address " + address + " (exclusive), a BusUpgrade");
 				break;
 			default:
 				System.out.println("ERROR: In L1C.ServiceExclusive(), RequestType not caught in switch statement, returning");
@@ -205,6 +218,7 @@ public class L1Controller {
 		} else {
 			SendAck(this.parent.getNodeNum(), address);
 		}
+		WriteLine("L1C: Serviced request for address " + address + " (invalid), a " + type);
 	}
 	
 	private void ServiceModified(ControllerEntry e, RequestType type) {
@@ -216,18 +230,21 @@ public class L1Controller {
 				//Update state to shared
 				UpdateState(address, State.SHARED);
 				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				WriteLine("L1C: Serviced request for address " + address + " (modified), a BusRead");
 				break;
 			case BUSREADEX:
 				//Send the data back along with this request
 				//Update state to invalid
 				UpdateState(address, State.INVALID);
 				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				WriteLine("L1C: Serviced request for address " + address + " (modified), a BusReadEx");
 				break;
 			case BUSUPGRADE:
 				//Send the data back
 				//Update to invalid
 				UpdateState(address, State.INVALID);
 				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				WriteLine("L1C: Serviced request for address " + address + " (modified), a BusUpgrade");
 				break;
 			default:
 				System.out.println("ERROR: In L1C.ServiceExclusive(), RequestType not caught in switch statement, returning");
@@ -243,18 +260,21 @@ public class L1Controller {
 				//Send the data back
 				//Update state to shared
 				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				WriteLine("L1C: Serviced request for address " + address + " (shared), a BusRead");
 				break;
 			case BUSREADEX:
 				//Send the data back along with this request
 				//Update state to invalid
 				UpdateState(address, State.INVALID);
 				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				WriteLine("L1C: Serviced request for address " + address + " (shared), a BusReadEx");
 				break;
 			case BUSUPGRADE:
 				//Send the data back
 				//Update to invalid
 				UpdateState(address, State.INVALID);
 				SendAck(this.parent.getNodeNum(), e.getAddress(), data);
+				WriteLine("L1C: Serviced request for address " + address + " (shared), a BusUpgrade");
 				break;
 			default:
 				System.out.println("ERROR: In L1C.ServiceExclusive(), RequestType not caught in switch statement, returning");
@@ -271,7 +291,7 @@ public class L1Controller {
 		BusAck ba = new BusAck(nodeNum, address, data.clone());
 		this.qman.L1C2RespPush(ba);
 	}
-	
+
 	private void ProcessBusAcks(BusAcks acks) {
 		//and getting it back we might have had to evict it
 		//These are bus acks from the BC
@@ -286,10 +306,10 @@ public class L1Controller {
 		//If we already had the data and just needed an upgrade/acks that we can write then:
 			//Change the state of the address
 			//Process the waiting line of instructions
-		String s = "L1C: Received and stored data for address " + address;
-		WriteLine(s);
 		UpdateState(address, state);
 		ProcessWaitingInstructions(address);
+		String s = "L1C: Received and stored data (" + ByteBuffer.wrap(data).getInt() + ") for address " + address + " with a state of " + state;
+		WriteLine(s);
 	}
 	
 	private void StallBusRequest(BusRequest br) {
@@ -362,10 +382,13 @@ public class L1Controller {
 	
 	private void Exclusive(Read r) {
 		//I have the most current version of this block, proceed with read
+		Integer address = r.getAddress();
+		WriteLine("L1C: Read requested for address " + address + " (exclusive), processing instruction");
 		ProcessRead(r);
 	}
 	private void Exclusive(Write w) {
 		Integer address = w.getAddress();
+		WriteLine("L1C: Write requested for address " + address + " (exclusive), processing instruction and upgrading state to modified");
 		//I have the most current version of this block, proceed with write
 		ProcessWrite(w);
 		//Change state of entry to modified
@@ -373,12 +396,16 @@ public class L1Controller {
 	}
 
 	private void Invalid(Read r) {
+		Integer address = r.getAddress();
+		WriteLine("L1C: Read requested for address " + address + " (invalid), sending out BusRead");
 		//I am missing this address, send a request (BusRead) to the bus for it
 		SendOutBusRequest(r, RequestType.BUSREAD);
 		//Put this address into a waiting line
 		PutInWaitingLine(r);
 	}
 	private void Invalid(Write w) {
+		Integer address = w.getAddress();
+		WriteLine("L1C: Write requested for address " + address + " (invalid), sending out BusReadEx");
 		//I am missing this address, send a request (BusReadEx) to the bus for it
 		SendOutBusRequest(w, RequestType.BUSREADEX);
 		//Put this address into a waiting line
@@ -386,19 +413,27 @@ public class L1Controller {
 	}
 
 	private void Modified(Read r) {
+		Integer address = r.getAddress();
+		WriteLine("L1C: Read requested for address " + address + " (modified), processing instruction");
 		//I have the most current version of this block, proceed with read
 		ProcessRead(r);
 	}
 	private void Modified(Write w) {
+		Integer address = w.getAddress();
+		WriteLine("L1C: Write requested for address " + address + " (modified), processing instruction");
 		//I have the most current version of this block, proceed with write
 		ProcessWrite(w);
 	}
 
 	private void Shared(Read r) {
+		Integer address = r.getAddress();
+		WriteLine("L1C: Read requested for address " + address + " (shared), processing instruction");
 		//I have the most current version of this block, proceed with read
 		ProcessRead(r);
 	}
 	private void Shared(Write w) {
+		Integer address = w.getAddress();
+		WriteLine("L1C: Read requested for address " + address + " (shared), sending out BusUpgrade");
 		//Send a request (BusUpgrade) to the bus for it
 		SendOutBusRequest(w, RequestType.BUSUPGRADE);
 		//Put this address into a waiting line
@@ -415,6 +450,7 @@ public class L1Controller {
 			QItem item = new QItem(r, data);
 			this.qman.L1C2NodePush(item);
 			//The instruction is done and pushed to the node
+			WriteLine("L1C: Processed Instruction " + r.toString() + ", passing to Node");
 			return;
 		} else {
 			System.out.println("ERROR: In L1C.ProcessRead(), entry not found for address");
@@ -432,6 +468,7 @@ public class L1Controller {
 			QItem item = new QItem(w, data);
 			this.qman.L1C2NodePush(item);
 			//The instruction is done and pushed to the node
+			WriteLine("L1C: Processed Instruction " + w.toString() + ", passing to Node");
 			return;
 		} else {
 			System.out.println("ERROR: In L1C.ProcessWrite(), entry not found for address");

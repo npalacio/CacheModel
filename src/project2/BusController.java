@@ -22,10 +22,12 @@ public class BusController {
 	private List<Node> nodes = new ArrayList<Node>();
 	private Integer numberOfNodes = -1;
 	private List<List<Instruction>> nodeInstructions;
+	private boolean priorityMode;
 	
 	//State of bus
 	private Integer busOwner = -1;
 	private Integer prevBusOwner = -1;
+	private Integer busTransCount = 0;
 	
 	//State of request
 	private Integer responseNum = 0;
@@ -36,11 +38,12 @@ public class BusController {
 	
 	//State of processing instructions
 	private Integer cycleCount = 0;
+	private String testName;
 	
 	//Memory
 	private Integer memSize = 131072;
 	private Memory memory;
-	
+		
 	public static void main(String[] args) {
 		BusController bc = new BusController();
 		bc.Initialize(args);
@@ -68,9 +71,9 @@ public class BusController {
 			int i = 0;
 			while(line != null) {
 				if(i == 0) {
-					//This should just tell us the number of nodes
+					//This should tell us the number of nodes and if we are in priorityMode or not
 					ProcessFirstLine(line);
-				} else if(line == ";") {
+				} else if(line.equals(";")) {
 					//We have our bath to send
 					SendInstructionBatch();
 				} else {
@@ -108,7 +111,10 @@ public class BusController {
 	}
 
 	private void ProcessFirstLine(String line) {
-		this.numberOfNodes = Integer.parseInt(line);
+		String[] tokens = line.split(" ");
+		this.numberOfNodes = Integer.parseInt(tokens[0]);
+		this.priorityMode = tokens[1].equals("true");
+		this.testName = tokens[2];
 		if(this.numberOfNodes > 3) {
 			System.out.println("WARNING: More than 3 nodes passed in (" + this.numberOfNodes + ")");
 		}
@@ -125,7 +131,7 @@ public class BusController {
 		//Call process
 		Process();
 	}
-	
+
 	private void InitializeNodes() {
 		this.nodeInstructions = new ArrayList<List<Instruction>>(this.numberOfNodes);
 		this.qman = new QManager(this.numberOfNodes);
@@ -135,7 +141,7 @@ public class BusController {
 	}
 
 	private void CreateNode(int i) {
-		Node node = new Node(i, this.qman);
+		Node node = new Node(i, this.qman, this.priorityMode, this.testName);
 		this.nodes.add(i, node);
 	}
 	
@@ -144,6 +150,7 @@ public class BusController {
 			//Keep going
 		}
 		//We are done
+		System.out.println("Finished processing all instructions");
 	}
 	
 	private boolean Process() {
@@ -196,6 +203,7 @@ public class BusController {
 			System.out.println("ERROR: In BC.ProcessWriteBack, data from WB was null, returning");
 			return;
 		}
+		System.out.println("BC: Wrote back address " + address + " (" + ByteBuffer.wrap(data).getInt() + ")");
 	}
 	
 	private boolean ProcessNodes() {
@@ -231,6 +239,7 @@ public class BusController {
 			byte[] data = this.memory.getData(this.busReqAddr);
 			item = new BusAcks(this.busReqAddr, data, blockState);
 		}
+		System.out.println("BC: Passed back acknowledgements for address " + this.busReqAddr.intValue() + " to node " + this.busOwner);
 		this.qman.BC2RespPush(item, this.busOwner);
 		ResetBusRequestValues();
 	}
@@ -289,6 +298,7 @@ public class BusController {
 	}
 	
 	private void ProcessRequest(BusItem item) {
+		this.busTransCount++;
 		//Set other BC vars to the new request we have
 		BusRequest br = (BusRequest) item;
 		this.busReqAddr = br.getAddress();

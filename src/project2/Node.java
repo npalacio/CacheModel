@@ -25,14 +25,19 @@ public class Node {
 	private InstructionCache IC;
 	private L1Controller L1C;
 
+	//State of node
+	private boolean priorityMode;
+	private Integer cycleCount = 0;
+
 	//Communication components
 	private QManager qman;
 	private NodeQManager nodeQman;
 	
-	public Node(Integer nodeNumber, QManager qmanager) {
+	public Node(Integer nodeNumber, QManager qmanager, boolean priorityMode, String folder) {
 		this.nodeNum = nodeNumber;
-		this.outputFile = "Node" + nodeNumber + ".txt";
+		this.outputFile = folder + "/Node" + nodeNumber + ".txt";
 		this.qman = qmanager;
+		this.priorityMode = priorityMode;
 		Initialize();
 	}
 	
@@ -40,12 +45,14 @@ public class Node {
 		this.nodeQman = new NodeQManager();
 		this.RequContr = new RequestController(sb, nodeQman, this);
 		this.RespContr = new ResponseController(sb, nodeQman, this);
-		this.L1C = new L1Controller(sb, nodeQman, this);
+		this.L1C = new L1Controller(sb, nodeQman, this, this.priorityMode);
 		this.IC = new InstructionCache(sb, nodeQman);
+		WriteLine("Initialized node " + this.nodeNum + ", Priority Mode = " + this.priorityMode);
 	}
 	
 	//Return true if still stuff to do, false otherwise
 	public boolean Process() {
+		
 		boolean ret = false;
 		if(this.RespContr.Process()) {
 			ret = true;
@@ -63,6 +70,9 @@ public class Node {
 			ret = true;
 		}
 		ProcessFinishedInstructions();
+		WriteLine("**************************************");
+		WriteLine("CYCLE " + this.cycleCount++);
+		WriteLine("**************************************");
 		return ret;
 	}
 	
@@ -109,7 +119,7 @@ public class Node {
 	}
 	
 	public void Terminate() {
-		//TODO: Figure out what all needs to happen at the end here
+		WriteLine("Node: Finished processing " + this.IC.getInstructionCount() + " instructions in Node " + this.nodeNum);
 		WriteToOutputFile();
 	}
 	
