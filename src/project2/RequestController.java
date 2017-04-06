@@ -16,7 +16,6 @@ public class RequestController {
 	}
 	
 	public boolean Process() {
-		//TODO: Implement
 		boolean ret = false;
 		//Grab instructions from L1C and turn them into bus instructions
 		if(ProcessFromL1C()) {
@@ -31,6 +30,7 @@ public class RequestController {
 		while(item != null) {
 			ret = true;
 			ProcessQItem(item);
+			item = this.nodeQ.L1C2RequPull();
 		}
 		return ret;
 	}
@@ -63,6 +63,6 @@ public class RequestController {
 	}
 	
 	private void WriteLine(String s) {
-		this.sb.append(s + "\n");
+		this.sb.append(s + System.getProperty("line.separator"));
 	}
 }

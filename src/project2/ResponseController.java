@@ -33,6 +33,7 @@ public class ResponseController {
 		while(item != null) {
 			ret = true;
 			ProcessBCItem(item);
+			item = this.parent.BC2RespPull();
 		}
 		return ret;
 	}
@@ -45,6 +46,7 @@ public class ResponseController {
 		while(item != null) {
 			ret = true;
 			ProcessL1CItem(item);
+			item = this.qman.L1C2RespPull();
 		}
 		return ret;
 	}

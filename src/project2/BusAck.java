@@ -19,7 +19,7 @@ public class BusAck extends BusItem {
 	}
 	
 	public byte[] getData() {
-		return data.clone();
+		return data == null ? null : data.clone();
 	}
 
 	public void setData(byte[] data) {

@@ -2,7 +2,6 @@ package project2;
 
 public abstract class BusItem {
 
-	//TODO: Implement
 	private Integer address;
 	
 	public BusItem(Integer address) {

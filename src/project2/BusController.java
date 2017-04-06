@@ -1,6 +1,7 @@
 package project2;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,7 +39,7 @@ public class BusController {
 	
 	//State of processing instructions
 	private Integer cycleCount = 0;
-	private String testName;
+	private String outputFolder;
 	
 	//Memory
 	private Integer memSize = 131072;
@@ -50,10 +51,11 @@ public class BusController {
 	}
 	
 	private void Initialize(String[] args) {
-		String fileName = args[0];
+//		String fileName = args[0];
+		String fileName = "input/P2.1Node.SingleRead.txt";
 		//-1 implies no one owns the bus
 		InitializeMemory();
-		InitializeNodes();
+//		InitializeNodes();
 		ProcessInstructions(fileName);
 	}
 	
@@ -64,6 +66,7 @@ public class BusController {
 	private void ProcessInstructions(String fileName) {
 		FileInputStream fis = null;
 		BufferedReader reader = null;
+		System.out.println("Inside ProcessInstructions");
 		try {
 			fis = new FileInputStream(fileName);
 			reader = new BufferedReader(new InputStreamReader(fis));
@@ -93,14 +96,18 @@ public class BusController {
 						System.out.println("Invalid input for instruction");
 					}
 					//Add the instruction to the corresponding node
-					nodeInstructions.get(node).add(instr);
+					System.out.println("Finished grabbing instruction");
+					System.out.println("Instruction list size = " + this.nodeInstructions.size());
+					this.nodeInstructions.get(node).add(instr);
 				}
 				i++;
 				line = reader.readLine();
 			}
+			System.out.println("Done reading instructions");
 			FinishProcessing();
 		} catch (Exception e) {
-			System.out.println(e);
+//			System.out.println();
+			e.printStackTrace();
 		} finally {
 			try {
 				reader.close();
@@ -111,29 +118,34 @@ public class BusController {
 	}
 
 	private void ProcessFirstLine(String line) {
+		System.out.println("Processing first line");
 		String[] tokens = line.split(" ");
 		this.numberOfNodes = Integer.parseInt(tokens[0]);
 		this.priorityMode = tokens[1].equals("true");
-		this.testName = tokens[2];
+		this.outputFolder = "output" + File.separator + tokens[2];
 		if(this.numberOfNodes > 3) {
 			System.out.println("WARNING: More than 3 nodes passed in (" + this.numberOfNodes + ")");
 		}
 		InitializeNodes();
 	}
-	
+
 	private void SendInstructionBatch() {
+		System.out.println("Sending instruction batch");
 		for(int i = 0; i < this.numberOfNodes; i++) {
 			List<Instruction> instructions = this.nodeInstructions.get(i);
 			Node n = this.nodes.get(i);
 			n.AddInstructions(instructions);
 		}
-		this.nodeInstructions = new ArrayList<List<Instruction>>(this.numberOfNodes);
+//		this.nodeInstructions = new ArrayList<List<Instruction>>(this.numberOfNodes);
+		InitializeInstructionLists();
 		//Call process
 		Process();
 	}
 
 	private void InitializeNodes() {
-		this.nodeInstructions = new ArrayList<List<Instruction>>(this.numberOfNodes);
+		System.out.println("Creating instruction lists for " + this.numberOfNodes + " nodes");
+		InitializeInstructionLists();
+		System.out.println("Size of lists of instructions = " + this.nodeInstructions.size());
 		this.qman = new QManager(this.numberOfNodes);
 		for(int i = 0; i < this.numberOfNodes; i++) {
 			CreateNode(i);
@@ -141,8 +153,16 @@ public class BusController {
 	}
 
 	private void CreateNode(int i) {
-		Node node = new Node(i, this.qman, this.priorityMode, this.testName);
+		Node node = new Node(i, this.qman, this.priorityMode, this.outputFolder);
 		this.nodes.add(i, node);
+	}
+	
+	private void InitializeInstructionLists() {
+		this.nodeInstructions = new ArrayList<List<Instruction>>(this.numberOfNodes);
+		for(int i = 0; i < this.numberOfNodes; i++) {
+			List<Instruction> instructions = new ArrayList<Instruction>();
+			this.nodeInstructions.add(i, instructions);
+		}
 	}
 	
 	private void FinishProcessing() {
@@ -150,7 +170,14 @@ public class BusController {
 			//Keep going
 		}
 		//We are done
-		System.out.println("Finished processing all instructions");
+		TerminateNodes();
+		System.out.println("Finished processing all instructions!");
+	}
+	
+	private void TerminateNodes() {
+		for(Node n : this.nodes) {
+			n.Terminate();
+		}
 	}
 	
 	private boolean Process() {
@@ -160,6 +187,9 @@ public class BusController {
 			//grab an acknowledgement for a node
 		//Check if anyone needs the bus (if no one currently owns it) and grant them the bus
 		//If someone got the bus, broadcast their request if necessary
+		System.out.println("*************************************");
+		System.out.println("CYCLE " + this.cycleCount);
+		System.out.println("*************************************");
 		boolean notDone = false;
 		BusItem item = this.qman.WriteBackPull();
 		if(item != null) {
@@ -260,7 +290,7 @@ public class BusController {
 		if(this.prevBusOwner == -1) {
 			curr = 0;
 		} else {
-			curr = (this.prevBusOwner + 1) % 3;
+			curr = (this.prevBusOwner + 1) % this.numberOfNodes;
 		}
 		for(int i = 0; i < this.numberOfNodes; i++) {
 			bi = qman.Requ2BCPull(curr);
@@ -274,7 +304,7 @@ public class BusController {
 					return null;
 				}
 			}
-			curr = (curr + 1) % 3;
+			curr = (curr + 1) % this.numberOfNodes;
 		}
 		return bi;
 	}
@@ -311,9 +341,14 @@ public class BusController {
 			//Put this request into the response controller for each node
 			this.qman.BC2RespPush(item, i);
 		}
+		if(this.numberOfNodes == 1) {
+			//Just say the acks are in and it will grab the data next cycle
+			this.acksReady = true;
+		}
 	}
 	
 	private void ResetBusRequestValues() {
+		this.responseNum = 0;
 		this.busReqAddr = -1;
 		this.dataForRequest = null;
 		this.prevBusOwner = this.busOwner;
@@ -326,7 +361,7 @@ public class BusController {
 		//Grab variables
 		byte[] dataFromNode = item.getData();
 		Integer address = item.getAddress();
-		if(address != this.busReqAddr) {
+		if(!address.equals(this.busReqAddr)) {
 			System.out.println("ERROR: In ProcessAck, node " + item.getNodeNum() + " returned BusAck with address " + 
 								address + ", but the BC was waiting for BusAck for address " + this.busReqAddr);
 			return;

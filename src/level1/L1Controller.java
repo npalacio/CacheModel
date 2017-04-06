@@ -106,6 +106,7 @@ public class L1Controller {
 					ProcessBusRequest((BusRequest) item);
 				}
 			}
+			item = this.qman.Resp2L1CPull();
 		}
 		return ret;
 	}
@@ -115,10 +116,24 @@ public class L1Controller {
 		boolean ret = false;
 		Instruction instr = this.qman.IC2L1CPull();
 		while(instr != null) {
-			String s = "L1C: Receiving Instruction " + instr.toString() + " from IC";
-			WriteLine(s);
 			ret = true;
-			ProcessInstruction(instr);
+			Queue<Instruction> waitingLine = this.waitingLines.get(instr.getAddress());
+			if(waitingLine == null) {
+				String s = "L1C: Receiving Instruction " + instr.toString() + " from IC, processing";
+				WriteLine(s);
+				ProcessInstruction(instr);
+			} else {
+				if(waitingLine.size() > 0) {
+					String s = "L1C: Receiving Instruction " + instr.toString() + " from IC, placing in waiting line since there is a BusRequest for this address already";
+					WriteLine(s);
+					PutInWaitingLine(instr);
+				} else {
+					String s = "L1C: Receiving Instruction " + instr.toString() + " from IC, processing";
+					WriteLine(s);
+					ProcessInstruction(instr);					
+				}
+			}
+			instr = this.qman.IC2L1CPull();
 		}
 		return ret;
 	}
@@ -130,6 +145,7 @@ public class L1Controller {
 		while(br != null) {
 			ret = true;
 			ProcessBusRequest(br);
+			br = this.busRequests.poll();
 		}
 		return ret;
 	}
@@ -137,6 +153,7 @@ public class L1Controller {
 	private void ProcessBusRequest(BusRequest br) {
 		Integer address = br.getAddress();
 		RequestType requType = br.getType();
+		WriteLine("L1C: Servicing request for address " + address + " (" + requType + ")");
 		if(requType == null) {
 			System.out.println("ERROR: In L1C.ProcessBusRequest, the RequestType was null");
 		}
@@ -171,12 +188,14 @@ public class L1Controller {
 			if(wb != null) {
 				byte[] data = wb.getData();
 				if(data != null) {
-					SendAck(this.parent.getNodeNum(), address, data);			
+					SendAck(this.parent.getNodeNum(), address, data);
+					WriteLine("L1C: Sent acknowledgement with data for address " + address + " (found data in write back queue)");
 				} else {
 					System.out.println("ERROR: In L1C, we snooped a WB but its data was null");
 				}
 			} else {
 				SendAck(this.parent.getNodeNum(), address);
+				WriteLine("L1C: Sent acknowledgement for address " + address + " (Did not have data)");
 			}
 		}
 	}
@@ -247,7 +266,7 @@ public class L1Controller {
 				WriteLine("L1C: Serviced request for address " + address + " (modified), a BusUpgrade");
 				break;
 			default:
-				System.out.println("ERROR: In L1C.ServiceExclusive(), RequestType not caught in switch statement, returning");
+				System.out.println("ERROR: In L1C.ServiceModified(), RequestType not caught in switch statement, returning");
 				return;
 		}
 	}
@@ -306,10 +325,10 @@ public class L1Controller {
 		//If we already had the data and just needed an upgrade/acks that we can write then:
 			//Change the state of the address
 			//Process the waiting line of instructions
+		String s = "L1C: Received acknowledgements/data from bus for address " + address + " with a state of " + state;
+		WriteLine(s);
 		UpdateState(address, state);
 		ProcessWaitingInstructions(address);
-		String s = "L1C: Received and stored data (" + ByteBuffer.wrap(data).getInt() + ") for address " + address + " with a state of " + state;
-		WriteLine(s);
 	}
 	
 	private void StallBusRequest(BusRequest br) {
@@ -433,7 +452,8 @@ public class L1Controller {
 	}
 	private void Shared(Write w) {
 		Integer address = w.getAddress();
-		WriteLine("L1C: Read requested for address " + address + " (shared), sending out BusUpgrade");
+		WriteLine("L1C: Write requested for address " + address + " (shared), sending out BusUpgrade");
+		
 		//Send a request (BusUpgrade) to the bus for it
 		SendOutBusRequest(w, RequestType.BUSUPGRADE);
 		//Put this address into a waiting line
@@ -480,7 +500,13 @@ public class L1Controller {
 		Queue<Instruction> waitingLine = this.waitingLines.get(address);
 		if(waitingLine != null) {
 			//We already have a waiting line, put it in there
-			waitingLine.offer(i);
+			if(waitingLine.size() > 0) {
+				waitingLine.offer(i);
+			} else {
+				waitingLine = new LinkedList<Instruction>();
+				waitingLine.offer(i);
+				this.waitingLines.put(address, waitingLine);
+			}
 		} else {
 			//There is no waiting line, we need to create one and put it in there
 			waitingLine = new LinkedList<Instruction>();
@@ -515,7 +541,7 @@ public class L1Controller {
 	//the same as the address we are trying to store there
 	private boolean IsSetAvailable(ControllerEntry e, Integer dataAddress) {
 		Integer addr = e.getAddress();
-		if(addr == -1 || addr == dataAddress || e.getState() == State.INVALID) {
+		if(addr == -1 || addr.equals(dataAddress) || e.getState() == State.INVALID) {
 			return true;
 		} else {
 			return false;
@@ -559,7 +585,7 @@ public class L1Controller {
 		List<ControllerEntry> set = this.sets.get(setNum);
 		for(ControllerEntry e : set) {
 			Integer entryAddr = e.getAddress();
-			if(entryAddr == address) {
+			if(entryAddr.equals(address)) {
 				return e;
 			}
 		}
@@ -584,7 +610,7 @@ public class L1Controller {
 	
 	
 	private void WriteLine(String s) {
-		this.sb.append(s + "\n");
+		this.sb.append(s + System.getProperty("line.separator"));
 	}
 	
 //	private void processFromData(QItem q) {

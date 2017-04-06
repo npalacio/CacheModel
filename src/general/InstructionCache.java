@@ -24,7 +24,6 @@ public class InstructionCache {
 	}
 	
 	public boolean Process() {
-		//TODO: Implement
 		//This should take every instruction in our 'cache' and pass it to L1C using NodeQManager
 		boolean ret = PassInstructions();
 		return ret;
@@ -32,15 +31,16 @@ public class InstructionCache {
 
 	private boolean PassInstructions() {
 		boolean ret = false;
-		for(Instruction i : instructions) {
+		Instruction i = this.instructions.poll();
+		while(i != null) {
 			this.nodeQman.IC2L1CPush(i);
 			ret = true;
+			i = this.instructions.poll();
 		}
 		return ret;
 	}
 	
 	public void AddInstructions(List<Instruction> instructions) {
-		//TODO: Implement
 		for(Instruction i : instructions) {
 			i.setNumber(currentInstruction);
 			this.instructions.offer(i);

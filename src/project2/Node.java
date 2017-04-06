@@ -1,5 +1,7 @@
 package project2;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
@@ -35,7 +37,7 @@ public class Node {
 	
 	public Node(Integer nodeNumber, QManager qmanager, boolean priorityMode, String folder) {
 		this.nodeNum = nodeNumber;
-		this.outputFile = folder + "/Node" + nodeNumber + ".txt";
+		this.outputFile = folder + File.separator + "Node" + nodeNumber + ".txt";
 		this.qman = qmanager;
 		this.priorityMode = priorityMode;
 		Initialize();
@@ -52,6 +54,9 @@ public class Node {
 	
 	//Return true if still stuff to do, false otherwise
 	public boolean Process() {
+		WriteLine("**************************************");
+		WriteLine("CYCLE " + this.cycleCount++);
+		WriteLine("**************************************");
 		
 		boolean ret = false;
 		if(this.RespContr.Process()) {
@@ -69,19 +74,21 @@ public class Node {
 		if(this.nodeQman.AreAnyLeft()) {
 			ret = true;
 		}
-		ProcessFinishedInstructions();
-		WriteLine("**************************************");
-		WriteLine("CYCLE " + this.cycleCount++);
-		WriteLine("**************************************");
+		if(ProcessFinishedInstructions()) {
+			ret = true;
+		}
 		return ret;
 	}
 	
-	private void ProcessFinishedInstructions() {
+	private boolean ProcessFinishedInstructions() {
+		boolean ret = false;
 		QItem item = this.nodeQman.L1C2NodePull();
 		while(item != null) {
+			ret = true;
 			ProcessFinishedInstruction(item);
 			item = this.nodeQman.L1C2NodePull();
 		}
+		return ret;
 	}
 	
 	private void ProcessFinishedInstruction(QItem q) {
@@ -125,12 +132,18 @@ public class Node {
 	
 	private void WriteToOutputFile() {
 		try{
-		    PrintWriter writer = new PrintWriter(this.outputFile, "UTF-8");
-		    writer.print(this.sb.toString());
+//		    PrintWriter writer = new PrintWriter(this.outputFile, "UTF-8");
+//		    writer.print(this.sb.toString());
+//		    writer.close();
+		    File file = new File(this.outputFile);
+		    file.getParentFile().mkdirs();
+		    FileWriter writer = new FileWriter(file);
+		    writer.write(this.sb.toString());
 		    writer.close();
 		} catch (IOException e) {
 			// do something
 			System.out.println("ERROR: Error in node " + this.nodeNum + " when trying to write to output file");
+			e.printStackTrace();
 		}
 	}
 
@@ -159,7 +172,7 @@ public class Node {
 	}
 
 	private void WriteLine(String s) {
-		this.sb.append(s + "\n");
+		this.sb.append(s + System.getProperty("line.separator"));
 	}
 	
 }

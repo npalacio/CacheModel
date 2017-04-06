@@ -148,7 +148,7 @@ public class QManager {
 		//Put all the items in the temp Q back
 		Queue<BusItem> newWBQ = new LinkedList<BusItem>();
 		//Need to add them in reverse order to preserve the order of the Q
-		for(int j = i; j >= 0; j--) {
+		for(int j = i - 1; j >= 0; j--) {
 			newWBQ.offer(temp.get(j));
 		}
 		this.writeBacks = newWBQ;
